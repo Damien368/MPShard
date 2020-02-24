@@ -38,13 +38,13 @@ namespace Server.Commands
                 from.Hunger = iHunger;
 
                 if (iHunger < 5)
-                    from.SendMessage("You eat the food, but are still extremely hungry"); // You eat the food, but are still extremely hungry.
+                    from.SendMessage("You are extremely hungry."); // You eat the food, but are still extremely hungry.
                 else if (iHunger < 10)
-                    from.SendMessage("You eat the food, and begin to feel more satiated"); // You eat the food, and begin to feel more satiated.
+                    from.SendMessage("You feel Peckish."); // You eat the food, and begin to feel more satiated.
                 else if (iHunger < 15)
-                    from.SendMessage("After eating the food, you feel much less hungry"); // After eating the food, you feel much less hungry.
+                    from.SendMessage("You are quite full but there i still space in your belly."); // After eating the food, you feel much less hungry.
                 else
-                    from.SendMessage("You feel quite full after consuming the food"); // You feel quite full after consuming the food.
+                    from.SendMessage("You are stuffed!"); // You feel quite full after consuming the food.
             }
 
         }
