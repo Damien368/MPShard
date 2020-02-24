@@ -85,6 +85,7 @@ namespace Server
             this.AddCheck(240, 415, 210, 211, false, (int)SkillName.MagicResist);
             this.AddCheck(240, 440, 210, 211, false, (int)SkillName.Meditation);
             this.AddCheck(240, 465, 210, 211, false, (int)SkillName.Mining);
+
             this.AddLabel(265, 65, 0, SkillName.Fencing.ToString());
             this.AddLabel(265, 90, 0, SkillName.Fishing.ToString());
             this.AddLabel(265, 115, 0, SkillName.Fletching.ToString());
@@ -102,6 +103,7 @@ namespace Server
             this.AddLabel(265, 415, 0, SkillName.MagicResist.ToString());
             this.AddLabel(265, 440, 0, SkillName.Meditation.ToString());
             this.AddLabel(265, 465, 0, SkillName.Mining.ToString());
+
             // ********************************************************
             this.AddCheck(425, 65, 210, 211, false, (int)SkillName.Musicianship);
             this.AddCheck(425, 90, 210, 211, false, (int)SkillName.Necromancy);
@@ -142,10 +144,16 @@ namespace Server
             this.AddCheck(610, 90, 210, 211, false, (int)SkillName.Tracking);
             this.AddCheck(610, 115, 210, 211, false, (int)SkillName.Veterinary);
             this.AddCheck(610, 140, 210, 211, false, (int)SkillName.Wrestling);
+            this.AddCheck(610, 165, 210, 211, false, (int)SkillName.Imbuing);
+            this.AddCheck(610, 190, 210, 211, false, (int)SkillName.Throwing);
+            this.AddCheck(610, 215, 210, 211, false, (int)SkillName.Mysticism);
             this.AddLabel(635, 65, 0, SkillName.Tinkering.ToString());
             this.AddLabel(635, 90, 0, SkillName.Tracking.ToString());
             this.AddLabel(635, 115, 0, SkillName.Veterinary.ToString());
             this.AddLabel(635, 140, 0, SkillName.Wrestling.ToString());
+            this.AddLabel(635, 165, 0, SkillName.Imbuing.ToString());
+            this.AddLabel(635, 190, 0, SkillName.Throwing.ToString());
+            this.AddLabel(635, 215, 0, SkillName.Mysticism.ToString());
             //**********************************************************
         }
 
@@ -184,7 +192,7 @@ namespace Server
 
                             Server.Skills skills = m.Skills;
 
-                            for (int i = 0; i < 55; ++i)
+                            for (int i = 0; i < 58; ++i)
                             {
                                 if (info.IsSwitched(i))
                                     m.Skills[i].Base = val;
