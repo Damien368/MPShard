@@ -128,6 +128,7 @@ namespace Server.Mobiles
                 }
 
                 Add(new GenericBuyInfo("1154005", typeof(MalleableAlloy), 50, 500, 7139, 2949, true));
+                Add(new GenericBuyInfo(typeof(PowderOfTemperament), 10000, 10, 0x1006, 0, false));
             }
         }
 
