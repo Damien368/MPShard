@@ -6611,7 +6611,7 @@ namespace Server.Mobiles
 
                 AdjustSpeeds();
                
-                CurrentSpeed = m_dActiveSpeed * 0.8; 
+                CurrentSpeed = m_dActiveSpeed * 0.8; //activespeed * modifier. 
 
                 if (m_DeleteTimer != null)
                 {
