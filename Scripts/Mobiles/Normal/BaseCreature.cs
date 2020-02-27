@@ -6610,8 +6610,8 @@ namespace Server.Mobiles
                 UpdateMasteryInfo();
 
                 AdjustSpeeds();
-                CurrentSpeed = 0.2;
-                //CurrentSpeed = m_dActiveSpeed; Original way
+               
+                CurrentSpeed = m_dActiveSpeed * 0.8; 
 
                 if (m_DeleteTimer != null)
                 {
