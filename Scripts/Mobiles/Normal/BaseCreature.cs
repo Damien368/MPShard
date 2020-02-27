@@ -162,7 +162,6 @@ namespace Server.Mobiles
         public int CompareTo(object obj)
         {
             DamageStore ds = (DamageStore)obj;
-
             return ds.m_Damage - m_Damage;
         }
     }
@@ -6611,7 +6610,8 @@ namespace Server.Mobiles
                 UpdateMasteryInfo();
 
                 AdjustSpeeds();
-                CurrentSpeed = m_dActiveSpeed;
+                CurrentSpeed = 0.2;
+                //CurrentSpeed = m_dActiveSpeed;
 
                 if (m_DeleteTimer != null)
                 {
