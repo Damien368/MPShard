@@ -2360,7 +2360,7 @@ namespace Server.Mobiles
 
             SpeedInfo.GetSpeeds(this, ref dActiveSpeed, ref dPassiveSpeed);
 
-            m_dActiveSpeed = dActiveSpeed;
+            m_dActiveSpeed = dActiveSpeed ;
             m_dPassiveSpeed = dPassiveSpeed;
             m_dCurrentSpeed = dPassiveSpeed;
 
@@ -6610,8 +6610,8 @@ namespace Server.Mobiles
                 UpdateMasteryInfo();
 
                 AdjustSpeeds();
-               
-                CurrentSpeed = m_dActiveSpeed * 0.8; //activespeed * modifier. 
+                m_dActiveSpeed /= 2; 
+                CurrentSpeed = m_dActiveSpeed;
 
                 if (m_DeleteTimer != null)
                 {
