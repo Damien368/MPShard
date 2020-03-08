@@ -41,6 +41,7 @@ namespace Server.Commands
             var pm = m as PlayerMobile;
             Container pack = m.Backpack;
             var count = pm.QuipList4.Count;
+            Quip0_OnCommand(e); //quip0 called because else the character won't unequip already equipped items.
             if (count == 0)
             {
                 m.SendMessage("Nothing in Quip List 4!");
@@ -72,6 +73,7 @@ namespace Server.Commands
             var pm = m as PlayerMobile;
             Container pack = m.Backpack;
             var count = pm.QuipList3.Count;
+            Quip0_OnCommand(e); //quip0 called because else the character won't unequip already equipped items.
             if (count == 0)
             {
                 m.SendMessage("Nothing in Quip List 3!");
@@ -104,6 +106,7 @@ namespace Server.Commands
             var pm = m as PlayerMobile;
             Container pack = m.Backpack;
             var count = pm.QuipList2.Count;
+            Quip0_OnCommand(e); //quip0 called because else the character won't unequip already equipped items.
             if (count == 0)
             {
                 m.SendMessage("Nothing in Quip List 2!");
@@ -135,6 +138,7 @@ namespace Server.Commands
             var pm = m as PlayerMobile;
             Container pack = m.Backpack;
             var count = pm.QuipList.Count;
+            Quip0_OnCommand(e); //quip0 called because else the character won't unequip already equipped items. 
             if (count == 0)
             {
                 m.SendMessage("Nothing in Quip List 1!");
