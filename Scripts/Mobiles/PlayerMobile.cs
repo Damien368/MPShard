@@ -120,13 +120,42 @@ namespace Server.Mobiles
 		Red,
 		Black
 	}
-	#endregion
 
-	public partial class PlayerMobile : Mobile, IHonorTarget
+    public enum QuipList
+    {
+        None,
+        iTorso,
+        oTorso,
+        arms,
+        gloves,
+        helm,
+        ilegs,
+        neck,
+        oneHanded,
+        twoHanded,
+        oLegs,
+        bracelet,
+        cloak,
+        earrings,
+        mTorso,
+        pants,
+        ring,
+        shirt,
+        shoes,
+        waist
+    }
+    #endregion
+
+    public partial class PlayerMobile : Mobile, IHonorTarget
 	{
 		public static List<PlayerMobile> Instances { get; private set; }
+        public List<Item> QuipList = new List<Item>();
+        public List<Item> QuipList2 = new List<Item>();
+        public List<Item> QuipList3 = new List<Item>();
+        public List<Item> QuipList4 = new List<Item>();
+        public Container QuipBag;
 
-		static PlayerMobile()
+        static PlayerMobile()
 		{
 			Instances = new List<PlayerMobile>(0x1000);
 		}
