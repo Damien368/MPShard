@@ -111,11 +111,12 @@ namespace Server.Spells.Fourth
                 Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
                 return false;
             }
-            else if (Caster.Criminal)
+            //Commented to allow criminals to recall
+            /*else if (Caster.Criminal)
             {
                 Caster.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
                 return false;
-            }
+            }*/
             else if (SpellHelper.CheckCombat(Caster))
             {
                 Caster.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
@@ -154,10 +155,11 @@ namespace Server.Spells.Fourth
             {
                 Caster.SendLocalizedMessage(1019004); // You are not allowed to travel there.
             }
-            else if (Caster.Criminal)
+            //commented to allow criminals to recall
+            /*else if (Caster.Criminal)
             {
                 Caster.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
-            }
+            }*/
             else if (SpellHelper.CheckCombat(Caster))
             {
                 Caster.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
