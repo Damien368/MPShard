@@ -56,9 +56,28 @@ namespace Server.Mobiles
         public class InternalSellInfo : GenericSellInfo 
         { 
             public InternalSellInfo() 
-            { 
+            {
                 Add(typeof(RawFishSteak), 1);
                 Add(typeof(Fish), 1);
+
+                //for adding all the high seas fishes. 
+                for(int i = 0; i < BaseHighseasFish.DeepWaterFish.Length; i++){
+                    Add(BaseHighseasFish.DeepWaterFish[i], 6);
+                }
+
+                for(int i = 0; i < BaseHighseasFish.ShoreFish.Length; i++){
+                    Add(BaseHighseasFish.DeepWaterFish[i], 6);
+                }
+
+                for(int i = 0; i < BaseHighseasFish.DungeonFish.Length; i++){
+                    Add(BaseHighseasFish.DeepWaterFish[i], 6);
+                }
+
+                for(int i = 0; i < BaseHighseasFish.LobstersAndCrabs.Length; i++){
+                    Add(BaseHighseasFish.DeepWaterFish[i], 6);
+                }
+
+
                 //TODO: Add( typeof( SmallFish ), 1 );
                 Add(typeof(FishingPole), 7);
             }
