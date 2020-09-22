@@ -1,6 +1,7 @@
-﻿using Server.Prompts;
+﻿using System;
+using Server;
 using Server.Targeting;
-using System;
+using Server.Prompts;
 
 namespace Server.Items
 {
@@ -15,7 +16,7 @@ namespace Server.Items
         private bool m_Enhanced;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Type BaitType => m_BaitType;
+        public Type BaitType { get { return m_BaitType; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int UsesRemaining { get { return m_UsesRemaining; } set { m_UsesRemaining = value; InvalidateProperties(); } }
@@ -95,7 +96,7 @@ namespace Server.Items
                     list.Add(1116464, "#{0}\t{1}", 1116470, (string)label);
             }
             else if (label is int)
-                list.Add(1116465, string.Format("#{0}", (int)label)); //~1_token~ bait
+                list.Add(1116465, String.Format("#{0}", (int)label)); //~1_token~ bait
             else if (label is string)
                 list.Add(1116465, (string)label);
         }
@@ -109,7 +110,7 @@ namespace Server.Items
 
         private class InternalPrompt : Prompt
         {
-            private readonly Bait m_Bait;
+            private Bait m_Bait;
 
             public InternalPrompt(Bait bait)
             {
@@ -118,7 +119,7 @@ namespace Server.Items
 
             public override void OnResponse(Mobile from, string text)
             {
-                int amount = Utility.ToInt32(text);
+                int amount = Utility.ToInt32( text );
                 m_Bait.TryBeginTarget(from, amount);
             }
 
@@ -130,8 +131,8 @@ namespace Server.Items
 
         private class InternalTarget : Target
         {
-            private readonly Bait m_Bait;
-            private readonly int m_Amount;
+            private Bait m_Bait;
+            private int m_Amount;
 
             public InternalTarget(Bait bait, int amount)
                 : base(0, false, TargetFlags.None)
@@ -245,7 +246,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
 
             writer.Write(m_UsesRemaining);
             writer.Write(m_Index);

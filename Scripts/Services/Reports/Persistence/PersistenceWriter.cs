@@ -6,6 +6,10 @@ namespace Server.Engines.Reports
 {
     public abstract class PersistenceWriter
     {
+        public PersistenceWriter()
+        {
+        }
+
         public abstract void SetInt32(string key, int value);
 
         public abstract void SetBoolean(string key, bool value);
@@ -36,40 +40,40 @@ namespace Server.Engines.Reports
         private readonly string m_Title;
         public XmlPersistenceWriter(string filePath, string title)
         {
-            m_RealFilePath = filePath;
-            m_TempFilePath = Path.ChangeExtension(filePath, ".tmp");
+            this.m_RealFilePath = filePath;
+            this.m_TempFilePath = Path.ChangeExtension(filePath, ".tmp");
 
-            m_Writer = new StreamWriter(m_TempFilePath);
-            m_Xml = new XmlTextWriter(m_Writer);
+            this.m_Writer = new StreamWriter(this.m_TempFilePath);
+            this.m_Xml = new XmlTextWriter(this.m_Writer);
 
-            m_Title = title;
+            this.m_Title = title;
         }
 
         public override void SetInt32(string key, int value)
         {
-            m_Xml.WriteAttributeString(key, XmlConvert.ToString(value));
+            this.m_Xml.WriteAttributeString(key, XmlConvert.ToString(value));
         }
 
         public override void SetBoolean(string key, bool value)
         {
-            m_Xml.WriteAttributeString(key, XmlConvert.ToString(value));
+            this.m_Xml.WriteAttributeString(key, XmlConvert.ToString(value));
         }
 
         public override void SetString(string key, string value)
         {
             if (value != null)
-                m_Xml.WriteAttributeString(key, value);
+                this.m_Xml.WriteAttributeString(key, value);
         }
 
         public override void SetDateTime(string key, DateTime value)
         {
             if (value != DateTime.MinValue)
-                m_Xml.WriteAttributeString(key, XmlConvert.ToString(value, XmlDateTimeSerializationMode.Utc));
+                this.m_Xml.WriteAttributeString(key, XmlConvert.ToString(value, XmlDateTimeSerializationMode.Utc));
         }
 
         public override void BeginObject(PersistableType typeID)
         {
-            m_Xml.WriteStartElement(typeID.Name);
+            this.m_Xml.WriteStartElement(typeID.Name);
         }
 
         public override void BeginChildren()
@@ -82,48 +86,48 @@ namespace Server.Engines.Reports
 
         public override void FinishObject()
         {
-            m_Xml.WriteEndElement();
+            this.m_Xml.WriteEndElement();
         }
 
         public override void WriteDocument(PersistableObject root)
         {
-            Console.WriteLine("Reports: {0}: Save started", m_Title);
+            Console.WriteLine("Reports: {0}: Save started", this.m_Title);
 
-            m_Xml.Formatting = Formatting.Indented;
-            m_Xml.IndentChar = '\t';
-            m_Xml.Indentation = 1;
+            this.m_Xml.Formatting = Formatting.Indented;
+            this.m_Xml.IndentChar = '\t';
+            this.m_Xml.Indentation = 1;
 
-            m_Xml.WriteStartDocument(true);
+            this.m_Xml.WriteStartDocument(true);
 
             root.Serialize(this);
 
-            Console.WriteLine("Reports: {0}: Save complete", m_Title);
+            Console.WriteLine("Reports: {0}: Save complete", this.m_Title);
         }
 
         public override void Close()
         {
-            m_Xml.Close();
-            m_Writer.Close();
+            this.m_Xml.Close();
+            this.m_Writer.Close();
 
             try
             {
                 string renamed = null;
 
-                if (File.Exists(m_RealFilePath))
+                if (File.Exists(this.m_RealFilePath))
                 {
-                    renamed = Path.ChangeExtension(m_RealFilePath, ".rem");
-                    File.Move(m_RealFilePath, renamed);
-                    File.Move(m_TempFilePath, m_RealFilePath);
+                    renamed = Path.ChangeExtension(this.m_RealFilePath, ".rem");
+                    File.Move(this.m_RealFilePath, renamed);
+                    File.Move(this.m_TempFilePath, this.m_RealFilePath);
                     File.Delete(renamed);
                 }
                 else
                 {
-                    File.Move(m_TempFilePath, m_RealFilePath);
+                    File.Move(this.m_TempFilePath, this.m_RealFilePath);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Diagnostics.ExceptionLogging.LogException(e);
+                Console.WriteLine(ex);
             }
         }
     }

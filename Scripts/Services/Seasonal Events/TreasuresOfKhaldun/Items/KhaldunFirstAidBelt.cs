@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 namespace Server.Items
 {
     public class KhaldunFirstAidBelt : FirstAidBelt
@@ -5,7 +8,7 @@ namespace Server.Items
         [Constructable]
         public KhaldunFirstAidBelt()
         {
-            LootType = LootType.Blessed;
+			LootType = LootType.Blessed;
             WeightReduction = 50;
             Attributes.RegenHits = 2;
             HealingBonus = 10;

@@ -11,13 +11,13 @@ namespace Server
 			m_Count = 0;
 		}
 
-		public int Count => m_Count;
+		public int Count { get { return m_Count; } }
 
 		public void AddRange(StaticTile[] tiles)
 		{
 			if ((m_Count + tiles.Length) > m_Tiles.Length)
 			{
-				StaticTile[] old = m_Tiles;
+				var old = m_Tiles;
 				m_Tiles = new StaticTile[(m_Count + tiles.Length) * 2];
 
 				for (int i = 0; i < old.Length; ++i)
@@ -36,7 +36,7 @@ namespace Server
 		{
 			if ((m_Count + 1) > m_Tiles.Length)
 			{
-				StaticTile[] old = m_Tiles;
+				var old = m_Tiles;
 				m_Tiles = new StaticTile[old.Length * 2];
 
 				for (int i = 0; i < old.Length; ++i)
@@ -59,7 +59,7 @@ namespace Server
 				return m_EmptyTiles;
 			}
 
-			StaticTile[] tiles = new StaticTile[m_Count];
+			var tiles = new StaticTile[m_Count];
 
 			for (int i = 0; i < m_Count; ++i)
 			{

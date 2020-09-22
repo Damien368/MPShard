@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Server.Events.Halloween;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
-using System;
-using System.Collections.Generic;
 
 namespace Server.Engines.Events
 {
@@ -12,15 +12,17 @@ namespace Server.Engines.Events
         public static TimeSpan OneSecond = TimeSpan.FromSeconds(1);
         public static void Initialize()
         {
+            DateTime now = DateTime.UtcNow;
+
             if (DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween)
             {
-                EventSink.Speech += EventSink_Speech;
+                EventSink.Speech += new SpeechEventHandler(EventSink_Speech);
             }
         }
 
         public static void Bleeding(Mobile m_From)
         {
-            if (CheckMobile(m_From))
+            if (TrickOrTreat.CheckMobile(m_From))
             {
                 if (m_From.Location != Point3D.Zero)
                 {
@@ -48,7 +50,7 @@ namespace Server.Engines.Events
             {
                 target.SolidHueOverride = Utility.RandomMinMax(2501, 2644);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(10), RemoveHueMod, target);
+                Timer.DelayCall<Mobile>(TimeSpan.FromSeconds(10), new TimerStateCallback<Mobile>(RemoveHueMod), target);
             }
         }
 
@@ -60,7 +62,7 @@ namespace Server.Engines.Events
             {
                 Mobile twin = new NaughtyTwin(m_From);
 
-                if (!twin.Deleted)
+                if (twin != null && !twin.Deleted)
                 {
                     foreach (Item item in m_From.Items)
                     {
@@ -80,11 +82,7 @@ namespace Server.Engines.Events
                             {
                                 item = Activator.CreateInstance(m_Items[i].GetType()) as Item;
                             }
-                            catch (Exception e)
-                            {
-                                Diagnostics.ExceptionLogging.LogException(e);
-                                continue;
-                            }
+                            catch { continue; }
 
                             if (item != null)
                             {
@@ -111,14 +109,14 @@ namespace Server.Engines.Events
 
                     twin.MoveToWorld(m_From.Map.CanSpawnMobile(point) ? point : m_From.Location, m_From.Map);
 
-                    Timer.DelayCall(TimeSpan.FromSeconds(5), DeleteTwin, twin);
+                    Timer.DelayCall(TimeSpan.FromSeconds(5), new TimerStateCallback<Mobile>(DeleteTwin), twin);
                 }
             }
         }
 
         public static void DeleteTwin(Mobile m_Twin)
         {
-            if (CheckMobile(m_Twin))
+            if (TrickOrTreat.CheckMobile(m_Twin))
             {
                 m_Twin.Delete();
             }
@@ -188,7 +186,7 @@ namespace Server.Engines.Events
                         {
                             if (Utility.RandomDouble() > .10)
                             {
-                                switch (Utility.Random(3))
+                                switch( Utility.Random(3) )
                                 {
                                     case 0:
                                         m_Begged.Say(1076768);
@@ -224,15 +222,15 @@ namespace Server.Engines.Events
 
                                 if (m_Action == 0)
                                 {
-                                    Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, from);
+                                    Timer.DelayCall<Mobile>(OneSecond, OneSecond, 10, new TimerStateCallback<Mobile>(Bleeding), from);
                                 }
                                 else if (m_Action == 1)
                                 {
-                                    Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, from);
+                                    Timer.DelayCall<Mobile>(TimeSpan.FromSeconds(2), new TimerStateCallback<Mobile>(SolidHueMobile), from);
                                 }
                                 else
                                 {
-                                    Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, from);
+                                    Timer.DelayCall<Mobile>(TimeSpan.FromSeconds(2), new TimerStateCallback<Mobile>(MakeTwin), from);
                                 }
                             }
                         }
@@ -278,7 +276,7 @@ namespace Server.Engines.Events
             new Point3D(802, 1204, 25), // Makoto-Jima
             new Point3D(270, 628, 15)// Homare-Jima
         };
-        private static readonly Point3D[] TerMur_Locations =
+		private static readonly Point3D[] TerMur_Locations =
         {
             new Point3D(851, 3525, -38)// Royal City
         };
@@ -288,12 +286,12 @@ namespace Server.Engines.Events
         {
             if (TrickOrTreat.CheckMobile(from))
             {
-                Body = from.Body;
+                this.Body = from.Body;
 
-                m_From = from;
-                Name = string.Format("{0}\'s Naughty Twin", from.Name);
+                this.m_From = from;
+                this.Name = String.Format("{0}\'s Naughty Twin", from.Name);
 
-                Timer.DelayCall(TrickOrTreat.OneSecond, Utility.RandomBool() ? StealCandy : new TimerStateCallback<Mobile>(ToGate), m_From);
+                Timer.DelayCall<Mobile>(TrickOrTreat.OneSecond, Utility.RandomBool() ? new TimerStateCallback<Mobile>(StealCandy) : new TimerStateCallback<Mobile>(ToGate), this.m_From);
             }
         }
 
@@ -348,7 +346,9 @@ namespace Server.Engines.Events
 
         public static Point3D RandomMoongate(Mobile target)
         {
-            switch (target.Map.MapID)
+            Map map = target.Map;
+
+            switch( target.Map.MapID )
             {
                 case 2:
                     return Ilshenar_Locations[Utility.Random(Ilshenar_Locations.Length)];
@@ -356,7 +356,7 @@ namespace Server.Engines.Events
                     return Malas_Locations[Utility.Random(Malas_Locations.Length)];
                 case 4:
                     return Tokuno_Locations[Utility.Random(Tokuno_Locations.Length)];
-                case 5:
+				case 5:
                     return TerMur_Locations[Utility.Random(TerMur_Locations.Length)];
                 default:
                     return Felucca_Locations[Utility.Random(Felucca_Locations.Length)];
@@ -365,16 +365,16 @@ namespace Server.Engines.Events
 
         public override void OnThink()
         {
-            if (m_From == null || m_From.Deleted)
+            if (this.m_From == null || this.m_From.Deleted)
             {
-                Delete();
+                this.Delete();
             }
         }
 
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

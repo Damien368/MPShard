@@ -1,8 +1,8 @@
-using Server.Commands;
-using Server.Mobiles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Server.Mobiles;
+using Server.Commands;
 using System.Linq;
 
 namespace Server.Items
@@ -60,7 +60,7 @@ namespace Server.Items
             int count = 0;
             int fail = 0;
 
-            List<FillableContainer> toCheck = new List<FillableContainer>(World.Items.Values.OfType<FillableContainer>().Where(i => i is FillableContainer && i.ContentType == FillableContentType.None));
+            List<FillableContainer> toCheck = new List<FillableContainer>(World.Items.Values.OfType<FillableContainer>().Where(i => i is FillableContainer && ((FillableContainer)i).ContentType == FillableContentType.None));
 
             foreach (FillableContainer cont in toCheck)
             {
@@ -94,13 +94,13 @@ namespace Server.Items
         {
         }
 
-        public virtual int MinRespawnMinutes => 5;
-        public virtual int MaxRespawnMinutes => 30;
-        public virtual bool IsLockable => true;
-        public virtual bool IsTrapable => IsLockable;
-        public virtual int SpawnThreshold => MaxSpawnCount - 1;
+        public virtual int MinRespawnMinutes { get { return 5; } }
+        public virtual int MaxRespawnMinutes { get { return 30; } }
+        public virtual bool IsLockable { get { return true; } }
+        public virtual bool IsTrapable { get { return IsLockable; } }
+        public virtual int SpawnThreshold { get { return MaxSpawnCount - 1; } }
 
-        public virtual int AmountPerSpawn => 1;
+        public virtual int AmountPerSpawn { get { return 1; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxSpawnCount { get; set; }
@@ -109,11 +109,11 @@ namespace Server.Items
         public int TotalTraps { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime NextRespawnTime
+        public DateTime NextRespawnTime 
         {
-            get
+            get 
             {
-                return m_NextRespawnTime;
+                return m_NextRespawnTime; 
             }
             set
             {
@@ -122,7 +122,7 @@ namespace Server.Items
                 if (m_NextRespawnTime > DateTime.UtcNow)
                 {
                     TimeSpan delay = m_NextRespawnTime - DateTime.UtcNow;
-                    m_RespawnTimer = Timer.DelayCall(delay, Respawn);
+                    m_RespawnTimer = Timer.DelayCall(delay, new TimerCallback(Respawn));
                 }
             }
         }
@@ -226,7 +226,7 @@ namespace Server.Items
                     TimeSpan delay = TimeSpan.FromMinutes(mins);
 
                     m_NextRespawnTime = DateTime.UtcNow + delay;
-                    m_RespawnTimer = Timer.DelayCall(delay, Respawn);
+                    m_RespawnTimer = Timer.DelayCall(delay, new TimerCallback(Respawn));
                 }
             }
             else if (m_RespawnTimer != null)
@@ -370,7 +370,7 @@ namespace Server.Items
             if (m_RespawnTimer != null)
             {
                 writer.Write(true);
-                writer.WriteDeltaTime(m_NextRespawnTime);
+                writer.WriteDeltaTime((DateTime)m_NextRespawnTime);
             }
             else
             {
@@ -410,7 +410,7 @@ namespace Server.Items
                             m_NextRespawnTime = reader.ReadDeltaTime();
 
                             TimeSpan delay = m_NextRespawnTime - DateTime.UtcNow;
-                            m_RespawnTimer = Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Respawn);
+                            m_RespawnTimer = Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback(Respawn));
                         }
                         else
                         {
@@ -450,7 +450,13 @@ namespace Server.Items
         {
         }
 
-        public override bool IsLockable => false;
+        public override bool IsLockable
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         public override void AcquireContent()
         {
@@ -467,7 +473,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.WriteEncodedInt(2); // version
+            writer.WriteEncodedInt((int)2); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -477,9 +483,9 @@ namespace Server.Items
             int version = reader.ReadEncodedInt();
 
             if (version == 0 && m_Content == null)
-                Timer.DelayCall(TimeSpan.Zero, AcquireContent);
+                Timer.DelayCall(TimeSpan.Zero, new TimerCallback(AcquireContent));
 
-            if (version == 1)
+            if(version == 1)
                 MaxSpawnCount = 5;
         }
 
@@ -508,7 +514,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
+            writer.WriteEncodedInt((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -538,7 +544,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
+            writer.WriteEncodedInt((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -568,7 +574,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -597,7 +603,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.WriteEncodedInt(0); // version
+            writer.WriteEncodedInt((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -633,7 +639,13 @@ namespace Server.Items
         {
         }
 
-        public override bool IsLockable => false;
+        public override bool IsLockable
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         public void Pour(Mobile from, BaseBeverage beverage)
         {
@@ -642,14 +654,12 @@ namespace Server.Items
                 if (Items.Count > 0)
                 {
                     from.SendLocalizedMessage(500848); // Couldn't pour it there.  It was already full.
-                    beverage.PrivateOverheadMessage(Network.MessageType.Regular, 0, 500841, from.NetState); // that has somethign in it.
+                    beverage.PrivateOverheadMessage(Server.Network.MessageType.Regular, 0, 500841, from.NetState); // that has somethign in it.
                 }
                 else
                 {
-                    WaterBarrel barrel = new WaterBarrel
-                    {
-                        Movable = false
-                    };
+                    var barrel = new WaterBarrel();
+                    barrel.Movable = false;
                     barrel.MoveToWorld(Location, Map);
 
                     WorldLocation = Location;
@@ -689,7 +699,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.WriteEncodedInt(2); // version
+            writer.WriteEncodedInt((int)2); // version
 
             writer.Write(WorldLocation);
             writer.Write(WorldMap);
@@ -747,7 +757,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write((int)1); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -779,7 +789,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write((int)1); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -811,7 +821,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write((int)1); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -859,8 +869,20 @@ namespace Server.Items
                 m_Types[i] = types[offset + i];
         }
 
-        public Type[] Types => m_Types;
-        public int Weight => m_Weight;
+        public Type[] Types
+        {
+            get
+            {
+                return m_Types;
+            }
+        }
+        public int Weight
+        {
+            get
+            {
+                return m_Weight;
+            }
+        }
         public virtual Item Construct()
         {
             Item item = Loot.Construct(m_Types);
@@ -890,7 +912,13 @@ namespace Server.Items
             m_Content = content;
         }
 
-        public BeverageType Content => m_Content;
+        public BeverageType Content
+        {
+            get
+            {
+                return m_Content;
+            }
+        }
         public override Item Construct()
         {
             Item item;
@@ -928,7 +956,7 @@ namespace Server.Items
             1,
             new Type[]
             {
-                typeof(Alchemist)
+                typeof(Mobiles.Alchemist)
             },
             new FillableEntry[]
             {
@@ -1284,14 +1312,14 @@ namespace Server.Items
             {
                 new FillableEntry(16, typeof(BlankScroll)),
                 new FillableEntry(14, typeof(Spellbook)),
-                new FillableEntry(12, Loot.MageryScrollTypes, 0, 8),
-                new FillableEntry(11, Loot.MageryScrollTypes, 8, 8),
-                new FillableEntry(10, Loot.MageryScrollTypes, 16, 8),
-                new FillableEntry(9, Loot.MageryScrollTypes, 24, 8),
-                new FillableEntry(8, Loot.MageryScrollTypes, 32, 8),
-                new FillableEntry(7, Loot.MageryScrollTypes, 40, 8),
-                new FillableEntry(6, Loot.MageryScrollTypes, 48, 8),
-                new FillableEntry(5, Loot.MageryScrollTypes, 56, 8)
+                new FillableEntry(12, Loot.RegularScrollTypes, 0, 8),
+                new FillableEntry(11, Loot.RegularScrollTypes, 8, 8),
+                new FillableEntry(10, Loot.RegularScrollTypes, 16, 8),
+                new FillableEntry(9, Loot.RegularScrollTypes, 24, 8),
+                new FillableEntry(8, Loot.RegularScrollTypes, 32, 8),
+                new FillableEntry(7, Loot.RegularScrollTypes, 40, 8),
+                new FillableEntry(6, Loot.RegularScrollTypes, 48, 8),
+                new FillableEntry(5, Loot.RegularScrollTypes, 56, 8)
             });
         public static FillableContent Merchant = new FillableContent(
             1,
@@ -1635,9 +1663,27 @@ namespace Server.Items
                 m_Weight += entries[i].Weight;
         }
 
-        public int Level => m_Level;
-        public Type[] Vendors => m_Vendors;
-        public FillableContentType TypeID => Lookup(this);
+        public int Level
+        {
+            get
+            {
+                return m_Level;
+            }
+        }
+        public Type[] Vendors
+        {
+            get
+            {
+                return m_Vendors;
+            }
+        }
+        public FillableContentType TypeID
+        {
+            get
+            {
+                return Lookup(this);
+            }
+        }
         public static FillableContent Lookup(FillableContentType type)
         {
             int v = (int)type;

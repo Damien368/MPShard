@@ -1,11 +1,14 @@
+using System;
+using Server;
 using Server.Items;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
     [CorpseName("a gallusaurus corpse")]
     public class Gallusaurus : BaseCreature
     {
-        public override bool AttacksFocus => !Controlled;
+        public override bool AttacksFocus { get { return !Controlled; } }
 
         [Constructable]
         public Gallusaurus()
@@ -53,10 +56,8 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich, 1);
         }
 
-        public override int Meat => 3;
-        public override MeatType MeatType => MeatType.DinoRibs;
-        public override bool CanAngerOnTame => true;
-        public override int TreasureMapLevel => 1;
+        public override int Meat { get { return 3; } }
+        public override bool CanAngerOnTame { get { return true; } }
 
         public Gallusaurus(Serial serial)
             : base(serial)

@@ -1,19 +1,25 @@
+using System;
 using Server.Accounting;
-using Server.Engines.Craft;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
-using System;
 using System.Linq;
+using Server.Engines.Craft;
 
 
 namespace Server.Items
 {
     public class SoulStone : Item, ISecurable
     {
-        public override int LabelNumber => 1030899;// soulstone
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1030899;
+            }
+        }// soulstone
 
         private int m_ActiveItemID;
         private int m_InactiveItemID;
@@ -133,7 +139,13 @@ namespace Server.Items
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsEmpty => m_SkillValue <= 0.0;
+        public bool IsEmpty
+        {
+            get
+            {
+                return m_SkillValue <= 0.0;
+            }
+        }
 
         [Constructable]
         public SoulStone()
@@ -174,7 +186,7 @@ namespace Server.Items
             string name = LastUserName;
 
             if (name == null)
-                name = string.Format("#{0}", 1074235); // Unknown
+                name = String.Format("#{0}", 1074235); // Unknown
 
             list.Add(1041602, "{0}", name); // Owner: ~1_val~
         }
@@ -230,6 +242,11 @@ namespace Server.Items
             else if (!from.Alive)
             {
                 from.SendLocalizedMessage(1070730); // You may not use a Soulstone while your character is dead.
+                return false;
+            }
+            else if (Factions.Sigil.ExistsOn(from))
+            {
+                from.SendLocalizedMessage(1070731); // You may not use a Soulstone while your character has a faction town sigil.
                 return false;
             }
             else if (from.Spell != null && from.Spell.IsCasting)
@@ -814,7 +831,7 @@ namespace Server.Items
             writer.WriteEncodedInt(3); // version
 
             //version 3
-            writer.Write(m_LastUserName);
+            writer.Write((string)m_LastUserName);
 
             //version 2
             writer.Write((int)m_Level);
@@ -822,11 +839,11 @@ namespace Server.Items
             writer.Write(m_ActiveItemID);
             writer.Write(m_InactiveItemID);
 
-            writer.Write(m_Account);
-            writer.Write(m_NextUse); //TODO: delete it in a harmless way
+            writer.Write((string)m_Account);
+            writer.Write((DateTime)m_NextUse); //TODO: delete it in a harmless way
 
             writer.WriteEncodedInt((int)m_Skill);
-            writer.Write(m_SkillValue);
+            writer.Write((double)m_SkillValue);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -835,7 +852,7 @@ namespace Server.Items
 
             int version = reader.ReadEncodedInt();
 
-            switch (version)
+            switch( version )
             {
                 case 3:
                     {
@@ -877,7 +894,13 @@ namespace Server.Items
     {
         private int m_UsesRemaining;
 
-        public override int LabelNumber => 1071000;// soulstone fragment
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1071000;
+            }
+        }// soulstone fragment
 
         [Constructable]
         public SoulstoneFragment()
@@ -925,7 +948,7 @@ namespace Server.Items
 
         public override void OnSkillTransfered(Mobile from)
         {
-            if (string.IsNullOrEmpty(Account))
+            if (String.IsNullOrEmpty(Account))
             {
                 Account = from.Account.Username;
             }
@@ -1028,7 +1051,7 @@ namespace Server.Items
 
         public void Flip()
         {
-            switch (ItemID)
+            switch( ItemID )
             {
                 case 0x2ADC:
                     ItemID = 0x2AEC;
@@ -1049,7 +1072,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -1107,9 +1130,9 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write((int)1); // version
 
-            writer.Write(m_IsRewardItem);
+            writer.Write((bool)m_IsRewardItem);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -1118,7 +1141,7 @@ namespace Server.Items
 
             int version = reader.ReadInt();
 
-            switch (version)
+            switch ( version )
             {
                 case 1:
                     {
@@ -1153,7 +1176,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

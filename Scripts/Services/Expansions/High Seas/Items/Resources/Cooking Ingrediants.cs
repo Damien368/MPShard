@@ -1,16 +1,18 @@
+﻿using Server;
+using System;
 using Server.Targeting;
 
 namespace Server.Items
 {
     public class MentoSeasoning : Item
     {
-        public override int LabelNumber => 1116299; // Mento Seasoning
+        public override int LabelNumber { get { return 1116299; } }
 
         [Constructable]
         public MentoSeasoning()
-            : base(0x996)
+            : base(2454)
         {
-            Hue = 2591;
+            Hue = 95;
         }
 
         public MentoSeasoning(Serial serial) : base(serial)
@@ -20,23 +22,22 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
-            reader.ReadInt();
+            int version = reader.ReadInt();
         }
     }
 
     public class SamuelsSecretSauce : Item
     {
-        public override int LabelNumber => 1116338; // Samuel's Secret Sauce
+        public override int LabelNumber { get { return 1116338; } }
 
         [Constructable]
-        public SamuelsSecretSauce()
-            : base(0x99B)
+        public SamuelsSecretSauce() : base(2463)
         {
             Hue = 1461;
         }
@@ -48,25 +49,25 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
-            reader.ReadInt();
+            int version = reader.ReadInt();
         }
     }
 
     public class DarkTruffle : Item
     {
-        public override int LabelNumber => 1116300; // dark truffle
+        public override int LabelNumber { get { return 1116300; } }
 
         [Constructable]
         public DarkTruffle()
-            : base(0xD18)
+            : base(3352)
         {
-            Hue = 2021;
+            Hue = 1908;
         }
 
         public DarkTruffle(Serial serial)
@@ -77,23 +78,23 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
-            reader.ReadInt();
+            int version = reader.ReadInt();
         }
     }
 
     public class FreshGinger : Item
     {
-        public override int LabelNumber => 1031235; // Fresh Ginger
+        public override int LabelNumber { get { return 1031235; } }
 
         [Constructable]
         public FreshGinger()
-            : base(0x2BE3)
+            : base(11235)
         {
         }
 
@@ -105,35 +106,36 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
-            reader.ReadInt();
+            int version = reader.ReadInt();
         }
     }
 
     public class FishOilFlask : Item
     {
-        public override int LabelNumber => 1150863; // fish oil flask
+        public override int LabelNumber { get { return 1150863; } }
 
         [Constructable]
         public FishOilFlask()
-            : base(0x1C18)
+            : base(7192)
         {
+            Hue = 2404;
         }
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (IsChildOf(from.Backpack))
+            if(IsChildOf(from.Backpack))
                 from.Target = new InternalTarget(this);
         }
 
         private class InternalTarget : Target
         {
-            private readonly FishOilFlask m_Flask;
+            private FishOilFlask m_Flask;
 
             public InternalTarget(FishOilFlask flask) : base(-1, false, TargetFlags.None)
             {
@@ -164,70 +166,13 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
-            reader.ReadInt();
-        }
-    }
-
-    public class Salt : Item
-    {
-        public override int LabelNumber => 1159201; // salt
-
-        [Constructable]
-        public Salt()
-            : base(0x4C09)
-        {
-            Hue = 1150;
-        }
-
-        public Salt(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(GenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(GenericReader reader)
-        {
-            base.Deserialize(reader);
-            reader.ReadInt();
-        }
-    }
-
-    public class FreshSeasoning : Item
-    {
-        public override int LabelNumber => 1159200; // fresh seasoning
-
-        [Constructable]
-        public FreshSeasoning()
-            : base(0x1006)
-        {
-            Hue = 1150;
-        }
-
-        public FreshSeasoning(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(GenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(GenericReader reader)
-        {
-            base.Deserialize(reader);
-            reader.ReadInt();
+            int version = reader.ReadInt();
         }
     }
 }

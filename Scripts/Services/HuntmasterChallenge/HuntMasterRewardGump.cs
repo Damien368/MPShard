@@ -1,12 +1,14 @@
-using Server.Gumps;
-using Server.Items;
+using Server;
+using System;
 using Server.Mobiles;
+using Server.Gumps;
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Engines.HuntsmasterChallenge
 {
-    public class HuntmasterRewardGump : BaseRewardGump
-    {
+	public class HuntmasterRewardGump : BaseRewardGump
+	{
         public HuntmasterRewardGump(Mobile huntmaster, PlayerMobile pm)
             : base(huntmaster, pm, _Collections, 1155726) // Huntmaster's Challenge
         {
@@ -17,7 +19,7 @@ namespace Server.Engines.HuntsmasterChallenge
             if (HuntingSystem.Instance == null)
                 return 0.0;
 
-            HuntingSystem sys = HuntingSystem.Instance;
+            var sys = HuntingSystem.Instance;
 
             if (sys.UnclaimedWinners.ContainsKey(m))
             {
@@ -39,7 +41,7 @@ namespace Server.Engines.HuntsmasterChallenge
             if (HuntingSystem.Instance == null)
                 return;
 
-            HuntingSystem sys = HuntingSystem.Instance;
+            var sys = HuntingSystem.Instance;
 
             if (sys.UnclaimedWinners.ContainsKey(User))
             {
@@ -58,7 +60,7 @@ namespace Server.Engines.HuntsmasterChallenge
             {
                 Item item;
 
-                switch (citem.Tooltip.Number)
+                switch (citem.Tooltip)
                 {
                     default:
                     case 1158769: item = new RecipeScroll(605); break;
@@ -89,7 +91,7 @@ namespace Server.Engines.HuntsmasterChallenge
             }
         }
 
-        private static readonly List<CollectionItem> _Collections = new List<CollectionItem>
+        private static List<CollectionItem> _Collections = new List<CollectionItem>
         {
             new CollectionItem(typeof(HarvestersBlade), 0x2D20, 1114096, 0, 1.0),
             new CollectionItem(typeof(HornOfPlenty), 18080, 1153503, 0, 1.0),
@@ -103,5 +105,5 @@ namespace Server.Engines.HuntsmasterChallenge
             new CollectionItem(typeof(LumbjacksSatchel), 0xA274, 1158772, 0, 1.0),
             new CollectionItem(typeof(HarvestersAxe), 0x1443, 1158774, 0, 1.0),
         };
-    }
+	}
 }

@@ -1,7 +1,13 @@
+using System;
+
 namespace Server.Engines.Reports
 {
     public abstract class PersistableObject
     {
+        public PersistableObject()
+        {
+        }
+
         public abstract PersistableType TypeID { get; }
         public virtual void SerializeAttributes(PersistenceWriter op)
         {
@@ -13,10 +19,10 @@ namespace Server.Engines.Reports
 
         public void Serialize(PersistenceWriter op)
         {
-            op.BeginObject(TypeID);
-            SerializeAttributes(op);
+            op.BeginObject(this.TypeID);
+            this.SerializeAttributes(op);
             op.BeginChildren();
-            SerializeChildren(op);
+            this.SerializeChildren(op);
             op.FinishChildren();
             op.FinishObject();
         }
@@ -31,11 +37,11 @@ namespace Server.Engines.Reports
 
         public void Deserialize(PersistenceReader ip)
         {
-            DeserializeAttributes(ip);
+            this.DeserializeAttributes(ip);
 
             if (ip.BeginChildren())
             {
-                DeserializeChildren(ip);
+                this.DeserializeChildren(ip);
                 ip.FinishChildren();
             }
         }

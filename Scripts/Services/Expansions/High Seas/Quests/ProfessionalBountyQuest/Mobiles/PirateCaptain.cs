@@ -1,8 +1,9 @@
-using Server.Engines.Quests;
+﻿using Server;
+using System;
 using Server.Items;
 using Server.Multis;
-using System;
 using System.Collections.Generic;
+using Server.Engines.Quests;
 
 namespace Server.Mobiles
 {
@@ -26,12 +27,12 @@ namespace Server.Mobiles
         private int m_Adjective;
         private int m_Noun;
 
-        public int PirateName => m_PirateName;
-        public int Adjective => m_Adjective;
-        public int Noun => m_Noun;
+        public int PirateName { get { return m_PirateName; } }
+        public int Adjective { get { return m_Adjective; } }
+        public int Noun { get { return m_Noun; } }
 
-        public override bool AlwaysMurderer => true;
-        public override bool Commandable => false;
+        public override bool AlwaysMurderer { get { return true; } }
+        public override bool Commandable { get { return false; } }
 
         #region Bounty Quest
         private ProfessionalBountyQuest m_Quest;
@@ -55,7 +56,7 @@ namespace Server.Mobiles
         {
             PickRandomName();
 
-            if (m_PirateName > 0 && (m_PirateName == 1116679 || m_PirateName == 1116680 || m_PirateName == 1116683))
+            if(m_PirateName > 0 && (m_PirateName == 1116679 || m_PirateName == 1116680 || m_PirateName == 1116683))
                 Female = true;
 
             SpeechHue = Utility.RandomDyedHue();
@@ -82,10 +83,8 @@ namespace Server.Mobiles
 
             Item hat;
             Item fancyShirt = new FancyShirt();
-            Item shirt = new Shirt(GetRandomShirtHue())
-            {
-                Layer = Layer.OuterTorso
-            };
+            Item shirt = new Shirt(GetRandomShirtHue());
+            shirt.Layer = Layer.OuterTorso;
 
             if (Utility.RandomBool())
                 hat = new Bandana();
@@ -146,11 +145,11 @@ namespace Server.Mobiles
         public override void AddNameProperties(ObjectPropertyList list)
         {
             string args;
-
-            if (m_PirateName > 0)
-                args = string.Format("#{0}\t#{1}\t#{2}", m_Adjective, m_Noun, m_PirateName);
+            
+            if(m_PirateName > 0)
+                args = String.Format("#{0}\t#{1}\t#{2}", m_Adjective, m_Noun, m_PirateName);
             else
-                args = string.Format("#{0}\t#{1}\t{2}", m_Adjective, m_Noun, Name);
+                args = String.Format("#{0}\t#{1}\t{2}", m_Adjective, m_Noun, Name);
 
             list.Add(1116690, args);
         }
@@ -162,10 +161,10 @@ namespace Server.Mobiles
             if (!IsCaught || m_NextTalk > DateTime.UtcNow)
                 return;
 
-            IPooledEnumerable eable = GetMobilesInRange(7);
-            foreach (Mobile mob in eable)
+            IPooledEnumerable eable = this.GetMobilesInRange(7);
+            foreach(Mobile mob in eable)
             {
-                if (mob is PlayerMobile)
+                if (mob is PlayerMobile) 
                 {
                     OnTalk();
                     break;
@@ -303,7 +302,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(1);
+            writer.Write((int)1);
 
             writer.Write(m_IsCaught);
             writer.Write(m_Adjective);

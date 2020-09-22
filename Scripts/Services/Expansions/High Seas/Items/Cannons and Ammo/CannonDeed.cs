@@ -1,4 +1,7 @@
+using Server;
+using System;
 using Server.Multis;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Items
@@ -61,7 +64,7 @@ namespace Server.Items
                 {
                     Point3D pnt = new Point3D((IPoint3D)targeted);
 
-                    BaseGalleon galleon = BaseGalleon.FindGalleonAt(new Point2D(pnt.X, pnt.Y), map);
+                    var galleon = BaseGalleon.FindGalleonAt(new Point2D(pnt.X, pnt.Y), map);
 
                     if (galleon != null && Galleon == galleon)
                     {
@@ -76,7 +79,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -88,8 +91,8 @@ namespace Server.Items
 
     public class CulverinDeed : ShipCannonDeed
     {
-        public override CannonPower CannonType => CannonPower.Light;
-        public override int LabelNumber => 1095793;
+        public override CannonPower CannonType { get { return CannonPower.Light; } }
+        public override int LabelNumber { get { return 1095793; } }
 
         [Constructable]
         public CulverinDeed()
@@ -102,7 +105,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -114,8 +117,8 @@ namespace Server.Items
 
     public class CarronadeDeed : ShipCannonDeed
     {
-        public override CannonPower CannonType => CannonPower.Heavy;
-        public override int LabelNumber => 1095794;
+        public override CannonPower CannonType { get { return CannonPower.Heavy; } }
+        public override int LabelNumber { get { return 1095794; } }
 
         [Constructable]
         public CarronadeDeed()
@@ -128,7 +131,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -140,8 +143,8 @@ namespace Server.Items
 
     public class BlundercannonDeed : ShipCannonDeed
     {
-        public override CannonPower CannonType => CannonPower.Massive;
-        public override int LabelNumber => 1095794;
+        public override CannonPower CannonType { get { return CannonPower.Massive; } }
+        public override int LabelNumber { get { return 1095794; } }
 
         [Constructable]
         public BlundercannonDeed()
@@ -154,7 +157,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -166,8 +169,8 @@ namespace Server.Items
 
     public class LightShipCannonDeed : ShipCannonDeed
     {
-        public override CannonPower CannonType => CannonPower.Light;
-        public override int LabelNumber => 1095793;
+        public override CannonPower CannonType { get { return CannonPower.Light; } }
+        public override int LabelNumber { get { return 1095793; } }
 
         [Constructable]
         public LightShipCannonDeed()
@@ -180,7 +183,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -192,8 +195,8 @@ namespace Server.Items
 
     public class HeavyShipCannonDeed : ShipCannonDeed
     {
-        public override CannonPower CannonType => CannonPower.Heavy;
-        public override int LabelNumber => 1095794;
+        public override CannonPower CannonType { get { return CannonPower.Heavy; } }
+        public override int LabelNumber { get { return 1095794; } }
 
         [Constructable]
         public HeavyShipCannonDeed()
@@ -206,7 +209,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

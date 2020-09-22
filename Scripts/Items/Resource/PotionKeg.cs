@@ -49,7 +49,7 @@ namespace Server.Items
             }
         }
         public override int LabelNumber
-        {
+        { 
             get
             {
                 if (m_Held > 0 && (int)m_Type >= (int)PotionEffect.Conflagration)
@@ -66,7 +66,7 @@ namespace Server.Items
                     }
                 }
 
-                return (m_Held > 0 ? 1041620 + (int)m_Type : 1041641);
+                return (m_Held > 0 ? 1041620 + (int)m_Type : 1041641); 
             }
         }
         public static void Initialize()
@@ -85,10 +85,10 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(1); // version
+            writer.Write((int)1); // version
 
             writer.Write((int)m_Type);
-            writer.Write(m_Held);
+            writer.Write((int)m_Held);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -97,7 +97,7 @@ namespace Server.Items
 
             int version = reader.ReadInt();
 
-            switch (version)
+            switch ( version )
             {
                 case 1:
                 case 0:
@@ -110,7 +110,7 @@ namespace Server.Items
             }
 
             if (version < 1)
-                Timer.DelayCall(TimeSpan.Zero, UpdateWeight);
+                Timer.DelayCall(TimeSpan.Zero, new TimerCallback(UpdateWeight));
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -145,6 +145,40 @@ namespace Server.Items
                 number = 502258; // The keg is completely full.
 
             list.Add(number);
+        }
+
+        public override void OnSingleClick(Mobile from)
+        {
+            base.OnSingleClick(from);
+
+            int number;
+
+            if (m_Held <= 0)
+                number = 502246; // The keg is empty.
+            else if (m_Held < 5)
+                number = 502248; // The keg is nearly empty.
+            else if (m_Held < 20)
+                number = 502249; // The keg is not very full.
+            else if (m_Held < 30)
+                number = 502250; // The keg is about one quarter full.
+            else if (m_Held < 40)
+                number = 502251; // The keg is about one third full.
+            else if (m_Held < 47)
+                number = 502252; // The keg is almost half full.
+            else if (m_Held < 54)
+                number = 502254; // The keg is approximately half full.
+            else if (m_Held < 70)
+                number = 502253; // The keg is more than half full.
+            else if (m_Held < 80)
+                number = 502255; // The keg is about three quarters full.
+            else if (m_Held < 96)
+                number = 502256; // The keg is very full.
+            else if (m_Held < 100)
+                number = 502257; // The liquid is almost to the top of the keg.
+            else
+                number = 502258; // The keg is completely full.
+
+            LabelTo(from, number);
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -285,7 +319,7 @@ namespace Server.Items
 
         public BasePotion FillBottle()
         {
-            switch (m_Type)
+            switch ( m_Type )
             {
                 default:
                 case PotionEffect.Nightsight:
@@ -335,7 +369,7 @@ namespace Server.Items
                     return new ExplosionPotion();
                 case PotionEffect.ExplosionGreater:
                     return new GreaterExplosionPotion();
-
+				
                 case PotionEffect.Conflagration:
                     return new ConflagrationPotion();
                 case PotionEffect.ConflagrationGreater:

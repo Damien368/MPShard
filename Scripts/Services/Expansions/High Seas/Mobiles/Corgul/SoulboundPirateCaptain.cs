@@ -1,11 +1,13 @@
+﻿using Server;
+using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     public class SoulboundPirateCaptain : BaseCreature
     {
-        public override bool ClickTitle => false;
-        public override bool AlwaysMurderer => true;
+        public override bool ClickTitle { get { return false; } }
+        public override bool AlwaysMurderer { get { return true; } }
 
         public SoulboundPirateCaptain()
             : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -49,15 +51,6 @@ namespace Server.Mobiles
 
         }
 
-        public override bool OnBeforeDeath()
-        {
-            if (Region.IsPartOf<Regions.CorgulRegion>())
-            {
-                CorgulTheSoulBinder.CheckDropSOT(this);
-            }
-
-            return base.OnBeforeDeath();
-        }
 
         public override void GenerateLoot()
         {
@@ -72,7 +65,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

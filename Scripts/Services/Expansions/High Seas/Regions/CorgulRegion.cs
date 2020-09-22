@@ -1,7 +1,8 @@
+﻿using Server;
+using System;
+using Server.Multis;
 using Server.Items;
 using Server.Mobiles;
-using Server.Multis;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,11 +12,11 @@ namespace Server.Regions
     {
         public static void Initialize()
         {
-            EventSink.Login += OnLogin;
+            EventSink.Login += new LoginEventHandler(OnLogin);
 
             Timer.DelayCall(TimeSpan.FromSeconds(30), () =>
             {
-                foreach (CorgulRegion reg in Regions.OfType<CorgulRegion>())
+                foreach (CorgulRegion reg in Region.Regions.OfType<CorgulRegion>())
                 {
                     if (reg.Altar != null && reg.Altar.Activated)
                         continue;
@@ -30,13 +31,13 @@ namespace Server.Regions
         }
 
         private List<Item> m_Markers;
-        private readonly CorgulAltar m_Altar;
+        private CorgulAltar m_Altar;
         private Rectangle2D m_Bounds;
 
-        public CorgulAltar Altar => m_Altar;
+        public CorgulAltar Altar { get { return m_Altar; } }
 
         public CorgulRegion(Rectangle2D rec, CorgulAltar altar)
-            : base("Corgul Boss Region", altar.Map, DefaultPriority, new Rectangle2D[] { rec })
+            : base("Corgul Boss Region", altar.Map, Region.DefaultPriority, new Rectangle2D[] { rec })
         {
             //MarkBounds(rec);
             m_Altar = altar;
@@ -60,7 +61,7 @@ namespace Server.Regions
                         if (t >= 10)
                         {
                             MarkerItem i = new MarkerItem(14089);
-                            i.MoveToWorld(new Point3D(x, y, 0), Map);
+                            i.MoveToWorld(new Point3D(x, y, 0), this.Map);
                             m_Markers.Add(i);
                             t = 0;
                         }
@@ -84,17 +85,16 @@ namespace Server.Regions
 
         public override bool OnBeginSpellCast(Mobile m, ISpell s)
         {
-            if (m.AccessLevel == AccessLevel.Player)
-            {
-                if (s is Spells.Sixth.MarkSpell || s is Spells.Fourth.RecallSpell || s is Spells.Seventh.GateTravelSpell
-                || s is Spells.Chivalry.SacredJourneySpell)
-                    return false;
+            if(m.AccessLevel == AccessLevel.Player) {
+                if (s is Server.Spells.Sixth.MarkSpell || s is Server.Spells.Fourth.RecallSpell || s is Server.Spells.Seventh.GateTravelSpell
+                || s is Server.Spells.Chivalry.SacredJourneySpell)
+                return false;
             }
 
             return true;
         }
 
-        public override bool CheckTravel(Mobile m, Point3D newLocation, Spells.TravelCheckType travelType)
+        public override bool CheckTravel(Mobile m, Point3D newLocation, Server.Spells.TravelCheckType travelType)
         {
             return false;
         }
@@ -102,7 +102,7 @@ namespace Server.Regions
         public void CheckExit(BaseBoat boat)
         {
             if (boat != null)
-                Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerStateCallback(RemoveBoat_Callback), boat);
+                Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerStateCallback(RemoveBoat_Callback), boat );
         }
 
         public void RemovePlayers(bool message)
@@ -119,16 +119,16 @@ namespace Server.Regions
 
                 if (m is PlayerMobile || (m is BaseCreature && ((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned))
                 {
-                    Point3D go = CorgulAltar.GetRandomPoint(CorgulAltar.LandKickLocation, Map);
-                    BaseCreature.TeleportPets(m, go, Map);
-                    m.MoveToWorld(go, Map);
+                    Point3D go = CorgulAltar.GetRandomPoint(CorgulAltar.LandKickLocation, this.Map);
+                    BaseCreature.TeleportPets(m, go, this.Map);
+                    m.MoveToWorld(go, this.Map);
                 }
 
             }
 
-            foreach (BaseBoat b in GetEnumeratedMultis().OfType<BaseBoat>())
+            foreach(BaseBoat b in this.GetEnumeratedMultis().OfType<BaseBoat>())
             {
-                if (b != null)
+                if(b != null)
                     RemoveBoat(b);
             }
         }
@@ -160,7 +160,7 @@ namespace Server.Regions
                 int offsetY = ePnt.Y - boat.Y;
                 int offsetZ = map.GetAverageZ(ePnt.X, ePnt.Y) - boat.Z;
 
-                if (boat.CanFit(ePnt, Map, boat.ItemID))
+                if (boat.CanFit(ePnt, this.Map, boat.ItemID))
                 {
                     boat.Teleport(offsetX, offsetY, offsetZ);
 
@@ -184,7 +184,7 @@ namespace Server.Regions
                 int offsetY = ePnt.Y - boat.Y;
                 int offsetZ = ePnt.Z - boat.Z;
 
-                if (boat.CanFit(ePnt, Map, boat.ItemID))
+                if (boat.CanFit(ePnt, this.Map, boat.ItemID))
                 {
                     boat.Teleport(offsetX, offsetY, -5);
                     boat.SendMessageToAllOnBoard("A rough patch of sea has disoriented the crew!");
@@ -204,7 +204,7 @@ namespace Server.Regions
         {
             Mobile from = e.Mobile;
 
-            Region reg = Find(from.Location, from.Map);
+            Region reg = Region.Find(from.Location, from.Map);
 
             if (reg is CorgulRegion)
             {

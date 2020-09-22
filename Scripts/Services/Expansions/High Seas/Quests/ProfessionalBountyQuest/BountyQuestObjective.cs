@@ -1,6 +1,8 @@
-using Server.Items;
-using Server.Mobiles;
+﻿using Server;
 using System;
+using Server.Mobiles;
+using Server.Items;
+using Server.Multis;
 
 namespace Server.Engines.Quests
 {
@@ -11,6 +13,10 @@ namespace Server.Engines.Quests
 
         public bool Captured { get { return m_Captured; } set { m_Captured = value; } }
         public Mobile CapturedCaptain { get { return m_CapturedCaptain; } set { m_CapturedCaptain = value; } }
+
+        public BountyQuestObjective()
+        {
+        }
 
         public override bool Update(object obj)
         {
@@ -39,7 +45,7 @@ namespace Server.Engines.Quests
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteEncodedInt(1); // version
+            writer.WriteEncodedInt((int)1); // version
 
             writer.Write(m_Captured);
             writer.Write(m_CapturedCaptain);
@@ -53,13 +59,13 @@ namespace Server.Engines.Quests
             m_Captured = reader.ReadBool();
             m_CapturedCaptain = reader.ReadMobile();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(10), ValidateCaught);
+            Timer.DelayCall(TimeSpan.FromSeconds(10), new TimerCallback(ValidateCaught));
         }
 
         private void ValidateCaught()
         {
-            if (m_CapturedCaptain != null && m_CapturedCaptain is PirateCaptain && Quest is ProfessionalBountyQuest)
-                ((PirateCaptain)m_CapturedCaptain).Quest = Quest as ProfessionalBountyQuest;
+            if (m_CapturedCaptain != null && m_CapturedCaptain is PirateCaptain && this.Quest is ProfessionalBountyQuest)
+                ((PirateCaptain)m_CapturedCaptain).Quest = this.Quest as ProfessionalBountyQuest;
         }
     }
 }

@@ -1,39 +1,42 @@
+﻿using Server;
+using System;
 using Server.Mobiles;
+using System.Collections.Generic;
+using Server.Multis;
 using Server.Regions;
 using Server.Targeting;
-using System;
-using System.Collections.Generic;
 
 namespace Server.Items
 {
     public class CorgulAltar : Container
     {
+
         #region Statics
         private static TimeSpan ExpireTime = TimeSpan.FromMinutes(180);
         private static TimeSpan CompleteTime = TimeSpan.FromMinutes(15);
 
         private static readonly int m_RegionSize = 186;
 
-        private static readonly Rectangle2D[] m_WarpLocations = new Rectangle2D[]
+        private static Rectangle2D[] m_WarpLocations = new Rectangle2D[]
         {
                 new Rectangle2D(2885, 1373, 500, 800),
                 new Rectangle2D(330,  2940, 400, 400),
-                new Rectangle2D(4040, 2550, 500, 350),
+                new Rectangle2D(4040, 2550, 500, 350), 
                 new Rectangle2D(4040, 1755, 500, 250),
                 new Rectangle2D(180,  180,  300, 300)
         };
 
-        public static Rectangle2D[] WarpLocations => m_WarpLocations;
+        public static Rectangle2D[] WarpLocations { get { return m_WarpLocations; } }
 
         private static Rectangle2D m_BoatKickLocation = new Rectangle2D(2400, 2500, 500, 500);
-        public static Rectangle2D BoatKickLocation => m_BoatKickLocation;
+        public static Rectangle2D BoatKickLocation { get { return m_BoatKickLocation; } }
 
         private static Rectangle2D m_LandKickLocation = new Rectangle2D(2125, 3090, 25, 30);
-        public static Rectangle2D LandKickLocation => m_LandKickLocation;
+        public static Rectangle2D LandKickLocation { get { return m_LandKickLocation; } }
 
         private static Rectangle2D m_CorgulBounds = new Rectangle2D(6337, 1156, m_RegionSize, m_RegionSize);
 
-        public static Rectangle2D CorgulBounds => m_CorgulBounds;
+        public static Rectangle2D CorgulBounds { get { return m_CorgulBounds; } }
         #endregion
 
         private bool m_Activated;
@@ -44,35 +47,35 @@ namespace Server.Items
         private DateTime m_DeadLine;
         private Mobile m_Boss;
         private int m_KeyStage;
-        private readonly List<Item> m_IslandMaps = new List<Item>();
+        private List<Item> m_IslandMaps = new List<Item>();
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool Activated => m_Activated;
+        public bool Activated {  get { return m_Activated; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool Active
-        {
-            get { return m_Active; }
-            set
-            {
-                m_Active = value;
-                PublicOverheadMessage(Network.MessageType.Regular, 25, false, string.Format("Corgul Altar for {0} has been {1}", Map, m_Active ? "activated" : "deactivated"));
-            }
+        public bool Active 
+        { 
+            get { return m_Active; } 
+            set 
+            { 
+                m_Active = value; 
+                PublicOverheadMessage(Server.Network.MessageType.Regular, 25, false, String.Format("Corgul Altar for {0} has been {1}", this.Map, m_Active ? "activated" : "deactivated")); 
+            } 
         }
 
-        public CorgulWarpRegion WarpRegion => m_WarpRegion;
-        public CorgulRegion BossRegion => m_BossRegion;
+        public CorgulWarpRegion WarpRegion { get { return m_WarpRegion; } }
+        public CorgulRegion BossRegion { get { return m_BossRegion; } }
 
-        private readonly Type[] m_Keys = new Type[] { typeof(TreasureMap), typeof(WorldMap) };
+        private Type[] m_Keys = new Type[] { typeof(TreasureMap), typeof(WorldMap) };
 
         public static Point3D SpawnLoc = new Point3D(6431, 1236, 10);
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime DeadLine => m_DeadLine;
+        public DateTime DeadLine { get { return m_DeadLine; } }
 
-        public int KeyStage => m_KeyStage;
+        public int KeyStage { get { return m_KeyStage; } }
 
-        public override int LabelNumber => 1074818;
+        public override int LabelNumber { get { return 1074818; } }
 
         public CorgulAltar()
             : base(13807)
@@ -141,7 +144,7 @@ namespace Server.Items
                 from.SendMessage("This altar has been deactivated.");
             else if (!CheckCanUse(from))
                 from.SendLocalizedMessage(1116791); // You must wait a few minutes before making your sacrifice.
-            else if (from.InRange(Location, 3))
+            else if (from.InRange(this.Location, 3))
             {
                 from.Target = new InternalTarget(this);
 
@@ -155,7 +158,7 @@ namespace Server.Items
         {
             if (m_Activated)
             {
-                if (Map == Map.Trammel)
+                if (this.Map == Map.Trammel)
                     return false;
 
                 if (m_Boss == null || !m_Boss.Alive || m_Boss.Hits < m_Boss.HitsMax / 2)
@@ -167,7 +170,7 @@ namespace Server.Items
 
         private class InternalTarget : Target
         {
-            private readonly CorgulAltar m_Altar;
+            private CorgulAltar m_Altar;
 
             public InternalTarget(CorgulAltar altar) : base(-1, false, TargetFlags.None)
             {
@@ -188,7 +191,7 @@ namespace Server.Items
                 if (!m_Activated)
                 {
                     SpawnBoss(from);
-                    m_DeadLineTimer = Timer.DelayCall(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), OnTick);
+                    m_DeadLineTimer = Timer.DelayCall(ExpireTime, new TimerCallback(OnDeadLine));
                     m_DeadLine = DateTime.UtcNow + ExpireTime;
                 }
 
@@ -207,28 +210,10 @@ namespace Server.Items
                 m_KeyStage = 1;
                 from.SendLocalizedMessage(1116585); // Your offering has been accepted. The price of blood will be taken when your -world map- is marked with the secret location.
 
-                m_KeyResetTimer = Timer.DelayCall(TimeSpan.FromSeconds(30), ResetKeys);
+                m_KeyResetTimer = Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerCallback(ResetKeys));
             }
 
             item.Delete();
-        }
-
-        private void OnTick()
-        {
-            if (DateTime.UtcNow > m_DeadLine)
-            {
-                OnDeadLine();
-            }
-            else
-            {
-                for (int i = 0; i < m_IslandMaps.Count; i++)
-                {
-                    if (m_IslandMaps[i] != null)
-                    {
-                        m_IslandMaps[i].InvalidateProperties();
-                    }
-                }
-            }
         }
 
         private void ResetKeys()
@@ -260,7 +245,7 @@ namespace Server.Items
 
         public void OnBossKilled()
         {
-            m_ResetTimer = Timer.DelayCall(CompleteTime, Reset);
+            m_ResetTimer = Timer.DelayCall(CompleteTime, new TimerCallback(Reset));
 
             EndDeadLineTimer();
 
@@ -293,7 +278,7 @@ namespace Server.Items
 
             m_WarpPoint = Point3D.Zero;
 
-            if (m_BossRegion != null)
+            if(m_BossRegion != null)
                 m_BossRegion.RemovePlayers(false);
 
             EndResetTimer();
@@ -350,7 +335,7 @@ namespace Server.Items
         {
             //Spawn boss
             CorgulTheSoulBinder boss = new CorgulTheSoulBinder(this);
-            boss.MoveToWorld(SpawnLoc, Map);
+            boss.MoveToWorld(SpawnLoc, this.Map);
             boss.SpawnHelpers();
             m_Boss = boss;
 
@@ -366,7 +351,7 @@ namespace Server.Items
 
         private void GiveMap(Mobile from)
         {
-            CorgulIslandMap map = new CorgulIslandMap(m_WarpPoint, this);
+            CorgulIslandMap map = new CorgulIslandMap(m_WarpPoint);
             from.AddToBackpack(map);
 
             m_IslandMaps.Add(map);
@@ -396,7 +381,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(1);
+            writer.Write((int)1);
 
             writer.Write(m_DeadLine);
             writer.Write(m_Boss);
@@ -431,10 +416,7 @@ namespace Server.Items
                             Item map = reader.ReadItem();
 
                             if (map != null && !map.Deleted && map is CorgulIslandMap)
-                            {
                                 m_IslandMaps.Add(map);
-                                ((CorgulIslandMap)map).Altar = this;
-                            }
                         }
 
                         break;
@@ -463,8 +445,8 @@ namespace Server.Items
                     Rectangle2D bounds = GetRectangle(m_WarpPoint);
                     m_WarpRegion = new CorgulWarpRegion(this, bounds);
                     m_WarpRegion.Register();
-
-                    m_DeadLineTimer = Timer.DelayCall(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), OnTick);
+                    TimeSpan ts = m_DeadLine - DateTime.UtcNow;
+                    m_DeadLineTimer = Timer.DelayCall(ts, new TimerCallback(OnDeadLine));
                 }
             }
         }

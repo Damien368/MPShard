@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace Server.Engines.Reports
@@ -5,14 +6,20 @@ namespace Server.Engines.Reports
     public class SnapshotHistory : PersistableObject
     {
         #region Type Identification
-        public static readonly PersistableType ThisTypeID = new PersistableType("sh", Construct);
+        public static readonly PersistableType ThisTypeID = new PersistableType("sh", new ConstructCallback(Construct));
 
         private static PersistableObject Construct()
         {
             return new SnapshotHistory();
         }
 
-        public override PersistableType TypeID => ThisTypeID;
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
         #endregion
 
         private SnapshotCollection m_Snapshots;
@@ -21,17 +28,17 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_Snapshots;
+                return this.m_Snapshots;
             }
             set
             {
-                m_Snapshots = value;
+                this.m_Snapshots = value;
             }
         }
 
         public SnapshotHistory()
         {
-            m_Snapshots = new SnapshotCollection();
+            this.m_Snapshots = new SnapshotCollection();
         }
 
         public void Save()
@@ -60,14 +67,14 @@ namespace Server.Engines.Reports
 
         public override void SerializeChildren(PersistenceWriter op)
         {
-            for (int i = 0; i < m_Snapshots.Count; ++i)
-                m_Snapshots[i].Serialize(op);
+            for (int i = 0; i < this.m_Snapshots.Count; ++i)
+                this.m_Snapshots[i].Serialize(op);
         }
 
         public override void DeserializeChildren(PersistenceReader ip)
         {
             while (ip.HasChild)
-                m_Snapshots.Add(ip.GetChild() as Snapshot);
+                this.m_Snapshots.Add(ip.GetChild() as Snapshot);
         }
     }
 }

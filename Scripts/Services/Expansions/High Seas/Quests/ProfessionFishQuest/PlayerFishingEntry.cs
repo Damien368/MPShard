@@ -1,6 +1,10 @@
-using Server.Commands;
-using System;
+﻿using System;
+using Server;
+using Server.Mobiles;
+using Server.Items;
 using System.Collections.Generic;
+using Server.Commands;
+using Server.Multis;
 
 namespace Server.Engines.Quests
 {
@@ -8,23 +12,23 @@ namespace Server.Engines.Quests
     {
         public static void Initialize()
         {
-            CommandSystem.Register("FishMongerStatus", AccessLevel.Player, FishMongerStatus_OnCommand);
+            CommandSystem.Register("FishMongerStatus", AccessLevel.Player, new CommandEventHandler(FishMongerStatus_OnCommand));
         }
 
-        private readonly Mobile m_Player;
+        private Mobile m_Player;
         private double m_Reputation;
         private bool m_HasRecievedBritGal;
-        private readonly Dictionary<int, int> m_HaveFished = new Dictionary<int, int>();
-        private readonly Dictionary<int, int> m_TimesFished = new Dictionary<int, int>();
+        private Dictionary<int, int> m_HaveFished = new Dictionary<int, int>();
+        private Dictionary<int, int> m_TimesFished = new Dictionary<int, int>();
 
-        public Mobile Player => m_Player;
+        public Mobile Player { get { return m_Player; } }
         public double Reputation { get { return m_Reputation; } set { m_Reputation = value; } }
         public bool HasRecievedBritGal { get { return m_HasRecievedBritGal; } set { m_HasRecievedBritGal = value; } }
-        public Dictionary<int, int> HaveFished => m_HaveFished;
-        public Dictionary<int, int> TimesFished => m_TimesFished;
+        public Dictionary<int, int> HaveFished { get { return m_HaveFished; } }
+        public Dictionary<int, int> TimesFished { get { return m_TimesFished; } }
 
-        private static readonly Dictionary<Mobile, PlayerFishingEntry> m_FishingEntries = new Dictionary<Mobile, PlayerFishingEntry>();
-        public static Dictionary<Mobile, PlayerFishingEntry> FishingEntries => m_FishingEntries;
+        private static Dictionary<Mobile, PlayerFishingEntry> m_FishingEntries = new Dictionary<Mobile, PlayerFishingEntry>();
+        public static Dictionary<Mobile, PlayerFishingEntry> FishingEntries { get { return m_FishingEntries; } }
 
         public static readonly double RewardAmount = 15000;
 
@@ -75,7 +79,7 @@ namespace Server.Engines.Quests
 
                 m_Reputation += toAward;
             }
-
+ 
             return toAward;
         }
 
@@ -114,7 +118,7 @@ namespace Server.Engines.Quests
                     case 3: line4 += toAdd; goto case 2;
                     case 2: line3 += toAdd; goto case 1;
                     case 1: line2 += toAdd; goto case 0;
-                    case 0:
+                    case 0: 
                     default: break;
                 }
             }
@@ -136,7 +140,7 @@ namespace Server.Engines.Quests
         {
             int eligibleIndex = FishQuestHelper.GetIndexForSkillLevel(m_Player);
 
-            while (true)
+            while(true)
             {
                 index = Utility.Random(eligibleIndex);
 
@@ -228,13 +232,13 @@ namespace Server.Engines.Quests
                     m_TimesFished.Add(index, fished);
             }
 
-            if (m_Player != null)
+            if(m_Player != null)
                 m_FishingEntries.Add(m_Player, this);
         }
 
         public void Serialize(GenericWriter writer)
         {
-            writer.Write(1);
+            writer.Write((int)1);
 
             writer.Write(m_HasRecievedBritGal);
 
@@ -281,7 +285,7 @@ namespace Server.Engines.Quests
             return m_Status[5];
         }
 
-        private readonly string[] m_Status = new string[]
+        private string[] m_Status = new string[]
         {
             "a small",
             "a fair",

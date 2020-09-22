@@ -1,40 +1,28 @@
-using Server.ContextMenus;
+using System;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
-using System.Collections.Generic;
 
 namespace Server.Items
 {
-    public class SingingBall : Item, ISecurable
+    public class SingingBall : Item
     {
-        public override int LabelNumber => 1041245;  // Singing Ball
-
+        public override int LabelNumber { get { return 1041245; } } // Singing Ball
         private bool m_TurnedOn;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool TurnedOn
         {
-            get { return m_TurnedOn; }
+            get { return this.m_TurnedOn; }
             set
             {
-                m_TurnedOn = value;
-                InvalidateProperties();
+                this.m_TurnedOn = value;
+                this.InvalidateProperties();
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SecureLevel Level { get; set; }
-
         [Constructable]
-        public SingingBall()
-            : this(0xE2E)
-        {
-        }
-
-        [Constructable]
-        public SingingBall(int ItemId)
-            : base(ItemId)
+        public SingingBall() : base(0xE2E)
         {
             Weight = 10.0;
             LootType = LootType.Blessed;
@@ -42,96 +30,62 @@ namespace Server.Items
             Light = LightType.Circle300;
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
-        {
-            base.GetContextMenuEntries(from, list);
-
-            SetSecureLevelEntry.AddTo(from, this, list);
-        }
-
-        public bool CheckAccessible(Mobile from, Item item)
-        {
-            if (from.AccessLevel >= AccessLevel.GameMaster)
-                return true; // Staff can access anything
-
-            BaseHouse house = BaseHouse.FindHouseAt(item);
-
-            if (house == null)
-                return false;
-
-            switch (Level)
-            {
-                case SecureLevel.Owner: return house.IsOwner(from);
-                case SecureLevel.CoOwners: return house.IsCoOwner(from);
-                case SecureLevel.Friends: return house.IsFriend(from);
-                case SecureLevel.Anyone: return true;
-                case SecureLevel.Guild: return house.IsGuildMember(from);
-            }
-
-            return false;
-        }
-
-        public SingingBall(Serial serial)
-            : base(serial)
+        public SingingBall(Serial serial) : base(serial)
         {
         }
 
-        public override bool HandlesOnMovement => m_TurnedOn && IsLockedDown;
+        public override bool HandlesOnMovement { get { return this.m_TurnedOn && this.IsLockedDown; } }
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (m_TurnedOn && IsLockedDown && (!m.Hidden || m.IsPlayer()) && Utility.InRange(m.Location, Location, 2) && !Utility.InRange(oldLocation, Location, 2))
-            {
-                Effects.PlaySound(Location, Map, SoundList());
-            }
+            if (this.m_TurnedOn && this.IsLockedDown && (!m.Hidden || m.IsPlayer()) && Utility.InRange(m.Location, this.Location, 2) && !Utility.InRange(oldLocation, this.Location, 2))
+                Effects.PlaySound(this.Location, this.Map, Utility.RandomMinMax(0, 1338));
 
             base.OnMovement(m, oldLocation);
-        }
-
-        public virtual int SoundList()
-        {
-            return Utility.RandomMinMax(0, 1338);
         }
 
         public override void GetProperties(ObjectPropertyList list)
         {
             base.GetProperties(list);
 
-            if (m_TurnedOn)
+            if (this.m_TurnedOn)
                 list.Add(502695); // turned on
             else
                 list.Add(502696); // turned off
         }
 
+        public bool IsOwner(Mobile mob)
+        {
+            BaseHouse house = BaseHouse.FindHouseAt(this);
+
+            return (house != null && house.IsOwner(mob));
+        }
+
         public override void OnDoubleClick(Mobile from)
         {
-            if (CheckAccessible(from, this))
+            if (this.IsOwner(from))
             {
                 OnOffGump onOffGump = new OnOffGump(this);
                 from.SendGump(onOffGump);
             }
             else
             {
-                PublicOverheadMessage(MessageType.Regular, 0x3E9, 1061637); // You are not allowed to access 
+                from.SendLocalizedMessage(502691); // You must be the owner to use this.
             }
         }
 
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(1); // version
+            writer.Write((int)0); // version
 
-            writer.Write((int)Level);
-            writer.Write(m_TurnedOn);
+            writer.Write((bool)m_TurnedOn);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
             int version = reader.ReadInt();
-
-            if (version > 0)
-                Level = (SecureLevel)reader.ReadInt();
 
             m_TurnedOn = reader.ReadBool();
         }
@@ -146,12 +100,9 @@ namespace Server.Items
                 m_SingingBall = ball;
 
                 AddBackground(0, 0, 300, 150, 0xA28);
-
                 AddHtmlLocalized(45, 20, 300, 35, ball.TurnedOn ? 1011035 : 1011034, false, false); // [De]Activate this item
-
                 AddButton(40, 53, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
                 AddHtmlLocalized(80, 55, 65, 35, 1011036, false, false); // OKAY
-
                 AddButton(150, 53, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
                 AddHtmlLocalized(190, 55, 100, 35, 1011012, false, false); // CANCEL
             }
@@ -162,11 +113,11 @@ namespace Server.Items
 
                 if (info.ButtonID == 1)
                 {
-                    bool newValue = !m_SingingBall.TurnedOn;
+                    bool newValue = !this.m_SingingBall.TurnedOn;
 
-                    m_SingingBall.TurnedOn = newValue;
+                    this.m_SingingBall.TurnedOn = newValue;
 
-                    if (newValue && !m_SingingBall.IsLockedDown)
+                    if (newValue && !this.m_SingingBall.IsLockedDown)
                         from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
                 }
                 else

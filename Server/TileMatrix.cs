@@ -27,7 +27,7 @@ namespace Server
 		private readonly int m_FileIndex;
 		private readonly int m_BlockWidth;
 		private readonly int m_BlockHeight;
-		private readonly int m_Width, m_Height;
+		private int m_Width, m_Height;
 
 		private readonly Map m_Owner;
 
@@ -35,21 +35,50 @@ namespace Server
 		private readonly int[][] m_StaticPatches;
 		private readonly int[][] m_LandPatches;
 
-		public TileMatrixPatch Patch => m_Patch;
+		/*public Map Owner
+		{
+			get
+			{
+				return m_Owner;
+			}
+		}*/
 
-		public int BlockWidth => m_BlockWidth;
+		public TileMatrixPatch Patch { get { return m_Patch; } }
 
-		public int BlockHeight => m_BlockHeight;
+		public int BlockWidth { get { return m_BlockWidth; } }
 
-		public FileStream MapStream { get => m_Map; set => m_Map = value; }
+		public int BlockHeight { get { return m_BlockHeight; } }
 
-		public FileStream IndexStream { get => m_Index; set => m_Index = value; }
+		/*public int Width
+		{
+			get
+			{
+				return m_Width;
+			}
+		}
 
-		public FileStream DataStream { get => m_Statics; set => m_Statics = value; }
+		public int Height
+		{
+			get
+			{
+				return m_Height;
+			}
+		}*/
 
-		public BinaryReader IndexReader { get => m_IndexReader; set => m_IndexReader = value; }
+		public FileStream MapStream { get { return m_Map; } set { m_Map = value; } }
 
-		public bool Exists => m_Map != null && m_Index != null && m_Statics != null;
+		/*public bool MapUOPPacked
+		{
+			get{ return ( m_MapIndex != null ); }
+		}*/
+
+		public FileStream IndexStream { get { return m_Index; } set { m_Index = value; } }
+
+		public FileStream DataStream { get { return m_Statics; } set { m_Statics = value; } }
+
+		public BinaryReader IndexReader { get { return m_IndexReader; } set { m_IndexReader = value; } }
+
+		public bool Exists { get { return (m_Map != null && m_Index != null && m_Statics != null); } }
 
 		private static readonly List<TileMatrix> m_Instances = new List<TileMatrix>();
 		private readonly List<TileMatrix> m_FileShare = new List<TileMatrix>();
@@ -143,7 +172,7 @@ namespace Server
 			m_Patch = new TileMatrixPatch(this, mapID);
 		}
 
-		public StaticTile[][][] EmptyStaticBlock => m_EmptyStaticBlock;
+		public StaticTile[][][] EmptyStaticBlock { get { return m_EmptyStaticBlock; } }
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void SetStaticBlock(int x, int y, StaticTile[][][] value)
@@ -181,7 +210,7 @@ namespace Server
 				m_StaticTiles[x] = new StaticTile[m_BlockHeight][][][];
 			}
 
-			StaticTile[][][] tiles = m_StaticTiles[x][y];
+			var tiles = m_StaticTiles[x][y];
 
 			if (tiles == null)
 			{
@@ -195,7 +224,7 @@ namespace Server
 						{
 							if (x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight)
 							{
-								StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
+								var theirTiles = shared.m_StaticTiles[x];
 
 								if (theirTiles != null)
 								{
@@ -204,7 +233,7 @@ namespace Server
 
 								if (tiles != null)
 								{
-									int[] theirBits = shared.m_StaticPatches[x];
+									var theirBits = shared.m_StaticPatches[x];
 
 									if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
 									{
@@ -229,7 +258,7 @@ namespace Server
 
 		public StaticTile[] GetStaticTiles(int x, int y)
 		{
-			StaticTile[][][] tiles = GetStaticBlock(x >> 3, y >> 3);
+			var tiles = GetStaticBlock(x >> 3, y >> 3);
 
 			return tiles[x & 0x7][y & 0x7];
 		}
@@ -239,11 +268,11 @@ namespace Server
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public StaticTile[] GetStaticTiles(int x, int y, bool multis)
 		{
-			StaticTile[][][] tiles = GetStaticBlock(x >> 3, y >> 3);
+			var tiles = GetStaticBlock(x >> 3, y >> 3);
 
 			if (multis)
 			{
-				IPooledEnumerable<StaticTile[]> eable = m_Owner.GetMultiTilesAt(x, y);
+				var eable = m_Owner.GetMultiTilesAt(x, y);
 
 				if (eable == Map.NullEnumerable<StaticTile[]>.Instance)
 				{
@@ -252,7 +281,7 @@ namespace Server
 
 				bool any = false;
 
-				foreach (StaticTile[] multiTiles in eable)
+				foreach (var multiTiles in eable)
 				{
 					if (!any)
 					{
@@ -315,7 +344,7 @@ namespace Server
 				m_LandTiles[x] = new LandTile[m_BlockHeight][];
 			}
 
-			LandTile[] tiles = m_LandTiles[x][y];
+			var tiles = m_LandTiles[x][y];
 
 			if (tiles == null)
 			{
@@ -329,7 +358,7 @@ namespace Server
 						{
 							if (x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight)
 							{
-								LandTile[][] theirTiles = shared.m_LandTiles[x];
+								var theirTiles = shared.m_LandTiles[x];
 
 								if (theirTiles != null)
 								{
@@ -338,7 +367,7 @@ namespace Server
 
 								if (tiles != null)
 								{
-									int[] theirBits = shared.m_LandPatches[x];
+									var theirBits = shared.m_LandPatches[x];
 
 									if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
 									{
@@ -363,7 +392,7 @@ namespace Server
 
 		public LandTile GetLandTile(int x, int y)
 		{
-			LandTile[] tiles = GetLandBlock(x >> 3, y >> 3);
+			var tiles = GetLandBlock(x >> 3, y >> 3);
 
 			return tiles[((y & 0x7) << 3) + (x & 0x7)];
 		}
@@ -397,7 +426,7 @@ namespace Server
 						m_TileBuffer = new StaticTile[count];
 					}
 
-					StaticTile[] staTiles = m_TileBuffer; //new StaticTile[tileCount];
+					var staTiles = m_TileBuffer; //new StaticTile[tileCount];
 
 					fixed (StaticTile* pTiles = staTiles)
 					{
@@ -418,7 +447,7 @@ namespace Server
 							}
 						}
 
-						TileList[][] lists = m_Lists;
+						var lists = m_Lists;
 
 						StaticTile* pCur = pTiles, pEnd = pTiles + count;
 
@@ -429,7 +458,7 @@ namespace Server
 							pCur = pCur + 1;
 						}
 
-						StaticTile[][][] tiles = new StaticTile[8][][];
+						var tiles = new StaticTile[8][][];
 
 						for (int i = 0; i < 8; ++i)
 						{
@@ -445,10 +474,8 @@ namespace Server
 					}
 				}
 			}
-			catch (EndOfStreamException ex)
+			catch (EndOfStreamException)
 			{
-                Diagnostics.ExceptionLogging.LogException(ex);
-
 				if (DateTime.UtcNow >= m_NextStaticWarning)
 				{
 					Console.WriteLine("Warning: Static EOS for {0} ({1}, {2})", m_Owner, x, y);
@@ -484,7 +511,7 @@ namespace Server
 
 				m_Map.Seek(offset, SeekOrigin.Begin);
 
-				LandTile[] tiles = new LandTile[64];
+				var tiles = new LandTile[64];
 
 				fixed (LandTile* pTiles = tiles)
 				{
@@ -493,10 +520,8 @@ namespace Server
 
 				return tiles;
 			}
-			catch (Exception ex)
+			catch
 			{
-                Diagnostics.ExceptionLogging.LogException(ex);
-
 				if (DateTime.UtcNow >= m_NextLandWarning)
 				{
 					Console.WriteLine("Warning: Land EOS for {0} ({1}, {2})", m_Owner, x, y);
@@ -536,13 +561,13 @@ namespace Server
 		internal short m_ID;
 		internal sbyte m_Z;
 
-		public int ID => m_ID;
+		public int ID { get { return m_ID; } }
 
-		public int Z { get => m_Z; set => m_Z = (sbyte)value; }
+		public int Z { get { return m_Z; } set { m_Z = (sbyte)value; } }
 
-		public int Height => 0;
+		public int Height { get { return 0; } }
 
-		public bool Ignored => m_ID == 2 || m_ID == 0x1DB || (m_ID >= 0x1AE && m_ID <= 0x1B5);
+		public bool Ignored { get { return (m_ID == 2 || m_ID == 0x1DB || (m_ID >= 0x1AE && m_ID <= 0x1B5)); } }
 
 		public LandTile(short id, sbyte z)
 		{
@@ -566,17 +591,17 @@ namespace Server
 		internal sbyte m_Z;
 		internal short m_Hue;
 
-		public int ID => m_ID;
+		public int ID { get { return m_ID; } }
 
-		public int X { get => m_X; set => m_X = (byte)value; }
+		public int X { get { return m_X; } set { m_X = (byte)value; } }
 
-		public int Y { get => m_Y; set => m_Y = (byte)value; }
+		public int Y { get { return m_Y; } set { m_Y = (byte)value; } }
 
-		public int Z { get => m_Z; set => m_Z = (sbyte)value; }
+		public int Z { get { return m_Z; } set { m_Z = (sbyte)value; } }
 
-		public int Hue { get => m_Hue; set => m_Hue = (short)value; }
+		public int Hue { get { return m_Hue; } set { m_Hue = (short)value; } }
 
-		public int Height => TileData.ItemTable[m_ID & TileData.MaxItemValue].Height;
+		public int Height { get { return TileData.ItemTable[m_ID & TileData.MaxItemValue].Height; } }
 
 		public StaticTile(ushort id, sbyte z)
 		{
@@ -649,7 +674,7 @@ namespace Server
 		private readonly int m_Version;
 		private readonly UOPEntry[] m_Entries;
 
-		public int Version => m_Version;
+		public int Version { get { return m_Version; } }
 
 		public UOPIndex(FileStream stream)
 		{
@@ -665,7 +690,7 @@ namespace Server
 			m_Reader.ReadInt32();
 			int nextTable = m_Reader.ReadInt32();
 
-			List<UOPEntry> entries = new List<UOPEntry>();
+			var entries = new List<UOPEntry>();
 
 			do
 			{

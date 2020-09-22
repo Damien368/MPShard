@@ -1,6 +1,7 @@
-using Server.Items;
-using Server.Mobiles;
 using System;
+
+using Server.Mobiles;
+using Server.Items;
 
 namespace Server.Engines.SorcerersDungeon
 {
@@ -100,12 +101,11 @@ namespace Server.Engines.SorcerersDungeon
                         continue;
                 }
 
-                UnholyPumpkin bone = new UnholyPumpkin
-                {
-                    Hue = 0,
-                    Name = "unholy pumpkin",
-                    ItemID = Utility.RandomMinMax(0xC6A, 0xC6C)
-                };
+                UnholyPumpkin bone = new UnholyPumpkin();
+
+                bone.Hue = 0;
+                bone.Name = "unholy pumpkin";
+                bone.ItemID = Utility.RandomMinMax(0xC6A, 0xC6C);
 
                 bone.MoveToWorld(new Point3D(x, y, z), map);
             }
@@ -116,8 +116,8 @@ namespace Server.Engines.SorcerersDungeon
         {
         }
 
-        public override bool AlwaysMurderer => true;
-        public override Poison PoisonImmune => Poison.Deadly;
+        public override bool AlwaysMurderer { get { return true; } }
+        public override Poison PoisonImmune { get { return Poison.Deadly; } }
 
         public override void GenerateLoot()
         {
@@ -127,7 +127,7 @@ namespace Server.Engines.SorcerersDungeon
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -156,7 +156,13 @@ namespace Server.Engines.SorcerersDungeon
         {
         }
 
-        public override string DefaultName => "unholy pumpkin";
+        public override string DefaultName
+        {
+            get
+            {
+                return "unholy pumpkin";
+            }
+        }
         public bool Carve(Mobile from, Item item)
         {
             Effects.PlaySound(GetWorldLocation(), Map, 0x48F);
@@ -184,7 +190,7 @@ namespace Server.Engines.SorcerersDungeon
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)

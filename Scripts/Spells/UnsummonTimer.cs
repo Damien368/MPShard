@@ -1,5 +1,5 @@
-using Server.Mobiles;
 using System;
+using Server.Mobiles;
 
 namespace Server.Spells
 {
@@ -10,15 +10,15 @@ namespace Server.Spells
         public UnsummonTimer(Mobile caster, BaseCreature creature, TimeSpan delay)
             : base(delay)
         {
-            m_Caster = caster;
-            m_Creature = creature;
-            Priority = TimerPriority.OneSecond;
+            this.m_Caster = caster;
+            this.m_Creature = creature;
+            this.Priority = TimerPriority.OneSecond;
         }
 
         protected override void OnTick()
         {
-            if (!m_Creature.Deleted)
-                m_Creature.Delete();
+            if (!this.m_Creature.Deleted)
+                this.m_Creature.Delete();
         }
     }
 }

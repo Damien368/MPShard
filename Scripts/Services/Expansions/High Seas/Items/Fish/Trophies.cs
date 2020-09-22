@@ -1,5 +1,7 @@
-﻿using Server.Multis;
+﻿using Server;
 using System;
+using Server.Mobiles;
+using Server.Multis;
 using System.Linq;
 
 namespace Server.Items
@@ -24,24 +26,24 @@ namespace Server.Items
         private int m_TrophyID;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Fisher => m_Fisher;
+        public Mobile Fisher { get { return m_Fisher; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int TrophyWeight => m_Weight;
+        public int TrophyWeight { get { return m_Weight; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime DateCaught => m_DateCaught;
+        public DateTime DateCaught { get { return m_DateCaught; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int TrophyName => m_TrophyName;
+        public int TrophyName { get { return m_TrophyName; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int DeedName => m_DeedName;
+        public int DeedName { get { return m_DeedName; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int TrophyID => m_TrophyID;
+        public int TrophyID { get { return m_TrophyID; } }
 
-        public override int LabelNumber => m_DeedName;
+        public override int LabelNumber { get { return m_DeedName; } }
 
         public FishTrophyDeed(int weight, Mobile fisher, DateTime caught, int deedname, int trophyname, int id) : base(0x14F0)
         {
@@ -123,43 +125,43 @@ namespace Server.Items
             BaseAddon addon = null;
             switch (m_TrophyID)
             {
-                case 0: addon = new FishTrophy(typeof(AutumnDragonfish), TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 1: addon = new FishTrophy(typeof(BullFish), TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 2: addon = new FishTrophy(typeof(FireFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 3: addon = new FishTrophy(typeof(GiantKoi), TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 4: addon = new FishTrophy(typeof(LavaFish), TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 5: addon = new FishTrophy(typeof(SummerDragonfish), TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 6: addon = new FishTrophy(typeof(UnicornFish), TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 0: addon = new FishTrophy(typeof(AutumnDragonfish),  TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 1: addon = new FishTrophy(typeof(BullFish),          TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 2: addon = new FishTrophy(typeof(FireFish),          TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 3: addon = new FishTrophy(typeof(GiantKoi),          TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 4: addon = new FishTrophy(typeof(LavaFish),          TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 5: addon = new FishTrophy(typeof(SummerDragonfish),  TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 6: addon = new FishTrophy(typeof(UnicornFish),       TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
                 case 7: addon = new FishTrophy(typeof(AbyssalDragonfish), TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 8: addon = new FishTrophy(typeof(BlackMarlin), TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 9: addon = new FishTrophy(typeof(BlueMarlin), TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 8: addon = new FishTrophy(typeof(BlackMarlin),       TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 9: addon = new FishTrophy(typeof(BlueMarlin),        TrophyStyle.Marlin, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
                 case 10: addon = new FishTrophy(typeof(GiantSamuraiFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 11: addon = new FishTrophy(typeof(Kingfish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 12: addon = new FishTrophy(typeof(LanternFish), TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 13: addon = new FishTrophy(typeof(SeekerFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 11: addon = new FishTrophy(typeof(Kingfish),         TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 12: addon = new FishTrophy(typeof(LanternFish),      TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 13: addon = new FishTrophy(typeof(SeekerFish),       TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
                 case 14: addon = new FishTrophy(typeof(SpringDragonfish), TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 15: addon = new FishTrophy(typeof(StoneFish), TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 15: addon = new FishTrophy(typeof(StoneFish),        TrophyStyle.BoardMahi, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
                 case 16: addon = new FishTrophy(typeof(WinterDragonfish), TrophyStyle.Dragonfish, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
 
-                case 17: addon = new FishTrophy(typeof(BlueLobster), TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 18: addon = new FishTrophy(typeof(BloodLobster), TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 19: addon = new FishTrophy(typeof(DreadLobster), TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 20: addon = new FishTrophy(typeof(VoidLobster), TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 21: addon = new FishTrophy(typeof(StoneCrab), TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 22: addon = new FishTrophy(typeof(SpiderCrab), TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 23: addon = new FishTrophy(typeof(TunnelCrab), TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 24: addon = new FishTrophy(typeof(VoidCrab), TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 17: addon = new FishTrophy(typeof(BlueLobster),      TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 18: addon = new FishTrophy(typeof(BloodLobster),     TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 19: addon = new FishTrophy(typeof(DreadLobster),     TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 20: addon = new FishTrophy(typeof(VoidLobster),      TrophyStyle.Lobster, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 21: addon = new FishTrophy(typeof(StoneCrab),        TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 22: addon = new FishTrophy(typeof(SpiderCrab),       TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 23: addon = new FishTrophy(typeof(TunnelCrab),       TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 24: addon = new FishTrophy(typeof(VoidCrab),         TrophyStyle.Crab, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
 
-                case 25: addon = new FishTrophy(typeof(CrystalFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 26: addon = new FishTrophy(typeof(FairySalmon), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 27: addon = new FishTrophy(typeof(GreatBarracuda), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 28: addon = new FishTrophy(typeof(HolyMackerel), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 29: addon = new FishTrophy(typeof(ReaperFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 25: addon = new FishTrophy(typeof(CrystalFish),         TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 26: addon = new FishTrophy(typeof(FairySalmon),         TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 27: addon = new FishTrophy(typeof(GreatBarracuda),      TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 28: addon = new FishTrophy(typeof(HolyMackerel),        TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 29: addon = new FishTrophy(typeof(ReaperFish),          TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
                 case 30: addon = new FishTrophy(typeof(YellowtailBarracuda), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 31: addon = new FishTrophy(typeof(DungeonPike), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 32: addon = new FishTrophy(typeof(GoldenTuna), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 33: addon = new FishTrophy(typeof(RainbowFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
-                case 34: addon = new FishTrophy(typeof(ZombieFish), TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 31: addon = new FishTrophy(typeof(DungeonPike),         TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 32: addon = new FishTrophy(typeof(GoldenTuna),          TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 33: addon = new FishTrophy(typeof(RainbowFish),         TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
+                case 34: addon = new FishTrophy(typeof(ZombieFish),          TrophyStyle.BoardGrouper, north, m_TrophyName, m_Weight, m_Fisher, m_DateCaught); break;
             }
             return addon;
         }
@@ -169,7 +171,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
 
             writer.Write(m_Weight);
             writer.Write(m_Fisher);
@@ -201,13 +203,13 @@ namespace Server.Items
         private Type m_TypeName;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Fisher => m_Fisher;
+        public Mobile Fisher { get { return m_Fisher; } }
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime DateCaught => m_DateCaught;
+        public DateTime DateCaught { get { return m_DateCaught; } }
         [CommandProperty(AccessLevel.GameMaster)]
-        public int FishWeight => m_FishWeight;
+        public int FishWeight { get { return m_FishWeight; } }
         [CommandProperty(AccessLevel.GameMaster)]
-        public Type TypeName => m_TypeName;
+        public Type TypeName { get { return m_TypeName; } }
 
         public FishTrophy(Type type, TrophyStyle style, bool north, int label, int weight, Mobile fisher, DateTime datecaught)
         {
@@ -218,21 +220,21 @@ namespace Server.Items
             m_Fisher = fisher;
             m_DateCaught = datecaught;
 
-            switch (style)
+            switch(style)
             {
                 case TrophyStyle.Marlin:
                     {
-                        if (north)
+                        if(north)
                         {
                             AddComponent(new TrophyComponent(17641, label, hue), 0, 0, 0);
-                            AddComponent(new TrophyComponent(17642, label, hue), -1, 0, 0);
-                            AddComponent(new TrophyComponent(17643, label, hue), 1, 0, 0);
+                            AddComponent(new TrophyComponent(17642, label, hue), -1, 0, 0); 
+                            AddComponent(new TrophyComponent(17643, label, hue), 1, 0, 0); 
                         }
                         else
                         {
-                            AddComponent(new TrophyComponent(17644, label, hue), 0, 0, 0);
-                            AddComponent(new TrophyComponent(17645, label, hue), 0, 1, 0);
-                            AddComponent(new TrophyComponent(17646, label, hue), 0, -1, 0);
+                            AddComponent(new TrophyComponent(17644, label, hue), 0, 0, 0); 
+                            AddComponent(new TrophyComponent(17645, label, hue), 0, 1, 0); 
+                            AddComponent(new TrophyComponent(17646, label, hue), 0, -1, 0); 
                         }
                         break;
                     }
@@ -303,7 +305,7 @@ namespace Server.Items
         {
             get
             {
-                TaxidermyKit.TrophyInfo info = TaxidermyKit.TrophyInfos.FirstOrDefault(i => i.CreatureType == m_TypeName);
+                var info = TaxidermyKit.TrophyInfos.FirstOrDefault(i => i.CreatureType == m_TypeName);
 
                 if (info != null)
                 {
@@ -327,7 +329,7 @@ namespace Server.Items
             if (m_TypeName == null)
                 return;
 
-            TaxidermyKit.TrophyInfo info = TaxidermyKit.TrophyInfos.FirstOrDefault(i => i.CreatureType == m_TypeName);
+            var info = TaxidermyKit.TrophyInfos.FirstOrDefault(i => i.CreatureType == m_TypeName);
 
             if (info != null)
             {
@@ -337,7 +339,7 @@ namespace Server.Items
                 {
                     from.AddToBackpack(new FishTrophyDeed(m_FishWeight, m_Fisher, m_DateCaught, info.DeedNumber, info.AddonNumber, info.NorthID));
 
-                    if (house.Addons.ContainsKey(this))
+                    if(house.Addons.ContainsKey(this))
                         house.Addons.Remove(this);
 
                     Delete();
@@ -354,7 +356,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
             writer.Write(m_TypeName.Name);
             writer.Write(m_FishWeight);
             writer.Write(m_Fisher);
@@ -376,7 +378,7 @@ namespace Server.Items
 
     public class TrophyComponent : LocalizedAddonComponent
     {
-        public override bool ForceShowProperties => true;
+        public override bool ForceShowProperties { get { return true; } }
 
         public TrophyComponent(int itemID, int label, int hue) : base(itemID, label)
         {
@@ -393,7 +395,7 @@ namespace Server.Items
 
                 list.Add(1070858, trophy.FishWeight.ToString());
                 list.Add(1070857, trophy.Fisher != null ? trophy.Fisher.Name : "Unknown");
-                list.Add(string.Format("[{0}]", trophy.DateCaught.ToShortDateString()));
+                list.Add(String.Format("[{0}]", trophy.DateCaught.ToShortDateString()));
             }
         }
 
@@ -402,7 +404,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

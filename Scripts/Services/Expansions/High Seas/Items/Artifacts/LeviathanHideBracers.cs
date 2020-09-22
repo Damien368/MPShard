@@ -1,17 +1,20 @@
-﻿namespace Server.Items
+﻿using Server;
+using System;
+
+namespace Server.Items
 {
     public class LeviathanHideBracers : LeatherArms
     {
-        public override int LabelNumber => 1116619;
+        public override int LabelNumber { get { return 1116619; } }
 
-        public override int BasePhysicalResistance => 7;
-        public override int BaseFireResistance => 9;
-        public override int BaseColdResistance => 10;
-        public override int BasePoisonResistance => 13;
-        public override int BaseEnergyResistance => 14;
+        public override int BasePhysicalResistance { get { return 7; } }
+        public override int BaseFireResistance { get { return 9; } }
+        public override int BaseColdResistance { get { return 10; } }
+        public override int BasePoisonResistance { get { return 13; } }
+        public override int BaseEnergyResistance { get { return 14; } }
 
-        public override int InitMinHits => 255;
-        public override int InitMaxHits => 255;
+        public override int InitMinHits { get { return 255; } }
+        public override int InitMaxHits { get { return 255; } }
 
         [Constructable]
         public LeviathanHideBracers()
@@ -35,7 +38,7 @@
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

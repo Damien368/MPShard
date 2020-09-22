@@ -1,7 +1,10 @@
-using Server.Commands;
+﻿using Server;
+using System;
 using Server.Engines.Quests;
 using Server.Mobiles;
 using Server.Regions;
+using Server.Commands;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Server.Items
@@ -11,25 +14,49 @@ namespace Server.Items
         public static string FilePath = Path.Combine("Saves", "Highseas.bin");
         public static bool DefaultRestrictBoats = true;
 
+        public static void Initialize()
+        {
+            if (Core.HS)
+            {
+                Region reg = new TokunoDocksRegion();
+                reg.Register();
+
+                SeaMarketRegion reg1 = new SeaMarketRegion(Map.Felucca);
+                SeaMarketRegion reg2 = new SeaMarketRegion(Map.Trammel);
+
+                reg1.Register();
+                reg2.Register();
+
+                SeaMarketRegion.SetRegions(reg1, reg2);
+
+                CommandSystem.Register("RestrictBoats", AccessLevel.GameMaster, new CommandEventHandler(SeaMarketRegion.SetRestriction_OnCommand));
+            }
+        }
+
         public static void Configure()
         {
-            EventSink.WorldSave += OnSave;
-            EventSink.WorldLoad += OnLoad;
+            if (Core.HS)
+            {
+                EventSink.WorldSave += OnSave;
+                EventSink.WorldLoad += OnLoad;
 
-            SeaMarketRegion.RestrictBoats = DefaultRestrictBoats;
+                SeaMarketRegion.RestrictBoats = DefaultRestrictBoats;
 
-            m_Instance = new HighSeasPersistance();
-
-            CommandSystem.Register("RestrictBoats", AccessLevel.GameMaster, SeaMarketRegion.SetRestriction_OnCommand);
+                m_Instance = new HighSeasPersistance();
+            }
         }
 
         private static HighSeasPersistance m_Instance;
-        public static HighSeasPersistance Instance => m_Instance;
+        public static HighSeasPersistance Instance { get { return m_Instance; } }
 
         public bool HighSeasActive { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public CharydbisSpawner CharydbisSpawner { get { return CharydbisSpawner.SpawnInstance; } set { } }
+
+        public HighSeasPersistance()
+        {
+        }
 
         public static void OnSave(WorldSaveEventArgs e)
         {
@@ -37,9 +64,9 @@ namespace Server.Items
                 FilePath,
                 writer =>
                 {
-                    writer.Write(1);
+                    writer.Write((int)1);
 
-                    SeaMarketRegion.Save(writer);
+                    Server.Regions.SeaMarketRegion.Save(writer);
 
                     writer.Write(PlayerFishingEntry.FishingEntries.Count);
 
@@ -66,7 +93,7 @@ namespace Server.Items
                 {
                     int version = reader.ReadInt();
 
-                    SeaMarketRegion.Load(reader);
+                    Server.Regions.SeaMarketRegion.Load(reader);
                     int count = reader.ReadInt();
                     for (int i = 0; i < count; i++)
                         new PlayerFishingEntry(reader);

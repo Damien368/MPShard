@@ -1,13 +1,14 @@
+using System;
 using Server.Items;
-using Server.Mobiles;
 using Server.Network;
+using Server.Mobiles;
 using System.Globalization;
 
 namespace Server.Gumps
 {
     public class TithingGump : Gump
     {
-        private readonly int MaxTithing = 100000;
+        private int MaxTithing = 100000;
 
         public TithingGump(Mobile from, int offer)
             : base(100, 100)

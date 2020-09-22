@@ -1,16 +1,24 @@
+using System;
+
 namespace Server.Engines.Reports
 {
     public class ReportColumn : PersistableObject
     {
         #region Type Identification
-        public static readonly PersistableType ThisTypeID = new PersistableType("rc", Construct);
+        public static readonly PersistableType ThisTypeID = new PersistableType("rc", new ConstructCallback(Construct));
 
         private static PersistableObject Construct()
         {
             return new ReportColumn();
         }
 
-        public override PersistableType TypeID => ThisTypeID;
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
         #endregion
 
         private string m_Width;
@@ -21,33 +29,33 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_Width;
+                return this.m_Width;
             }
             set
             {
-                m_Width = value;
+                this.m_Width = value;
             }
         }
         public string Align
         {
             get
             {
-                return m_Align;
+                return this.m_Align;
             }
             set
             {
-                m_Align = value;
+                this.m_Align = value;
             }
         }
         public string Name
         {
             get
             {
-                return m_Name;
+                return this.m_Name;
             }
             set
             {
-                m_Name = value;
+                this.m_Name = value;
             }
         }
 
@@ -62,23 +70,23 @@ namespace Server.Engines.Reports
 
         public ReportColumn(string width, string align, string name)
         {
-            m_Width = width;
-            m_Align = align;
-            m_Name = name;
+            this.m_Width = width;
+            this.m_Align = align;
+            this.m_Name = name;
         }
 
         public override void SerializeAttributes(PersistenceWriter op)
         {
-            op.SetString("w", m_Width);
-            op.SetString("a", m_Align);
-            op.SetString("n", m_Name);
+            op.SetString("w", this.m_Width);
+            op.SetString("a", this.m_Align);
+            op.SetString("n", this.m_Name);
         }
 
         public override void DeserializeAttributes(PersistenceReader ip)
         {
-            m_Width = Utility.Intern(ip.GetString("w"));
-            m_Align = Utility.Intern(ip.GetString("a"));
-            m_Name = Utility.Intern(ip.GetString("n"));
+            this.m_Width = Utility.Intern(ip.GetString("w"));
+            this.m_Align = Utility.Intern(ip.GetString("a"));
+            this.m_Name = Utility.Intern(ip.GetString("n"));
         }
     }
 }

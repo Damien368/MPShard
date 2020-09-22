@@ -1,15 +1,18 @@
-﻿using Server.Mobiles;
+﻿using Server;
+using System;
+using Server.Mobiles;
+using Server.Engines.Quests;
 
 namespace Server.Items
 {
     public class DeathCertificate : Item
     {
-        public override int LabelNumber => 1116716;
+        public override int LabelNumber { get { return 1116716; } }
 
         private string m_Owner;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public string Owner => m_Owner;
+        public string Owner { get { return m_Owner; } }
 
         public DeathCertificate(Mobile owner)
             : base(0x14F0)
@@ -19,9 +22,9 @@ namespace Server.Items
                 PirateCaptain capt = (PirateCaptain)owner;
 
                 if (capt.PirateName > 0)
-                    m_Owner = string.Format("#{0}\t#{1}\t#{2}", capt.Adjective, capt.Noun, capt.PirateName);
+                    m_Owner = String.Format("#{0}\t#{1}\t#{2}", capt.Adjective, capt.Noun, capt.PirateName);
                 else
-                    m_Owner = string.Format("#{0}\t#{1}\t{2}", capt.Adjective, capt.Noun, Name);
+                    m_Owner = String.Format("#{0}\t#{1}\t{2}", capt.Adjective, capt.Noun, Name);
             }
         }
 
@@ -43,7 +46,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
             writer.Write(m_Owner);
         }
 

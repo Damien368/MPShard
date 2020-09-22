@@ -1,8 +1,13 @@
+using System;
+using Server.Items;
+using Server.Mobiles;
+using Server.Gumps;
+
 namespace Server.Items
 {
     public class ClimbingVine : Item
     {
-        public override int LabelNumber => 1023307;  // vines
+        public override int LabelNumber { get { return 1023307; } } // vines
 
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D ClimbLocation { get; set; }
@@ -24,7 +29,7 @@ namespace Server.Items
         {
             from.SayTo(from, 1156290, 1153); // *The vines looks as though they may be strong enough to support climbing...*
 
-            if (ClimbLocation != Point3D.Zero && from.InRange(GetWorldLocation(), 2) && Z >= from.Z)
+            if (ClimbLocation != Point3D.Zero && from.InRange(this.GetWorldLocation(), 2) && Z >= from.Z)
             {
                 from.MoveToWorld(ClimbLocation, Map);
             }
@@ -39,7 +44,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0);
+            writer.Write((int)0);
             writer.Write(ClimbLocation);
         }
 
@@ -56,19 +61,22 @@ namespace Server.Items
 
         public static void Initialize()
         {
-            Vine1 = Map.TerMur.FindItem<ClimbingVine>(new Point3D(687, 1759, 40));
-            Vine2 = Map.TerMur.FindItem<ClimbingVine>(new Point3D(687, 1759, 60));
-
-            if (Vine1 == null)
+            if (Core.TOL)
             {
-                Vine1 = new ClimbingVine(new Point3D(679, 1757, 100));
-                Vine1.MoveToWorld(new Point3D(678, 1759, 40), Map.TerMur);
-            }
+                Vine1 = Map.TerMur.FindItem<ClimbingVine>(new Point3D(687, 1759, 40));
+                Vine2 = Map.TerMur.FindItem<ClimbingVine>(new Point3D(687, 1759, 60));
 
-            if (Vine2 == null)
-            {
-                Vine2 = new ClimbingVine(new Point3D(679, 1757, 100));
-                Vine2.MoveToWorld(new Point3D(678, 1759, 60), Map.TerMur);
+                if (Vine1 == null)
+                {
+                    Vine1 = new ClimbingVine(new Point3D(679, 1757, 100));
+                    Vine1.MoveToWorld(new Point3D(678, 1759, 40), Map.TerMur);
+                }
+
+                if (Vine2 == null)
+                {
+                    Vine2 = new ClimbingVine(new Point3D(679, 1757, 100));
+                    Vine2.MoveToWorld(new Point3D(678, 1759, 60), Map.TerMur);
+                }
             }
         }
     }

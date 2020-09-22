@@ -1,8 +1,9 @@
-﻿using Server.ContextMenus;
-using Server.Gumps;
-using Server.Multis;
+﻿using Server;
 using System;
 using System.Collections.Generic;
+using Server.ContextMenus;
+using Server.Multis;
+using Server.Gumps;
 
 namespace Server.Items
 {
@@ -14,14 +15,26 @@ namespace Server.Items
         private BaseBoat m_Boat;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Owner => m_Owner;
+        public Mobile Owner { get { return m_Owner; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public BaseBoat Boat => m_Boat;
+        public BaseBoat Boat { get { return m_Boat; } }
 
-        public override TimeSpan DecayTime => TimeSpan.FromMinutes(DT);
+        public override TimeSpan DecayTime
+        {
+            get
+            {
+                return TimeSpan.FromMinutes(DT);
+            }
+        }
 
-        public override bool Decays => true;
+        public override bool Decays
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public ShipCrate(Mobile owner, BaseBoat boat)
         {
@@ -33,7 +46,7 @@ namespace Server.Items
 
         public override void Delete()
         {
-            Mobiles.DockMaster.RemoveCrate(this);
+            Server.Mobiles.DockMaster.RemoveCrate(this);
             base.Delete();
         }
 
@@ -50,14 +63,14 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
             list.Add(new DestroyCrate(from, this));
 
-            if (m_Boat != null && Items.Count > 0)
+            if(m_Boat != null && this.Items.Count > 0)
                 list.Add(new LoadShip(from, this));
         }
 
         private class DestroyCrate : ContextMenuEntry
         {
-            private readonly Mobile m_From;
-            private readonly ShipCrate m_Crate;
+            private Mobile m_From;
+            private ShipCrate m_Crate;
 
             public DestroyCrate(Mobile from, ShipCrate crate) : base(1116522, 3)
             {
@@ -67,14 +80,14 @@ namespace Server.Items
 
             public override void OnClick()
             {
-                m_From.SendGump(new InternalGump(m_Crate));
+                m_From.SendGump(new InternalGump(m_Crate)); 
             }
         }
 
         private class LoadShip : ContextMenuEntry
         {
-            private readonly Mobile m_From;
-            private readonly ShipCrate m_Crate;
+            private Mobile m_From;
+            private ShipCrate m_Crate;
 
             public LoadShip(Mobile from, ShipCrate crate)
                 : base(1116521, 3) //Load Ship from Crate
@@ -90,15 +103,15 @@ namespace Server.Items
 
                 Container hold;
 
-                if (m_Crate.Boat is BaseGalleon)
+                if(m_Crate.Boat is BaseGalleon)
                     hold = ((BaseGalleon)m_Crate.Boat).GalleonHold;
                 else
                     hold = m_Crate.Boat.Hold;
 
-                if (hold == null)
+                if(hold == null)
                     return;
 
-                if (m_From.InRange(m_Crate.Boat.Location, Mobiles.DockMaster.DryDockDistance))
+                if (m_From.InRange(m_Crate.Boat.Location, Server.Mobiles.DockMaster.DryDockDistance))
                 {
                     List<Item> items = new List<Item>(m_Crate.Items);
                     foreach (Item item in items)
@@ -113,9 +126,9 @@ namespace Server.Items
 
         private class InternalGump : BaseConfirmGump
         {
-            private readonly ShipCrate m_Crate;
+            private ShipCrate m_Crate;
 
-            public override int LabelNumber => 1116523;  // Are you sure you want to destroy your shipping crate and its contents?
+            public override int LabelNumber { get { return 1116523; } } // Are you sure you want to destroy your shipping crate and its contents?
 
             public InternalGump(ShipCrate crate)
             {
@@ -124,7 +137,7 @@ namespace Server.Items
 
             public override void Confirm(Mobile from)
             {
-                if (m_Crate != null)
+                if(m_Crate != null)
                     m_Crate.Delete();
             }
         }
@@ -138,13 +151,13 @@ namespace Server.Items
             }
 
             base.OnDoubleClick(from);
-        }
+        }   
 
         public override void OnItemRemoved(Item item)
         {
             base.OnItemRemoved(item);
 
-            if (TotalItems == 0)
+            if (this.TotalItems == 0)
                 Delete();
         }
 
@@ -156,7 +169,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
 
             writer.Write(m_Owner);
             writer.Write(m_Boat);

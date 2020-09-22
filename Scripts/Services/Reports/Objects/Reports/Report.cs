@@ -1,16 +1,24 @@
+using System;
+
 namespace Server.Engines.Reports
 {
     public class Report : PersistableObject
     {
         #region Type Identification
-        public static readonly PersistableType ThisTypeID = new PersistableType("rp", Construct);
+        public static readonly PersistableType ThisTypeID = new PersistableType("rp", new ConstructCallback(Construct));
 
         private static PersistableObject Construct()
         {
             return new Report();
         }
 
-        public override PersistableType TypeID => ThisTypeID;
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
         #endregion
 
         private string m_Name;
@@ -22,26 +30,38 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_Name;
+                return this.m_Name;
             }
             set
             {
-                m_Name = value;
+                this.m_Name = value;
             }
         }
         public string Width
         {
             get
             {
-                return m_Width;
+                return this.m_Width;
             }
             set
             {
-                m_Width = value;
+                this.m_Width = value;
             }
         }
-        public ReportColumnCollection Columns => m_Columns;
-        public ReportItemCollection Items => m_Items;
+        public ReportColumnCollection Columns
+        {
+            get
+            {
+                return this.m_Columns;
+            }
+        }
+        public ReportItemCollection Items
+        {
+            get
+            {
+                return this.m_Items;
+            }
+        }
 
         private Report()
             : this(null, null)
@@ -50,31 +70,31 @@ namespace Server.Engines.Reports
 
         public Report(string name, string width)
         {
-            m_Name = name;
-            m_Width = width;
-            m_Columns = new ReportColumnCollection();
-            m_Items = new ReportItemCollection();
+            this.m_Name = name;
+            this.m_Width = width;
+            this.m_Columns = new ReportColumnCollection();
+            this.m_Items = new ReportItemCollection();
         }
 
         public override void SerializeAttributes(PersistenceWriter op)
         {
-            op.SetString("n", m_Name);
-            op.SetString("w", m_Width);
+            op.SetString("n", this.m_Name);
+            op.SetString("w", this.m_Width);
         }
 
         public override void DeserializeAttributes(PersistenceReader ip)
         {
-            m_Name = Utility.Intern(ip.GetString("n"));
-            m_Width = Utility.Intern(ip.GetString("w"));
+            this.m_Name = Utility.Intern(ip.GetString("n"));
+            this.m_Width = Utility.Intern(ip.GetString("w"));
         }
 
         public override void SerializeChildren(PersistenceWriter op)
         {
-            for (int i = 0; i < m_Columns.Count; ++i)
-                m_Columns[i].Serialize(op);
+            for (int i = 0; i < this.m_Columns.Count; ++i)
+                this.m_Columns[i].Serialize(op);
 
-            for (int i = 0; i < m_Items.Count; ++i)
-                m_Items[i].Serialize(op);
+            for (int i = 0; i < this.m_Items.Count; ++i)
+                this.m_Items[i].Serialize(op);
         }
 
         public override void DeserializeChildren(PersistenceReader ip)
@@ -84,9 +104,9 @@ namespace Server.Engines.Reports
                 PersistableObject child = ip.GetChild();
 
                 if (child is ReportColumn)
-                    m_Columns.Add((ReportColumn)child);
+                    this.m_Columns.Add((ReportColumn)child);
                 else if (child is ReportItem)
-                    m_Items.Add((ReportItem)child);
+                    this.m_Items.Add((ReportItem)child);
             }
         }
     }

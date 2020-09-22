@@ -1,6 +1,11 @@
-﻿using Server.Items;
-using Server.Multis;
+﻿using Server;
 using System;
+using Server.Mobiles;
+using System.Collections.Generic;
+using Server.Multis;
+using Server.Regions;
+using Server.Targeting;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -30,7 +35,7 @@ namespace Server.Mobiles
         private bool m_Active;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Charydbis Charydbis => m_Charydbis;
+        public Charydbis Charydbis { get { return m_Charydbis; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime NextSpawn { get { return m_NextSpawn; } set { m_NextSpawn = value; } }
@@ -105,7 +110,7 @@ namespace Server.Mobiles
                 if (m_Charydbis != null && m_Charydbis.Alive)
                 {
                     Point3D pnt = new Point3D(m_CurrentLocation.X + 5, m_CurrentLocation.Y + 5, -5);
-                    from.SendMessage(string.Format("The location you seek is: {0} in {1}", GetSextantLocation(pnt), m_Map));
+                    from.SendMessage(String.Format("The location you seek is: {0} in {1}", GetSextantLocation(pnt), m_Map));
                 }
                 else if (m_HasSpawned && (m_Charydbis == null || !m_Charydbis.Alive))
                 {
@@ -135,7 +140,7 @@ namespace Server.Mobiles
             m_NextSpawn = DateTime.UtcNow + NoSpawnDelay;
             m_IsSummoned = true;
             Point3D p = SOS.FindLocation(map);
-            from.SendMessage(string.Format("The location you seek is: {0} in {1}", GetSextantLocation(p), m_Map));
+            from.SendMessage(String.Format("The location you seek is: {0} in {1}", GetSextantLocation(p), m_Map));
             m_CurrentLocation = new Rectangle2D(p.X - 5, p.Y - 5, 10, 10);
             m_LastLocation = m_CurrentLocation;
             m_Timer = new InternalTimer(this, NoSpawnDelay);
@@ -151,7 +156,7 @@ namespace Server.Mobiles
             bool xEast = false, ySouth = false;
 
             if (Sextant.Format(pnt, m_Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
-                return string.Format("{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W");
+                return String.Format("{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W");
 
             return pnt.ToString();
         }
@@ -284,7 +289,7 @@ namespace Server.Mobiles
 
         private class InternalTimer : Timer
         {
-            private readonly CharydbisSpawner m_Info;
+            private CharydbisSpawner m_Info;
 
             public InternalTimer(CharydbisSpawner info, TimeSpan ts)
                 : base(ts)
@@ -300,7 +305,7 @@ namespace Server.Mobiles
 
         public void Serialize(GenericWriter writer)
         {
-            writer.Write(0);
+            writer.Write((int)0);
 
             writer.Write(m_HasSpawned);
             writer.Write(m_LastAttempt);

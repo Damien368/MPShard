@@ -1,3 +1,5 @@
+using Server;
+using System;
 using Server.Engines.Plants;
 using Server.Gumps;
 using Server.Network;
@@ -15,7 +17,7 @@ namespace Server.Items
     [TypeAlias("Server.Items.RaisedGardenSmallAddon", "Server.Items.RaisedGardenSouthAddon", "Server.Items.RaisedGardenEastAddon", "Server.Items.RaisedGardenLargeAddon")]
     public class RaisedGardenAddon : BaseAddon
     {
-        public override BaseAddonDeed Deed => new RaisedGardenDeed();
+        public override BaseAddonDeed Deed { get { return new RaisedGardenDeed(); } }
 
         [Constructable]
         public RaisedGardenAddon(RaisedGardenDirection direction)
@@ -92,7 +94,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -105,8 +107,8 @@ namespace Server.Items
     [TypeAlias("Server.Items.RaisedGardenSmallAddonDeed", "Server.Items.RaisedGardenEastAddonDeed", "Server.Items.RaisedGardenSouthAddonDeed", "Server.Items.RaisedGardenLargeAddonDeed")]
     public class RaisedGardenDeed : BaseAddonDeed
     {
-        public override int LabelNumber => 1150359;  // Raised Garden Bed
-        public override BaseAddon Addon => new RaisedGardenAddon(m_Direction);
+        public override int LabelNumber { get { return 1150359; } } // Raised Garden Bed
+        public override BaseAddon Addon { get { return new RaisedGardenAddon(m_Direction); } }
         public RaisedGardenDirection m_Direction;
 
         [Constructable]
@@ -131,6 +133,13 @@ namespace Server.Items
                 from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
         }
 
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
+
+            list.Add(1150651); // * Requires the "Rustic" theme pack
+        }
+
         private void SendTarget(Mobile m)
         {
             base.OnDoubleClick(m);
@@ -150,7 +159,7 @@ namespace Server.Items
 
         private class InternalGump : Gump
         {
-            private readonly RaisedGardenDeed m_Deed;
+            private RaisedGardenDeed m_Deed;
 
             public InternalGump(RaisedGardenDeed deed) : base(60, 36)
             {
@@ -222,7 +231,7 @@ namespace Server.Items
             }
         }
 
-        public override int LabelNumber => 1150359;  // Raised Garden Bed
+        public override int LabelNumber { get { return 1150359; } } // Raised Garden Bed
 
         public GardenAddonComponent(int itemID) : base(itemID)
         {
@@ -243,7 +252,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
 
             writer.Write(m_Plant);
         }

@@ -13,8 +13,8 @@ namespace Server
 		private readonly Region m_Region;
 		private Rectangle3D m_Rect;
 
-		public Region Region => m_Region;
-		public Rectangle3D Rect => m_Rect;
+		public Region Region { get { return m_Region; } }
+		public Rectangle3D Rect { get { return m_Rect; } }
 
 		public RegionRect(Region region, Rectangle3D rect)
 		{
@@ -60,7 +60,6 @@ namespace Server
 
 		// TODO: Can we avoid this?
 		private static readonly List<Mobile> m_DefaultMobileList = new List<Mobile>();
-		private static readonly List<Mobile> m_DefaultPlayerList = new List<Mobile>();
 		private static readonly List<Item> m_DefaultItemList = new List<Item>();
 		private static readonly List<NetState> m_DefaultClientList = new List<NetState>();
 		private static readonly List<BaseMulti> m_DefaultMultiList = new List<BaseMulti>();
@@ -101,7 +100,7 @@ namespace Server
 		{
 			if (oldValue != null && newValue != null)
 			{
-				int index = list != null ? list.IndexOf(oldValue) : -1;
+				int index = (list != null ? list.IndexOf(oldValue) : -1);
 
 				if (index >= 0)
 				{
@@ -213,7 +212,7 @@ namespace Server
 		{
 			if (m_Mobiles != null)
 			{
-				List<Mobile> sandbox = new List<Mobile>(m_Mobiles);
+				var sandbox = new List<Mobile>(m_Mobiles);
 
 				foreach (Mobile mob in sandbox)
 				{
@@ -351,19 +350,19 @@ namespace Server
 			{
 				if (m_Players == null)
 				{
-					return m_DefaultPlayerList;
+					return m_DefaultMobileList;
 				}
 
 				return m_Players;
 			}
 		}
 
-		public bool Active => m_Active && m_Owner != Map.Internal;
+		public bool Active { get { return (m_Active && m_Owner != Map.Internal); } }
 
-		public Map Owner => m_Owner;
+		public Map Owner { get { return m_Owner; } }
 
-		public int X => m_X;
+		public int X { get { return m_X; } }
 
-		public int Y => m_Y;
+		public int Y { get { return m_Y; } }
 	}
 }

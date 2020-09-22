@@ -1,14 +1,15 @@
-using Server.Items;
-using Server.Spells;
-using Server.Spells.SkillMasteries;
 using System;
+using Server.Items;
+using Server.Spells.SkillMasteries;
+using Server.Spells;
+using Server.Network;
 
 namespace Server.Mobiles
 {
     [CorpseName("an anchisaur corpse")]
     public class Anchisaur : BaseCreature
     {
-        public override bool AttacksFocus => true;
+        public override bool AttacksFocus { get { return true; } }
         private DateTime _NextMastery;
 
         [Constructable]
@@ -74,14 +75,12 @@ namespace Server.Mobiles
                 }
 
                 _NextMastery = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(45, 70));
-            }
+            }           
         }
 
-        public override int DragonBlood => 6;
-        public override int Meat => 6;
-        public override MeatType MeatType => MeatType.DinoRibs;
-        public override int Hides => 11;
-        public override int TreasureMapLevel => 1;
+        public override int DragonBlood { get { return 6; } }
+        public override int Meat { get { return 6; } }
+        public override int Hides { get { return 11; } }
 
         public Anchisaur(Serial serial)
             : base(serial)

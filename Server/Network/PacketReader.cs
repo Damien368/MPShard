@@ -1,4 +1,5 @@
 #region References
+using System;
 using System.IO;
 using System.Text;
 #endregion
@@ -18,9 +19,9 @@ namespace Server.Network
 			m_Index = fixedSize ? 1 : 3;
 		}
 
-		public byte[] Buffer => m_Data;
+		public byte[] Buffer { get { return m_Data; } }
 
-		public int Size => m_Size;
+		public int Size { get { return m_Size; } }
 
 		public void Trace(NetState state)
 		{
@@ -28,7 +29,7 @@ namespace Server.Network
 			{
 				using (StreamWriter sw = new StreamWriter("Packets.log", true))
 				{
-					byte[] buffer = m_Data;
+					var buffer = m_Data;
 
 					if (buffer.Length > 0)
 					{
@@ -53,14 +54,14 @@ namespace Server.Network
 			switch (origin)
 			{
 				case SeekOrigin.Begin:
-				m_Index = offset;
-				break;
+					m_Index = offset;
+					break;
 				case SeekOrigin.Current:
-				m_Index += offset;
-				break;
+					m_Index += offset;
+					break;
 				case SeekOrigin.End:
-				m_Index = m_Size - offset;
-				break;
+					m_Index = m_Size - offset;
+					break;
 			}
 
 			return m_Index;
@@ -133,7 +134,7 @@ namespace Server.Network
 				return false;
 			}
 
-			return m_Data[m_Index++] != 0;
+			return (m_Data[m_Index++] != 0);
 		}
 
 		public string ReadUnicodeStringLE()
@@ -142,7 +143,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < m_Size && (c = m_Data[m_Index++] | (m_Data[m_Index++] << 8)) != 0)
+			while ((m_Index + 1) < m_Size && (c = (m_Data[m_Index++] | (m_Data[m_Index++] << 8))) != 0)
 			{
 				sb.Append((char)c);
 			}
@@ -164,7 +165,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < bound && (c = m_Data[m_Index++] | (m_Data[m_Index++] << 8)) != 0)
+			while ((m_Index + 1) < bound && (c = (m_Data[m_Index++] | (m_Data[m_Index++] << 8))) != 0)
 			{
 				if (IsSafeChar(c))
 				{
@@ -183,7 +184,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < m_Size && (c = m_Data[m_Index++] | (m_Data[m_Index++] << 8)) != 0)
+			while ((m_Index + 1) < m_Size && (c = (m_Data[m_Index++] | (m_Data[m_Index++] << 8))) != 0)
 			{
 				if (IsSafeChar(c))
 				{
@@ -200,7 +201,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < m_Size && (c = (m_Data[m_Index++] << 8) | m_Data[m_Index++]) != 0)
+			while ((m_Index + 1) < m_Size && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0)
 			{
 				if (IsSafeChar(c))
 				{
@@ -217,7 +218,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < m_Size && (c = (m_Data[m_Index++] << 8) | m_Data[m_Index++]) != 0)
+			while ((m_Index + 1) < m_Size && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0)
 			{
 				sb.Append((char)c);
 			}
@@ -227,7 +228,7 @@ namespace Server.Network
 
 		public bool IsSafeChar(int c)
 		{
-			return c >= 0x20 && c < 0xFFFE;
+			return (c >= 0x20 && c < 0xFFFE);
 		}
 
 		public string ReadUTF8StringSafe(int fixedLength)
@@ -235,7 +236,7 @@ namespace Server.Network
 			if (m_Index >= m_Size)
 			{
 				m_Index += fixedLength;
-				return string.Empty;
+				return String.Empty;
 			}
 
 			int bound = m_Index + fixedLength;
@@ -257,7 +258,7 @@ namespace Server.Network
 
 			index = 0;
 
-			byte[] buffer = new byte[count];
+			var buffer = new byte[count];
 			int value = 0;
 
 			while (m_Index < bound && (value = m_Data[m_Index++]) != 0)
@@ -298,7 +299,7 @@ namespace Server.Network
 		{
 			if (m_Index >= m_Size)
 			{
-				return string.Empty;
+				return String.Empty;
 			}
 
 			int count = 0;
@@ -311,7 +312,7 @@ namespace Server.Network
 
 			index = 0;
 
-			byte[] buffer = new byte[count];
+			var buffer = new byte[count];
 			int value = 0;
 
 			while (m_Index < m_Size && (value = m_Data[m_Index++]) != 0)
@@ -350,7 +351,7 @@ namespace Server.Network
 		{
 			if (m_Index >= m_Size)
 			{
-				return string.Empty;
+				return String.Empty;
 			}
 
 			int count = 0;
@@ -363,7 +364,7 @@ namespace Server.Network
 
 			index = 0;
 
-			byte[] buffer = new byte[count];
+			var buffer = new byte[count];
 			int value = 0;
 
 			while (m_Index < m_Size && (value = m_Data[m_Index++]) != 0)
@@ -419,7 +420,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < bound && (c = (m_Data[m_Index++] << 8) | m_Data[m_Index++]) != 0)
+			while ((m_Index + 1) < bound && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0)
 			{
 				if (IsSafeChar(c))
 				{
@@ -446,7 +447,7 @@ namespace Server.Network
 
 			int c;
 
-			while ((m_Index + 1) < bound && (c = (m_Data[m_Index++] << 8) | m_Data[m_Index++]) != 0)
+			while ((m_Index + 1) < bound && (c = ((m_Data[m_Index++] << 8) | m_Data[m_Index++])) != 0)
 			{
 				sb.Append((char)c);
 			}

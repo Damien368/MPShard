@@ -1,3 +1,4 @@
+using System;
 using Server.Targeting;
 
 namespace Server.Items
@@ -16,7 +17,13 @@ namespace Server.Items
         {
         }
 
-        public override int LabelNumber => 1072896;// runed switch
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1072896;
+            }
+        }// runed switch
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))
@@ -32,7 +39,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)

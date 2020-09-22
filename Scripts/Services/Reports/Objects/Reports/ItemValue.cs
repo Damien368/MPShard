@@ -1,16 +1,24 @@
+using System;
+
 namespace Server.Engines.Reports
 {
     public class ItemValue : PersistableObject
     {
         #region Type Identification
-        public static readonly PersistableType ThisTypeID = new PersistableType("iv", Construct);
+        public static readonly PersistableType ThisTypeID = new PersistableType("iv", new ConstructCallback(Construct));
 
         private static PersistableObject Construct()
         {
             return new ItemValue();
         }
 
-        public override PersistableType TypeID => ThisTypeID;
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
         #endregion
 
         private string m_Value;
@@ -20,22 +28,22 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_Value;
+                return this.m_Value;
             }
             set
             {
-                m_Value = value;
+                this.m_Value = value;
             }
         }
         public string Format
         {
             get
             {
-                return m_Format;
+                return this.m_Format;
             }
             set
             {
-                m_Format = value;
+                this.m_Format = value;
             }
         }
 
@@ -50,23 +58,23 @@ namespace Server.Engines.Reports
 
         public ItemValue(string value, string format)
         {
-            m_Value = value;
-            m_Format = format;
+            this.m_Value = value;
+            this.m_Format = format;
         }
 
         public override void SerializeAttributes(PersistenceWriter op)
         {
-            op.SetString("v", m_Value);
-            op.SetString("f", m_Format);
+            op.SetString("v", this.m_Value);
+            op.SetString("f", this.m_Format);
         }
 
         public override void DeserializeAttributes(PersistenceReader ip)
         {
-            m_Value = ip.GetString("v");
-            m_Format = Utility.Intern(ip.GetString("f"));
+            this.m_Value = ip.GetString("v");
+            this.m_Format = Utility.Intern(ip.GetString("f"));
 
-            if (m_Format == null)
-                Utility.Intern(ref m_Value);
+            if (this.m_Format == null)
+                Utility.Intern(ref this.m_Value);
         }
     }
 }

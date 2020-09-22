@@ -5,14 +5,20 @@ namespace Server.Engines.Reports
     public class Snapshot : PersistableObject
     {
         #region Type Identification
-        public static readonly PersistableType ThisTypeID = new PersistableType("ss", Construct);
+        public static readonly PersistableType ThisTypeID = new PersistableType("ss", new ConstructCallback(Construct));
 
         private static PersistableObject Construct()
         {
             return new Snapshot();
         }
 
-        public override PersistableType TypeID => ThisTypeID;
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
         #endregion
 
         private DateTime m_TimeStamp;
@@ -22,50 +28,50 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_TimeStamp;
+                return this.m_TimeStamp;
             }
             set
             {
-                m_TimeStamp = value;
+                this.m_TimeStamp = value;
             }
         }
         public ObjectCollection Children
         {
             get
             {
-                return m_Children;
+                return this.m_Children;
             }
             set
             {
-                m_Children = value;
+                this.m_Children = value;
             }
         }
 
         public Snapshot()
         {
-            m_Children = new ObjectCollection();
+            this.m_Children = new ObjectCollection();
         }
 
         public override void SerializeAttributes(PersistenceWriter op)
         {
-            op.SetDateTime("t", m_TimeStamp);
+            op.SetDateTime("t", this.m_TimeStamp);
         }
 
         public override void DeserializeAttributes(PersistenceReader ip)
         {
-            m_TimeStamp = ip.GetDateTime("t");
+            this.m_TimeStamp = ip.GetDateTime("t");
         }
 
         public override void SerializeChildren(PersistenceWriter op)
         {
-            for (int i = 0; i < m_Children.Count; ++i)
-                m_Children[i].Serialize(op);
+            for (int i = 0; i < this.m_Children.Count; ++i)
+                this.m_Children[i].Serialize(op);
         }
 
         public override void DeserializeChildren(PersistenceReader ip)
         {
             while (ip.HasChild)
-                m_Children.Add(ip.GetChild());
+                this.m_Children.Add(ip.GetChild());
         }
     }
 }

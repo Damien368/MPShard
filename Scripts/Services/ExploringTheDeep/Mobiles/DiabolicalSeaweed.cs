@@ -1,5 +1,5 @@
+﻿using System;
 using Server.Items;
-using System;
 using System.Collections;
 
 namespace Server.Mobiles
@@ -42,8 +42,24 @@ namespace Server.Mobiles
             Karma = -3000;
             CantWalk = true;
 
+            VirtualArmor = 60;
+
             m_Timer = new PullTimer(this);
             m_Timer.Start();
+
+            switch (Utility.Random(8))
+            {
+                case 0: PackItem(new BlueDiamond()); break;
+                case 1: PackItem(new FireRuby()); break;
+                case 2: PackItem(new BrilliantAmber()); break;
+                case 3: PackItem(new PerfectEmerald()); break;
+                case 4: PackItem(new DarkSapphire()); break;
+                case 5: PackItem(new Turquoise()); break;
+                case 6: PackItem(new EcruCitrine()); break;
+                case 7: PackItem(new WhitePearl()); break;
+            }
+            PackItem(new ParasiticPlant());
+            PackItem(new LuminescentFungi());
         }
 
         public DiabolicalSeaweed(Serial serial)
@@ -126,30 +142,42 @@ namespace Server.Mobiles
             }
         }
 
-        public override bool CanRummageCorpses => true;
+        public override void OnDeath(Container c)
+        {
+            base.OnDeath(c);
+            for (int i = Utility.Random(5, 6); i > 1; i--)
+            {
+                Item ReagentLoot = Loot.RandomReagent();
+                ReagentLoot.Amount = Utility.Random(4, 5);
+                c.DropItem(ReagentLoot);
+            }
+
+        }
+
+        public override bool CanRummageCorpses { get { return true; } }
 
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-            AddLoot(LootPack.RareGems);
-            AddLoot(LootPack.MageryRegs, 20, 30);
-            AddLoot(LootPack.LootItem<ParasiticPlant>(true));
-            AddLoot(LootPack.LootItem<LuminescentFungi>(true));
         }
 
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+
+            writer.Write((int)0); // version
+
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
+
             int version = reader.ReadInt();
 
             m_Timer = new PullTimer(this);
             m_Timer.Start();
+
         }
     }
 }

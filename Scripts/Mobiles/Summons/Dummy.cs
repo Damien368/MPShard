@@ -1,5 +1,5 @@
-using Server.Items;
 using System;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -16,54 +16,51 @@ namespace Server.Mobiles
     /// </summary>
     public class Dummy : BaseCreature
     {
-        public Timer m_Timer;
+        public Timer	m_Timer;
         [Constructable]
         public Dummy(AIType iAI, FightMode iFightMode, int iRangePerception, int iRangeFight, double dActiveSpeed, double dPassiveSpeed)
             : base(iAI, iFightMode, iRangePerception, iRangeFight, dActiveSpeed, dPassiveSpeed)
         {
-            Body = 400 + Utility.Random(2);
-            Hue = Utility.RandomSkinHue();
+            this.Body = 400 + Utility.Random(2);
+            this.Hue = Utility.RandomSkinHue();
 
-            Skills[SkillName.DetectHidden].Base = 100;
-            Skills[SkillName.MagicResist].Base = 120;
+            this.Skills[SkillName.DetectHidden].Base = 100;
+            this.Skills[SkillName.MagicResist].Base = 120;
 
-            Team = Utility.Random(3);
+            this.Team = Utility.Random(3);
 
-            int iHue = 20 + Team * 40;
-            int jHue = 25 + Team * 40;
+            int iHue = 20 + this.Team * 40;
+            int jHue = 25 + this.Team * 40;
 
             Utility.AssignRandomHair(this, iHue);
 
-            LeatherGloves glv = new LeatherGloves
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
-            AddItem(glv);
+            LeatherGloves glv = new LeatherGloves();
+            glv.Hue = iHue;
+            glv.LootType = LootType.Newbied;
+            this.AddItem(glv);
 
-            Container pack = new Backpack
-            {
-                Movable = false
-            };
+            Container pack = new Backpack();
 
-            AddItem(pack);
+            pack.Movable = false;
 
-            m_Timer = new AutokillTimer(this);
-            m_Timer.Start();
+            this.AddItem(pack);
+
+            this.m_Timer = new AutokillTimer(this);
+            this.m_Timer.Start();
         }
 
         public Dummy(Serial serial)
             : base(serial)
         {
-            m_Timer = new AutokillTimer(this);
-            m_Timer.Start();
+            this.m_Timer = new AutokillTimer(this);
+            this.m_Timer.Start();
         }
 
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -89,46 +86,46 @@ namespace Server.Mobiles
             {
                 if (e.Speech == "kill")
                 {
-                    m_Timer.Stop();
-                    m_Timer.Delay = TimeSpan.FromSeconds(Utility.Random(1, 5));
-                    m_Timer.Start();
+                    this.m_Timer.Stop();
+                    this.m_Timer.Delay = TimeSpan.FromSeconds(Utility.Random(1, 5));
+                    this.m_Timer.Start();
                 }
             }
         }
 
         public override void OnTeamChange()
         {
-            int iHue = 20 + Team * 40;
-            int jHue = 25 + Team * 40;
+            int iHue = 20 + this.Team * 40;
+            int jHue = 25 + this.Team * 40;
 
-            Item item = FindItemOnLayer(Layer.OuterTorso);
+            Item item = this.FindItemOnLayer(Layer.OuterTorso);
 
             if (item != null)
                 item.Hue = jHue;
 
-            item = FindItemOnLayer(Layer.Helm);
+            item = this.FindItemOnLayer(Layer.Helm);
 
             if (item != null)
                 item.Hue = iHue;
 
-            item = FindItemOnLayer(Layer.Gloves);
+            item = this.FindItemOnLayer(Layer.Gloves);
 
             if (item != null)
                 item.Hue = iHue;
 
-            item = FindItemOnLayer(Layer.Shoes);
+            item = this.FindItemOnLayer(Layer.Shoes);
 
             if (item != null)
                 item.Hue = iHue;
 
-            HairHue = iHue;
+            this.HairHue = iHue;
 
-            item = FindItemOnLayer(Layer.MiddleTorso);
+            item = this.FindItemOnLayer(Layer.MiddleTorso);
 
             if (item != null)
                 item.Hue = iHue;
 
-            item = FindItemOnLayer(Layer.OuterLegs);
+            item = this.FindItemOnLayer(Layer.OuterLegs);
 
             if (item != null)
                 item.Hue = iHue;
@@ -140,14 +137,14 @@ namespace Server.Mobiles
             public AutokillTimer(Dummy owner)
                 : base(TimeSpan.FromMinutes(5.0))
             {
-                m_Owner = owner;
-                Priority = TimerPriority.FiveSeconds;
+                this.m_Owner = owner;
+                this.Priority = TimerPriority.FiveSeconds;
             }
 
             protected override void OnTick()
             {
-                m_Owner.Kill();
-                Stop();
+                this.m_Owner.Kill();
+                this.Stop();
             }
         }
     }

@@ -1,3 +1,5 @@
+using System;
+using Server;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -5,7 +7,7 @@ namespace Server.Mobiles
     [CorpseName("an archaeosaurus corpse")]
     public class Archaeosaurus : BaseCreature
     {
-        public override bool AttacksFocus => true;
+        public override bool AttacksFocus { get { return true; } }
 
         [Constructable]
         public Archaeosaurus()
@@ -51,11 +53,9 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich, 2);
         }
 
-        public override int Meat => 1;
-        public override MeatType MeatType => MeatType.DinoRibs;
-        public override int Hides => 7;
-        public override int DragonBlood => 6;
-        public override int TreasureMapLevel => 1;
+        public override int Meat { get { return 1; } }
+        public override int Hides { get { return 7; } }
+        public override int DragonBlood { get { return 6; } }
 
         public Archaeosaurus(Serial serial)
             : base(serial)

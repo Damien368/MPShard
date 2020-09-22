@@ -1,7 +1,8 @@
-using Server.Items;
-using Server.Multis;
 using System;
+using Server;
+using Server.Multis;
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -10,31 +11,31 @@ namespace Server.Mobiles
         public static readonly TimeSpan SpawnRate = TimeSpan.FromSeconds(30);
         public static readonly int SpawnMax = 25;
 
-        private readonly List<Mobile> m_Eels = new List<Mobile>();
+        private List<Mobile> m_Eels = new List<Mobile>();
         private DateTime m_NextSpawn;
         private DateTime m_NextSpecial;
         private DateTime m_NextWaterBall;
 
-        public override bool CanDamageBoats => true;
-        public override bool TaintedLifeAura => true;
-        public override TimeSpan BoatDamageCooldown => TimeSpan.FromSeconds(120);
-        public override int MinBoatDamage => 3;
-        public override int MaxBoatDamage => 8;
-        public override int DamageRange => 2;
+        public override bool CanDamageBoats { get { return true; } }
+        public override bool TaintedLifeAura { get { return true; } }
+        public override TimeSpan BoatDamageCooldown { get { return TimeSpan.FromSeconds(120); } }
+        public override int MinBoatDamage { get { return 3; } }
+        public override int MaxBoatDamage { get { return 8; } }
+        public override int DamageRange { get { return 2; } }
 
-        public override int Meat => 5;
+        public override int Meat { get { return 5; } }
 
-        public override ScaleType ScaleType => ScaleType.All;
-        public override int Scales => 20;
+        public override ScaleType ScaleType { get { return ScaleType.All; } }
+        public override int Scales { get { return 20; } }
 
-        public override double TreasureMapChance => .50;
-        public override int TreasureMapLevel => 7;
+        public override double TreasureMapChance { get { return .50; } }
+        public override int TreasureMapLevel { get { return 7; } }
 
-        public override Type[] UniqueList => new Type[] { typeof(EnchantedCoralBracelet), typeof(WandOfThunderingGlory), typeof(LeviathanHideBracers), typeof(SmilingMoonBlade) };
-        public override Type[] SharedList => new Type[] { typeof(MiniSoulForgeDeed) };
-        public override Type[] DecorativeList => new Type[] { typeof(EnchantedBladeDeed), typeof(EnchantedVortexDeed) };
+        public override Type[] UniqueList { get { return new Type[] { typeof(EnchantedCoralBracelet), typeof(WandOfThunderingGlory), typeof(LeviathanHideBracers), typeof(SmilingMoonBlade) }; } }
+        public override Type[] SharedList { get { return new Type[] { typeof(MiniSoulForgeDeed) }; } }
+        public override Type[] DecorativeList { get { return new Type[] { typeof(EnchantedBladeDeed), typeof(EnchantedVortexDeed) }; } }
 
-        public override bool NoGoodies => true;
+        public override bool NoGoodies { get { return true; } }
 
         [Constructable]
         public Osiredon()
@@ -84,10 +85,10 @@ namespace Server.Mobiles
             SetSkill(SkillName.SpiritSpeak, 160.1, 220.0);
             SetSkill(SkillName.Magery, 120.1, 129.4);
             SetSkill(SkillName.EvalInt, 100.1, 120.0);
-            SetSkill(SkillName.DetectHidden, 100.0);
 
             Fame = 25000;
             Karma = -25000;
+
         }
 
         public void AddEel(Mobile eel)
@@ -134,12 +135,12 @@ namespace Server.Mobiles
 
         public override void OnActionCombat()
         {
-            Mobile combatant = Combatant as Mobile;
+            Mobile combatant = this.Combatant as Mobile;
 
-            if (combatant == null || combatant.Deleted || combatant.Map != Map || !InRange(combatant, 12) || !CanBeHarmful(combatant) || !InLOS(combatant))
+            if (combatant == null || combatant.Deleted || combatant.Map != this.Map || !this.InRange(combatant, 12) || !this.CanBeHarmful(combatant) || !this.InLOS(combatant))
                 return;
 
-            if (DateTime.UtcNow >= m_NextWaterBall)
+            if (DateTime.UtcNow >= this.m_NextWaterBall)
             {
                 double damage = combatant.Hits * 0.3;
 
@@ -148,8 +149,8 @@ namespace Server.Mobiles
                 else if (damage > 40.0)
                     damage = 40.0;
 
-                DoHarmful(combatant);
-                MovingParticles(combatant, 0x36D4, 5, 0, false, false, 195, 0, 9502, 3006, 0, 0, 0);
+                this.DoHarmful(combatant);
+                this.MovingParticles(combatant, 0x36D4, 5, 0, false, false, 195, 0, 9502, 3006, 0, 0, 0);
                 AOS.Damage(combatant, this, (int)damage, 100, 0, 0, 0, 0);
 
                 if (combatant is PlayerMobile && combatant.Mount != null)
@@ -163,12 +164,7 @@ namespace Server.Mobiles
 
         public void SpawnEel(Mobile m)
         {
-            Map map = Map;
-
-            if (map == null || m == null)
-            {
-                return;
-            }
+            Map map = this.Map;
 
             int x = m.X; int y = m.Y; int z = m.Z;
 
@@ -183,13 +179,11 @@ namespace Server.Mobiles
 
                     if (Spells.SpellHelper.CheckMulti(new Point3D(x, y, m.Z), map) || map.CanSpawnMobile(x, y, z))
                     {
-                        var eel = new ParasiticEel(this);
+                        ParasiticEel eel = new ParasiticEel(this);
                         eel.MoveToWorld(new Point3D(x, y, loc.Z), map);
 
                         if (m is PlayerMobile)
-                        {
-                            Timer.DelayCall(() => eel.Combatant = m);
-                        }
+                            eel.Combatant = m;
 
                         break;
                     }
@@ -203,14 +197,14 @@ namespace Server.Mobiles
         {
             List<Mobile> toExplode = new List<Mobile>();
 
-            IPooledEnumerable eable = GetMobilesInRange(8);
+            IPooledEnumerable eable = this.GetMobilesInRange(8);
             foreach (Mobile mob in eable)
             {
                 if (!CanBeHarmful(mob, false) || mob == this || (mob is BaseCreature && ((BaseCreature)mob).GetMaster() == this))
                     continue;
                 if (mob.Player)
                     toExplode.Add(mob);
-                if (mob is BaseCreature && (((BaseCreature)mob).Controlled || ((BaseCreature)mob).Summoned || ((BaseCreature)mob).Team != Team))
+                if (mob is BaseCreature && (((BaseCreature)mob).Controlled || ((BaseCreature)mob).Summoned || ((BaseCreature)mob).Team != this.Team))
                     toExplode.Add(mob);
             }
             eable.Free();
@@ -239,7 +233,10 @@ namespace Server.Mobiles
             c.DropItem(new SpecialFishingNet());
             c.DropItem(new SpecialFishingNet());
 
-            SkillMasteryPrimer.CheckPrimerDrop(this);
+            #region TOL
+            if (Core.TOL)
+                SkillMasteryPrimer.CheckPrimerDrop(this);
+            #endregion
         }
 
         public override void Delete()
@@ -260,12 +257,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.SuperBoss, 5);
-            AddLoot(LootPack.LootItemCallback(RandomRecipe, 10.0, 1, false, false));
-        }
-
-        private Item RandomRecipe(IEntity e)
-        {
-            return Utility.RandomBool() ? new RecipeScroll(1100) : new RecipeScroll(1108);
         }
 
         public Osiredon(Serial serial)
@@ -276,7 +267,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -342,8 +333,8 @@ namespace Server.Mobiles
             Karma = -2500;
         }
 
-        public override Poison PoisonImmune => Poison.Parasitic;
-        public override Poison HitPoison => Poison.Parasitic;
+        public override Poison PoisonImmune { get { return Poison.Parasitic; } }
+        public override Poison HitPoison { get { return Poison.Parasitic; } }
 
         public override void Delete()
         {
@@ -366,7 +357,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
             writer.Write(m_Master);
         }
 
