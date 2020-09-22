@@ -11,9 +11,9 @@ namespace Server.Diagnostics
 	{
 		public static void WriteAll<T>(TextWriter op, IEnumerable<T> profiles) where T : BaseProfile
 		{
-			var list = new List<T>(profiles);
+			List<T> list = new List<T>(profiles);
 
-			list.Sort(delegate(T a, T b) { return -a.TotalTime.CompareTo(b.TotalTime); });
+			list.Sort(delegate (T a, T b) { return -a.TotalTime.CompareTo(b.TotalTime); });
 
 			foreach (T prof in list)
 			{
@@ -31,15 +31,15 @@ namespace Server.Diagnostics
 
 		private readonly Stopwatch _stopwatch;
 
-		public string Name { get { return _name; } }
+		public string Name => _name;
 
-		public long Count { get { return _count; } }
+		public long Count => _count;
 
-		public TimeSpan AverageTime { get { return TimeSpan.FromTicks(_totalTime.Ticks / Math.Max(1, _count)); } }
+		public TimeSpan AverageTime => TimeSpan.FromTicks(_totalTime.Ticks / Math.Max(1, _count));
 
-		public TimeSpan PeakTime { get { return _peakTime; } }
+		public TimeSpan PeakTime => _peakTime;
 
-		public TimeSpan TotalTime { get { return _totalTime; } }
+		public TimeSpan TotalTime => _totalTime;
 
 		protected BaseProfile(string name)
 		{

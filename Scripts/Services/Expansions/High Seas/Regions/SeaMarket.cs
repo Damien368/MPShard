@@ -1,13 +1,13 @@
-﻿using System;
-using Server;
-using Server.Mobiles;
-using Server.Items;
-using Server.Multis;
-using System.Collections.Generic;
 using Server.Commands;
 using Server.Engines.Quests;
+using Server.Items;
+using Server.Mobiles;
+using Server.Multis;
 using Server.Spells;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 namespace Server.Regions
 {
@@ -18,19 +18,13 @@ namespace Server.Regions
         private static SeaMarketRegion m_Region1;
         private static SeaMarketRegion m_Region2;
 
-        public static void SetRegions(SeaMarketRegion reg1, SeaMarketRegion reg2)
-        {
-            m_Region1 = reg1;
-            m_Region2 = reg2;
-        }
-
         private Timer m_Timer;
 
         private static Timer m_BlabTimer;
         private static bool m_RestrictBoats;
 
-        private Dictionary<BaseBoat, DateTime> m_BoatTable = new Dictionary<BaseBoat, DateTime>();
-        public Dictionary<BaseBoat, DateTime> BoatTable { get { return m_BoatTable; } }
+        private readonly Dictionary<BaseBoat, DateTime> m_BoatTable = new Dictionary<BaseBoat, DateTime>();
+        public Dictionary<BaseBoat, DateTime> BoatTable => m_BoatTable;
 
         public static bool RestrictBoats
         {
@@ -58,16 +52,27 @@ namespace Server.Regions
             }
         }
 
-        public static Rectangle2D[] Bounds { get { return m_Bounds; } }
-        private static Rectangle2D[] m_Bounds = new Rectangle2D[]
+        public static Rectangle2D[] Bounds => m_Bounds;
+        private static readonly Rectangle2D[] m_Bounds = new Rectangle2D[]
         {
             new Rectangle2D(4529, 2296, 45, 112),
         };
 
-        public SeaMarketRegion(Map map)
-            : base("Sea Market", map, Region.DefaultPriority, m_Bounds)
+        public SeaMarketRegion(XmlElement xml, Map map, Region parent)
+            : base(xml, map, parent)
         {
-            GoLocation = new Point3D(4550, 2317, -2);
+        }
+
+        public override void OnRegister()
+        {
+            if (m_Region1 == null)
+            {
+                m_Region1 = this;
+            }
+            else if (m_Region2 == null)
+            {
+                m_Region2 = this;
+            }
         }
 
         public override bool CheckTravel(Mobile traveller, Point3D p, TravelCheckType type)
@@ -86,6 +91,11 @@ namespace Server.Regions
             }
 
             return base.CheckTravel(traveller, p, type);
+        }
+
+        public override bool AllowHousing(Mobile from, Point3D p)
+        {
+            return false;
         }
 
         #region Pirate Blabbing
@@ -120,15 +130,14 @@ namespace Server.Regions
                     Map map = capt.Map;
 
                     string locArgs;
-                    //string nameArgs;
                     string combine;
 
                     if (Sextant.Format(loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
-                        locArgs = String.Format("{0}°{1}'{2},{3}°{4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W");
+                        locArgs = string.Format("{0}°{1}'{2},{3}°{4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W");
                     else
                         locArgs = "?????";
 
-                    combine = String.Format("{0}\t{1}", capt.PirateName > -1 ? String.Format("#{0}", capt.PirateName) : capt.Name, locArgs);
+                    combine = string.Format("{0}\t{1}", capt.PirateName > -1 ? string.Format("#{0}", capt.PirateName) : capt.Name, locArgs);
 
                     int cliloc = Utility.RandomMinMax(1149856, 1149865);
                     npc.SayTo(from, cliloc, combine);
@@ -152,21 +161,21 @@ namespace Server.Regions
             if (r == null)
                 return;
 
-            foreach (var player in r.GetEnumeratedMobiles().Where(p => p is PlayerMobile && 
+            foreach (Mobile player in r.GetEnumeratedMobiles().Where(p => p is PlayerMobile &&
                                                                        p.Alive /*&&
                                                                        QuestHelper.GetQuest((PlayerMobile)p, typeof(ProfessionalBountyQuest)) != null*/))
             {
-                    IPooledEnumerable eable = player.GetMobilesInRange(4);
+                IPooledEnumerable eable = player.GetMobilesInRange(4);
 
-                    foreach (Mobile mob in eable)
+                foreach (Mobile mob in eable)
+                {
+                    if (mob is BaseVendor || mob is MondainQuester || mob is GalleonPilot)
                     {
-                        if (mob is BaseVendor || mob is MondainQuester || mob is GalleonPilot)
-                        {
-                            TryPirateBlab(player, mob);
-                            break;
-                        }
+                        TryPirateBlab(player, mob);
+                        break;
                     }
-                    eable.Free();
+                }
+                eable.Free();
             }
         }
         #endregion
@@ -193,7 +202,7 @@ namespace Server.Regions
         {
             List<BaseBoat> list = new List<BaseBoat>();
 
-            foreach (BaseBoat boat in this.GetEnumeratedMultis().OfType<BaseBoat>())
+            foreach (BaseBoat boat in GetEnumeratedMultis().OfType<BaseBoat>())
                 list.Add(boat);
 
             return list;
@@ -258,12 +267,12 @@ namespace Server.Regions
                 boat.Owner.SendMessage("You can only dock your boat here for {0} minutes.", (int)KickDuration.TotalMinutes);
         }
 
-        private Rectangle2D[] m_KickLocs = new Rectangle2D[]
+        private readonly Rectangle2D[] m_KickLocs = new Rectangle2D[]
         {
-	        new Rectangle2D(m_Bounds[0].X - 100, m_Bounds[0].X - 100, 200 + m_Bounds[0].Width, 100),
-	        new Rectangle2D(m_Bounds[0].X - 100, m_Bounds[0].Y, 100, m_Bounds[0].Height + 100),
-	        new Rectangle2D(m_Bounds[0].X, m_Bounds[0].Y + m_Bounds[0].Height, m_Bounds[0].Width + 100, 100),
-	        new Rectangle2D(m_Bounds[0].X + m_Bounds[0].Width, m_Bounds[0].Y, 100, m_Bounds[0].Height),
+            new Rectangle2D(m_Bounds[0].X - 100, m_Bounds[0].X - 100, 200 + m_Bounds[0].Width, 100),
+            new Rectangle2D(m_Bounds[0].X - 100, m_Bounds[0].Y, 100, m_Bounds[0].Height + 100),
+            new Rectangle2D(m_Bounds[0].X, m_Bounds[0].Y + m_Bounds[0].Height, m_Bounds[0].Width + 100, 100),
+            new Rectangle2D(m_Bounds[0].X + m_Bounds[0].Width, m_Bounds[0].Y, 100, m_Bounds[0].Height),
         };
 
         public bool KickBoat(BaseBoat boat)
@@ -295,7 +304,7 @@ namespace Server.Regions
 
         private class InternalTimer : Timer
         {
-            private SeaMarketRegion m_Region;
+            private readonly SeaMarketRegion m_Region;
 
             public InternalTimer(SeaMarketRegion reg)
                 : base(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1))
@@ -314,14 +323,14 @@ namespace Server.Regions
         {
             RestrictBoats = m_RestrictBoats;
 
-            m_BlabTimer = Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), new TimerCallback(CheckBlab_Callback));
+            m_BlabTimer = Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), CheckBlab_Callback);
             m_BlabTimer.Priority = TimerPriority.OneSecond;
         }
         #endregion
 
         public static void Save(GenericWriter writer)
         {
-            writer.Write((int)0);
+            writer.Write(0);
 
             writer.Write(m_RestrictBoats);
         }
@@ -332,7 +341,7 @@ namespace Server.Regions
 
             m_RestrictBoats = reader.ReadBool();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerCallback(StartTimers_Callback));
+            Timer.DelayCall(TimeSpan.FromSeconds(30), StartTimers_Callback);
         }
 
         public static void GetBoatInfo_OnCommand(CommandEventArgs e)

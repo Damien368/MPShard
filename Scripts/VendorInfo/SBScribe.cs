@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Server.Items;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -17,27 +16,15 @@ namespace Server.Mobiles
             }
         }
 
-        public override IShopSellInfo SellInfo
-        {
-            get
-            {
-                return m_SellInfo;
-            }
-        }
-        public override List<GenericBuyInfo> BuyInfo
-        {
-            get
-            {
-                return m_BuyInfo;
-            }
-        }
+        public override IShopSellInfo SellInfo => m_SellInfo;
+        public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
         public class InternalBuyInfo : List<GenericBuyInfo>
         {
             public InternalBuyInfo(Mobile m)
             {
                 Add(new GenericBuyInfo(typeof(ScribesPen), 8, 20, 0xFBF, 0));
-                Add(new GenericBuyInfo(typeof(BlankScroll), 5, 20, 0x0E34, 0,true));
+                Add(new GenericBuyInfo(typeof(BlankScroll), 5, 999, 0x0E34, 0));
                 Add(new GenericBuyInfo(typeof(BrownBook), 15, 10, 0xFEF, 0));
                 Add(new GenericBuyInfo(typeof(TanBook), 15, 10, 0xFF0, 0));
                 Add(new GenericBuyInfo(typeof(BlueBook), 15, 10, 0xFF2, 0));

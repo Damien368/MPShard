@@ -1,4 +1,5 @@
 #region References
+
 using Server.Accounting;
 using Server.Network;
 #endregion
@@ -9,7 +10,7 @@ namespace Server.Items
 	{
 		private readonly SecureTrade m_Trade;
 
-		public SecureTrade Trade { get { return m_Trade; } }
+		public SecureTrade Trade => m_Trade;
 
 		public SecureTradeContainer(SecureTrade trade)
 			: base(0x1E5E)
@@ -17,7 +18,7 @@ namespace Server.Items
 			m_Trade = trade;
 			Movable = false;
 
-            Layer = Layer.SecureTrade;
+			Layer = Layer.SecureTrade;
 		}
 
 		public SecureTradeContainer(Serial serial)
@@ -31,7 +32,7 @@ namespace Server.Items
 				return true;
 			}
 
-			var to = Trade.From.Container != this ? Trade.From.Mobile : Trade.To.Mobile;
+			Mobile to = Trade.From.Container != this ? Trade.From.Mobile : Trade.To.Mobile;
 
 			return m.CheckTrade(to, item, this, message, checkItems, plusItems, plusWeight);
 		}
@@ -106,7 +107,7 @@ namespace Server.Items
 		{
 			if (child is VirtualCheck)
 			{
-				return AccountGold.Enabled && (m.NetState == null || !m.NetState.NewSecureTrading);
+				return !AccountGold.Enabled;
 			}
 
 			return base.IsChildVisibleTo(m, child);

@@ -1,15 +1,14 @@
-﻿using Server;
-using System;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
     public class SeaMarketBuoy : BaseAddon
     {
         [Constructable]
         public SeaMarketBuoy()
         {
-            AddonComponent comp1 = new AddonComponent(18102);
-            comp1.Name = "buoy";
+            AddonComponent comp1 = new AddonComponent(18102)
+            {
+                Name = "buoy"
+            };
 
             AddonComponent comp2 = new AddonComponent(18103);
             comp1.Name = "buoy";
@@ -31,7 +30,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write((int)0);
+            writer.Write(0);
         }
 
         public override void Deserialize(GenericReader reader)

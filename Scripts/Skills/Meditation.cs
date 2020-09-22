@@ -1,5 +1,5 @@
-using System;
 using Server.Items;
+using System;
 
 namespace Server.SkillHandlers
 {
@@ -7,7 +7,7 @@ namespace Server.SkillHandlers
     {
         public static void Initialize()
         {
-            SkillInfo.Table[46].Callback = new SkillUseCallback(OnUse);
+            SkillInfo.Table[46].Callback = OnUse;
         }
 
         public static bool CheckOkayHolding(Item item)
@@ -18,10 +18,10 @@ namespace Server.SkillHandlers
             if (item is Spellbook || item is Runebook)
                 return true;
 
-            if (Core.AOS && item is BaseWeapon && ((BaseWeapon)item).Attributes.SpellChanneling != 0)
+            if (item is BaseWeapon && ((BaseWeapon)item).Attributes.SpellChanneling != 0)
                 return true;
 
-            if (Core.AOS && item is BaseArmor && ((BaseArmor)item).Attributes.SpellChanneling != 0)
+            if (item is BaseArmor && ((BaseArmor)item).Attributes.SpellChanneling != 0)
                 return true;
 
             return false;
@@ -37,30 +37,24 @@ namespace Server.SkillHandlers
 
                 return TimeSpan.FromSeconds(5.0);
             }
-            else if (!Core.AOS && m.Hits < (m.HitsMax / 10)) // Less than 10% health
-            {
-                m.SendLocalizedMessage(501849); // The mind is strong but the body is weak.
-
-                return TimeSpan.FromSeconds(5.0);
-            }
             else if (m.Mana >= m.ManaMax)
             {
                 m.SendLocalizedMessage(501846); // You are at peace.
 
-                return TimeSpan.FromSeconds(Core.AOS ? 10.0 : 5.0);
+                return TimeSpan.FromSeconds(10.0);
             }
-            else if (Core.AOS && Server.Misc.RegenRates.GetArmorOffset(m) > 0)
+            else if (Misc.RegenRates.GetArmorOffset(m) > 0)
             {
                 m.SendLocalizedMessage(500135); // Regenative forces cannot penetrate your armor!
 
                 return TimeSpan.FromSeconds(10.0);
             }
-            else 
+            else
             {
                 Item oneHanded = m.FindItemOnLayer(Layer.OneHanded);
                 Item twoHanded = m.FindItemOnLayer(Layer.TwoHanded);
 
-                if (Core.AOS && m.Player)
+                if (m.Player)
                 {
                     if (!CheckOkayHolding(oneHanded))
                         m.AddToBackpack(oneHanded);
@@ -94,7 +88,7 @@ namespace Server.SkillHandlers
 
                     m.ResetStatTimers();
                 }
-                else 
+                else
                 {
                     m.SendLocalizedMessage(501850); // You cannot focus your concentration.
                 }

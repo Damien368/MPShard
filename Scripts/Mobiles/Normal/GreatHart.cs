@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Mobiles
 {
     [CorpseName("a deer corpse")]
@@ -34,8 +32,6 @@ namespace Server.Mobiles
             Fame = 300;
             Karma = 0;
 
-            VirtualArmor = 24;
-
             Tamable = true;
             ControlSlots = 1;
             MinTameSkill = 59.1;
@@ -46,53 +42,33 @@ namespace Server.Mobiles
         {
         }
 
-        public override int Meat
+        public override int Meat => 6;
+        public override int Hides => 15;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override int GetAttackSound()
         {
-            get
-            {
-                return 6;
-            }
-        }
-        public override int Hides
-        {
-            get
-            {
-                return 15;
-            }
-        }
-        public override FoodType FavoriteFood
-        {
-            get
-            {
-                return FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-            }
-        }
-        public override int GetAttackSound() 
-        { 
-            return 0x82; 
+            return 0x82;
         }
 
-        public override int GetHurtSound() 
-        { 
-            return 0x83; 
+        public override int GetHurtSound()
+        {
+            return 0x83;
         }
 
-        public override int GetDeathSound() 
-        { 
-            return 0x84; 
+        public override int GetDeathSound()
+        {
+            return 0x84;
         }
 
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-
-            writer.Write((int)0);
+            writer.Write(0);
         }
 
         public override void Deserialize(GenericReader reader)
         {
             base.Deserialize(reader);
-
             int version = reader.ReadInt();
         }
     }

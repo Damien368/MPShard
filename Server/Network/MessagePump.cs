@@ -16,10 +16,10 @@ namespace Server.Network
 		private readonly Queue<NetState> m_Throttled;
 
 		public Listener[] Listeners { get; set; }
-		
+
 		public MessagePump()
 		{
-			var ipep = Listener.EndPoints;
+			System.Net.IPEndPoint[] ipep = Listener.EndPoints;
 
 			Listeners = new Listener[ipep.Length];
 
@@ -52,7 +52,7 @@ namespace Server.Network
 
 		public void AddListener(Listener l)
 		{
-			var old = Listeners;
+			Listener[] old = Listeners;
 
 			Listeners = new Listener[old.Length + 1];
 
@@ -68,7 +68,7 @@ namespace Server.Network
 		{
 			foreach (Listener l in Listeners)
 			{
-				var accepted = l.Slice();
+				Socket[] accepted = l.Slice();
 
 				foreach (Socket s in accepted)
 				{
@@ -76,7 +76,7 @@ namespace Server.Network
 
 					ns.Start();
 
-                    if (ns.Running && Display(ns))
+					if (ns.Running && Display(ns))
 					{
 						Utility.PushColor(ConsoleColor.Green);
 						Console.WriteLine("Client: {0}: Connected. [{1} Online]", ns, NetState.Instances.Count);
@@ -86,27 +86,27 @@ namespace Server.Network
 			}
 		}
 
-        public static bool Display(NetState ns)
-        {
-            if (ns == null)
-                return false;
+		public static bool Display(NetState ns)
+		{
+			if (ns == null)
+				return false;
 
-            string state = ns.ToString();
+			string state = ns.ToString();
 
-            foreach (var str in _NoDisplay)
-            {
-                if (str == state)
-                    return false;
-            }
+			foreach (string str in _NoDisplay)
+			{
+				if (str == state)
+					return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        private static string[] _NoDisplay =
-        {
-            "192.99.10.155",
-            "192.99.69.21",
-        };
+		private static readonly string[] _NoDisplay =
+		{
+			"192.99.10.155",
+			"192.99.69.21",
+		};
 
 		public void OnReceive(NetState ns)
 		{
@@ -122,7 +122,7 @@ namespace Server.Network
 
 			lock (this)
 			{
-				var temp = m_WorkingQueue;
+				Queue<NetState> temp = m_WorkingQueue;
 				m_WorkingQueue = m_Queue;
 				m_Queue = temp;
 			}
@@ -158,10 +158,10 @@ namespace Server.Network
 				ns.Seeded = true;
 				return true;
 			}
-			
+
 			if (buffer.Length >= 4)
 			{
-				var m_Peek = new byte[4];
+				byte[] m_Peek = new byte[4];
 
 				buffer.Dequeue(m_Peek, 0, 4);
 
@@ -195,7 +195,7 @@ namespace Server.Network
 				Utility.PushColor(ConsoleColor.Red);
 				Console.WriteLine("Client: {0}: Encrypted Client Unsupported", ns);
 				Utility.PopColor();
-				
+
 				ns.Dispose();
 
 				return true;
@@ -235,7 +235,7 @@ namespace Server.Network
 
 					if (handler == null)
 					{
-						var data = new byte[length];
+						byte[] data = new byte[length];
 						length = buffer.Dequeue(data, 0, length);
 						new PacketReader(data, length, false).Trace(ns);
 						return;
@@ -293,18 +293,17 @@ namespace Server.Network
 
 					if (throttler != null)
 					{
-						bool drop;
 
-						if (!throttler(ns, out drop))
+						if (!throttler(ns, out bool drop))
 						{
 							if (!drop)
 							{
 								m_Throttled.Enqueue(ns);
 							}
-                            else
-                            {
-                                buffer.Dequeue(new byte[packetLength], 0, packetLength);
-                            }
+							else
+							{
+								buffer.Dequeue(new byte[packetLength], 0, packetLength);
+							}
 
 							return;
 						}

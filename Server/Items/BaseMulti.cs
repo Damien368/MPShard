@@ -1,5 +1,4 @@
 #region References
-using Server.Network;
 using System;
 #endregion
 
@@ -21,12 +20,12 @@ namespace Server.Items
 		[CommandProperty(AccessLevel.GameMaster)]
 		public override int ItemID
 		{
-			get { return base.ItemID; }
+			get => base.ItemID;
 			set
 			{
 				if (base.ItemID != value)
 				{
-					Map facet = (Parent == null ? Map : null);
+					Map facet = Parent == null ? Map : null;
 
 					if (facet != null)
 					{
@@ -58,7 +57,7 @@ namespace Server.Items
 			}
 		}
 
-        public override int LabelNumber
+		public override int LabelNumber
 		{
 			get
 			{
@@ -82,26 +81,26 @@ namespace Server.Items
 			}
 		}
 
-		public virtual bool AllowsRelativeDrop { get { return false; } }
-	
+		public virtual bool AllowsRelativeDrop => false;
+
 		public override int GetUpdateRange(Mobile m)
 		{
-            int min = m.NetState != null ? m.NetState.UpdateRange : Core.GlobalUpdateRange;
-            int max = Core.GlobalRadarRange - 1;
+			int min = m.NetState != null ? m.NetState.UpdateRange : Core.GlobalUpdateRange;
+			int max = Core.GlobalRadarRange - 1;
 
-            int w = Components.Width;
-            int h = Components.Height - 1;
-            int v = min + ((w > h ? w : h) / 2);
+			int w = Components.Width;
+			int h = Components.Height - 1;
+			int v = min + ((w > h ? w : h) / 2);
 
-            if (v > max)
-                v = max;
-            else if (v < min)
-                v = min;
+			if (v > max)
+				v = max;
+			else if (v < min)
+				v = min;
 
-            return v;
+			return v;
 		}
 
-		public virtual MultiComponentList Components { get { return MultiData.GetComponents(ItemID); } }
+		public virtual MultiComponentList Components => MultiData.GetComponents(ItemID);
 
 		public virtual bool Contains(Point2D p)
 		{
@@ -155,23 +154,13 @@ namespace Server.Items
 		public override void Serialize(GenericWriter writer)
 		{
 			base.Serialize(writer);
-
 			writer.Write(1); // version
 		}
 
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize(reader);
-
 			int version = reader.ReadInt();
-
-			if (version == 0)
-			{
-				if (ItemID >= 0x4000)
-				{
-					ItemID -= 0x4000;
-				}
-			}
 		}
 	}
 }

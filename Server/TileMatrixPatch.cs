@@ -12,7 +12,7 @@ namespace Server
 
 		private static bool m_Enabled = true;
 
-		public static bool Enabled { get { return m_Enabled; } set { m_Enabled = value; } }
+		public static bool Enabled { get => m_Enabled; set => m_Enabled = value; }
 
 		public int LandBlocks
 		{
@@ -76,7 +76,7 @@ namespace Server
 
 						fsData.Seek(4, SeekOrigin.Current);
 
-						var tiles = new LandTile[64];
+						LandTile[] tiles = new LandTile[64];
 
 						fixed (LandTile* pTiles = tiles)
 						{
@@ -109,7 +109,7 @@ namespace Server
 
 						int count = (int)(indexReader.BaseStream.Length / 4);
 
-						var lists = new TileList[8][];
+						TileList[][] lists = new TileList[8][];
 
 						for (int x = 0; x < 8; ++x)
 						{
@@ -146,12 +146,12 @@ namespace Server
 								m_TileBuffer = new StaticTile[tileCount];
 							}
 
-							var staTiles = m_TileBuffer;
+							StaticTile[] staTiles = m_TileBuffer;
 
 							fixed (StaticTile* pTiles = staTiles)
 							{
 								NativeReader.Read(fsData.SafeFileHandle.DangerousGetHandle(), pTiles, length);
-								
+
 								StaticTile* pCur = pTiles, pEnd = pTiles + tileCount;
 
 								while (pCur < pEnd)
@@ -160,7 +160,7 @@ namespace Server
 									pCur = pCur + 1;
 								}
 
-								var tiles = new StaticTile[8][][];
+								StaticTile[][][] tiles = new StaticTile[8][][];
 
 								for (int x = 0; x < 8; ++x)
 								{
