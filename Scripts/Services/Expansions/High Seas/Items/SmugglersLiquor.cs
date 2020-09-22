@@ -1,12 +1,15 @@
-﻿namespace Server.Items
+﻿using Server;
+using System;
+
+namespace Server.Items
 {
     public class SmugglersLiquor : BaseBeverage
     {
         private int m_Label;
         private SmugglersLiquorType m_Type;
 
-        public override int LabelNumber => m_Label;
-        public override int MaxQuantity => 5;
+        public override int LabelNumber { get { return m_Label; } }
+        public override int MaxQuantity { get { return 5; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public SmugglersLiquorType LiquorType { get { return m_Type; } set { m_Type = value; ItemID = ComputeItemID(); } }
@@ -45,7 +48,7 @@
 
         public SmugglersLiquor(SmugglersLiquorType type) : base(GetContents(type))
         {
-            LiquorType = type;
+            this.LiquorType = type;
         }
 
         public static BeverageType GetContents(SmugglersLiquorType type)
@@ -57,25 +60,25 @@
                 case SmugglersLiquorType.ArabellasGargishStout: return BeverageType.Ale;
                 case SmugglersLiquorType.DiablosBlazePort: return BeverageType.Ale;
                 case SmugglersLiquorType.EldadorElvenWine: return BeverageType.Wine;
-                case SmugglersLiquorType.EquinoxWine: return BeverageType.Wine;
-                case SmugglersLiquorType.FitchsWhiteAle: return BeverageType.Ale;
+                case SmugglersLiquorType.EquinoxWine: return BeverageType.Wine;                    
+                case SmugglersLiquorType.FitchsWhiteAle: return BeverageType.Ale;                   
                 case SmugglersLiquorType.GatheredSpiritsWhisky: return BeverageType.Liquor;
-                case SmugglersLiquorType.GoldenBrewRum: return BeverageType.Liquor;
-                case SmugglersLiquorType.JoesSpicyBrew: return BeverageType.Ale;
-                case SmugglersLiquorType.KazolasTreeTopWine: return BeverageType.Wine;
-                case SmugglersLiquorType.Moonshine: return BeverageType.Liquor;
-                case SmugglersLiquorType.NapaValleysChardonnay: return BeverageType.Wine;
-                case SmugglersLiquorType.OtisHomemadeBrew: return BeverageType.Ale;
-                case SmugglersLiquorType.PandorasPinotNoir: return BeverageType.Wine;
-                case SmugglersLiquorType.RedEyeRum: return BeverageType.Liquor;
-                case SmugglersLiquorType.RoyalGuardAle: return BeverageType.Ale;
-                case SmugglersLiquorType.SaltyDogMead: return BeverageType.Ale;
-                case SmugglersLiquorType.SapewinWine: return BeverageType.Wine;
-                case SmugglersLiquorType.SerpentsCrossLager: return BeverageType.Ale;
-                case SmugglersLiquorType.SummerSolsticeBrew: return BeverageType.Ale;
-                case SmugglersLiquorType.VesperAle: return BeverageType.Ale;
-                case SmugglersLiquorType.WaxingDarkBrew: return BeverageType.Ale;
-                case SmugglersLiquorType.WhiteRoseZinfandel: return BeverageType.Wine;
+                case SmugglersLiquorType.GoldenBrewRum: return BeverageType.Liquor;  
+                case SmugglersLiquorType.JoesSpicyBrew: return BeverageType.Ale;                   
+                case SmugglersLiquorType.KazolasTreeTopWine: return BeverageType.Wine;                   
+                case SmugglersLiquorType.Moonshine: return BeverageType.Liquor;                  
+                case SmugglersLiquorType.NapaValleysChardonnay: return BeverageType.Wine;                    
+                case SmugglersLiquorType.OtisHomemadeBrew: return BeverageType.Ale;                   
+                case SmugglersLiquorType.PandorasPinotNoir: return BeverageType.Wine;                    
+                case SmugglersLiquorType.RedEyeRum: return BeverageType.Liquor;                    
+                case SmugglersLiquorType.RoyalGuardAle: return BeverageType.Ale;                    
+                case SmugglersLiquorType.SaltyDogMead: return BeverageType.Ale;                   
+                case SmugglersLiquorType.SapewinWine: return BeverageType.Wine;                    
+                case SmugglersLiquorType.SerpentsCrossLager: return BeverageType.Ale;                   
+                case SmugglersLiquorType.SummerSolsticeBrew: return BeverageType.Ale;                    
+                case SmugglersLiquorType.VesperAle: return BeverageType.Ale;                   
+                case SmugglersLiquorType.WaxingDarkBrew: return BeverageType.Ale;                    
+                case SmugglersLiquorType.WhiteRoseZinfandel: return BeverageType.Wine;                   
             }
         }
 
@@ -218,7 +221,7 @@
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(2);
+            writer.Write((int)2);
 
             writer.Write(m_Label);
             writer.Write((int)m_Type);

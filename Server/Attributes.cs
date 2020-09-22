@@ -53,8 +53,8 @@ namespace Server
 				return -1;
 			}
 
-			int xPriority = GetPriority(x);
-			int yPriority = GetPriority(y);
+			var xPriority = GetPriority(x);
+			var yPriority = GetPriority(y);
 
 			if (xPriority > yPriority)
 				return 1;
@@ -67,7 +67,7 @@ namespace Server
 
 		private int GetPriority(MethodInfo mi)
 		{
-			object[] objs = mi.GetCustomAttributes(typeof(CallPriorityAttribute), true);
+			var objs = mi.GetCustomAttributes(typeof(CallPriorityAttribute), true);
 
 			if (objs == null)
 			{
@@ -95,7 +95,7 @@ namespace Server
 	{
 		private readonly string[] m_Aliases;
 
-		public string[] Aliases => m_Aliases;
+		public string[] Aliases { get { return m_Aliases; } }
 
 		public TypeAliasAttribute(params string[] aliases)
 		{
@@ -112,7 +112,7 @@ namespace Server
 	{
 		private readonly string[] m_Names;
 
-		public string[] Names => m_Names;
+		public string[] Names { get { return m_Names; } }
 
 		public CustomEnumAttribute(string[] names)
 		{
@@ -146,15 +146,15 @@ namespace Server
 
 		public static bool Find(Type t, out string message)
 		{
-			object[] attrs = t.GetCustomAttributes(typeof(DeleteConfirmAttribute), true);
+			var attrs = t.GetCustomAttributes(typeof(DeleteConfirmAttribute), true);
 
 			if (attrs.Length > 0)
 			{
-				message = string.Join("\n", attrs.OfType<DeleteConfirmAttribute>().Select(a => a.Message));
+				message = String.Join("\n", attrs.OfType<DeleteConfirmAttribute>().Select(a => a.Message));
 				return true;
 			}
 
-			message = string.Empty;
+			message = String.Empty;
 			return false;
 		}
 	}
@@ -181,11 +181,11 @@ namespace Server
 		private readonly AccessLevel m_WriteLevel;
 		private readonly bool m_ReadOnly;
 
-		public AccessLevel ReadLevel => m_ReadLevel;
+		public AccessLevel ReadLevel { get { return m_ReadLevel; } }
 
-		public AccessLevel WriteLevel => m_WriteLevel;
+		public AccessLevel WriteLevel { get { return m_WriteLevel; } }
 
-		public bool ReadOnly => m_ReadOnly;
+		public bool ReadOnly { get { return m_ReadOnly; } }
 
 		public CommandPropertyAttribute(AccessLevel level, bool readOnly)
 		{

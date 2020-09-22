@@ -1,3 +1,4 @@
+using System;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -34,45 +35,35 @@ namespace Server.Mobiles
             Name = "Macer";
 
             // Equip
-            WarHammer war = new WarHammer
-            {
-                Movable = true,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            WarHammer war = new WarHammer();
+            war.Movable = true;
+            war.Crafter = this;
+            war.Quality = ItemQuality.Normal;
             AddItem(war);
 
-            Boots bts = new Boots
-            {
-                Hue = iHue
-            };
+            Boots bts = new Boots();
+            bts.Hue = iHue;
             AddItem(bts);
 
-            ChainChest cht = new ChainChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            ChainChest cht = new ChainChest();
+            cht.Movable = false;
+            cht.LootType = LootType.Newbied;
+            cht.Crafter = this;
+            cht.Quality = ItemQuality.Normal;
             AddItem(cht);
 
-            ChainLegs chl = new ChainLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            ChainLegs chl = new ChainLegs();
+            chl.Movable = false;
+            chl.LootType = LootType.Newbied;
+            chl.Crafter = this;
+            chl.Quality = ItemQuality.Normal;
             AddItem(chl);
 
-            PlateArms pla = new PlateArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            PlateArms pla = new PlateArms();
+            pla.Movable = false;
+            pla.LootType = LootType.Newbied;
+            pla.Crafter = this;
+            pla.Quality = ItemQuality.Normal;
             AddItem(pla);
 
             Bandage band = new Bandage(50);
@@ -88,7 +79,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -120,46 +111,36 @@ namespace Server.Mobiles
             Name = "Fencer";
 
             // Equip
-            Spear ssp = new Spear
-            {
-                Movable = true,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            Spear ssp = new Spear();
+            ssp.Movable = true;
+            ssp.Crafter = this;
+            ssp.Quality = ItemQuality.Normal;
             AddItem(ssp);
 
-            Boots snd = new Boots
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
+            Boots snd = new Boots();
+            snd.Hue = iHue;
+            snd.LootType = LootType.Newbied;
             AddItem(snd);
 
-            ChainChest cht = new ChainChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            ChainChest cht = new ChainChest();
+            cht.Movable = false;
+            cht.LootType = LootType.Newbied;
+            cht.Crafter = this;
+            cht.Quality = ItemQuality.Normal;
             AddItem(cht);
 
-            ChainLegs chl = new ChainLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            ChainLegs chl = new ChainLegs();
+            chl.Movable = false;
+            chl.LootType = LootType.Newbied;
+            chl.Crafter = this;
+            chl.Quality = ItemQuality.Normal;
             AddItem(chl);
 
-            PlateArms pla = new PlateArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            PlateArms pla = new PlateArms();
+            pla.Movable = false;
+            pla.LootType = LootType.Newbied;
+            pla.Crafter = this;
+            pla.Quality = ItemQuality.Normal;
             AddItem(pla);
 
             Bandage band = new Bandage(50);
@@ -175,7 +156,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -208,45 +189,35 @@ namespace Server.Mobiles
             Name = "Swordsman";
 
             // Equip
-            Katana kat = new Katana
-            {
-                Crafter = this,
-                Movable = true,
-                Quality = ItemQuality.Normal
-            };
+            Katana kat = new Katana();
+            kat.Crafter = this;
+            kat.Movable = true;
+            kat.Quality = ItemQuality.Normal;
             AddItem(kat);
 
-            Boots bts = new Boots
-            {
-                Hue = iHue
-            };
+            Boots bts = new Boots();
+            bts.Hue = iHue;
             AddItem(bts);
 
-            ChainChest cht = new ChainChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            ChainChest cht = new ChainChest();
+            cht.Movable = false;
+            cht.LootType = LootType.Newbied;
+            cht.Crafter = this;
+            cht.Quality = ItemQuality.Normal;
             AddItem(cht);
 
-            ChainLegs chl = new ChainLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            ChainLegs chl = new ChainLegs();
+            chl.Movable = false;
+            chl.LootType = LootType.Newbied;
+            chl.Crafter = this;
+            chl.Quality = ItemQuality.Normal;
             AddItem(chl);
 
-            PlateArms pla = new PlateArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            PlateArms pla = new PlateArms();
+            pla.Movable = false;
+            pla.LootType = LootType.Newbied;
+            pla.Crafter = this;
+            pla.Quality = ItemQuality.Normal;
             AddItem(pla);
 
             Bandage band = new Bandage(50);
@@ -262,7 +233,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -296,31 +267,23 @@ namespace Server.Mobiles
             Name = "Nox Mage";
 
             // Equip
-            Spellbook book = new Spellbook
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Content = 0xFFFFFFFFFFFFFFFF
-            };
+            Spellbook book = new Spellbook();
+            book.Movable = false;
+            book.LootType = LootType.Newbied;
+            book.Content = 0xFFFFFFFFFFFFFFFF;
             AddItem(book);
 
-            Kilt kilt = new Kilt
-            {
-                Hue = jHue
-            };
+            Kilt kilt = new Kilt();
+            kilt.Hue = jHue;
             AddItem(kilt);
 
-            Sandals snd = new Sandals
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
+            Sandals snd = new Sandals();
+            snd.Hue = iHue;
+            snd.LootType = LootType.Newbied;
             AddItem(snd);
 
-            SkullCap skc = new SkullCap
-            {
-                Hue = iHue
-            };
+            SkullCap skc = new SkullCap();
+            skc.Hue = iHue;
             AddItem(skc);
 
             // Spells
@@ -340,7 +303,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -374,60 +337,46 @@ namespace Server.Mobiles
             Name = "Stun Mage";
 
             // Equip
-            Spellbook book = new Spellbook
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Content = 0xFFFFFFFFFFFFFFFF
-            };
+            Spellbook book = new Spellbook();
+            book.Movable = false;
+            book.LootType = LootType.Newbied;
+            book.Content = 0xFFFFFFFFFFFFFFFF;
             AddItem(book);
 
-            LeatherArms lea = new LeatherArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherArms lea = new LeatherArms();
+            lea.Movable = false;
+            lea.LootType = LootType.Newbied;
+            lea.Crafter = this;
+            lea.Quality = ItemQuality.Normal;
             AddItem(lea);
 
-            LeatherChest lec = new LeatherChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherChest lec = new LeatherChest();
+            lec.Movable = false;
+            lec.LootType = LootType.Newbied;
+            lec.Crafter = this;
+            lec.Quality = ItemQuality.Normal;
             AddItem(lec);
 
-            LeatherGorget leg = new LeatherGorget
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherGorget leg = new LeatherGorget();
+            leg.Movable = false;
+            leg.LootType = LootType.Newbied;
+            leg.Crafter = this;
+            leg.Quality = ItemQuality.Normal;
             AddItem(leg);
 
-            LeatherLegs lel = new LeatherLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherLegs lel = new LeatherLegs();
+            lel.Movable = false;
+            lel.LootType = LootType.Newbied;
+            lel.Crafter = this;
+            lel.Quality = ItemQuality.Normal;
             AddItem(lel);
 
-            Boots bts = new Boots
-            {
-                Hue = iHue
-            };
+            Boots bts = new Boots();
+            bts.Hue = iHue;
             AddItem(bts);
 
-            Cap cap = new Cap
-            {
-                Hue = iHue
-            };
+            Cap cap = new Cap();
+            cap.Hue = iHue;
             AddItem(cap);
 
             // Spells
@@ -447,7 +396,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -482,67 +431,51 @@ namespace Server.Mobiles
             Name = "Super Mage";
 
             // Equip
-            Spellbook book = new Spellbook
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Content = 0xFFFFFFFFFFFFFFFF
-            };
+            Spellbook book = new Spellbook();
+            book.Movable = false;
+            book.LootType = LootType.Newbied;
+            book.Content = 0xFFFFFFFFFFFFFFFF;
             AddItem(book);
 
-            LeatherArms lea = new LeatherArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherArms lea = new LeatherArms();
+            lea.Movable = false;
+            lea.LootType = LootType.Newbied;
+            lea.Crafter = this;
+            lea.Quality = ItemQuality.Normal;
             AddItem(lea);
 
-            LeatherChest lec = new LeatherChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherChest lec = new LeatherChest();
+            lec.Movable = false;
+            lec.LootType = LootType.Newbied;
+            lec.Crafter = this;
+            lec.Quality = ItemQuality.Normal;
             AddItem(lec);
 
-            LeatherGorget leg = new LeatherGorget
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherGorget leg = new LeatherGorget();
+            leg.Movable = false;
+            leg.LootType = LootType.Newbied;
+            leg.Crafter = this;
+            leg.Quality = ItemQuality.Normal;
             AddItem(leg);
 
-            LeatherLegs lel = new LeatherLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherLegs lel = new LeatherLegs();
+            lel.Movable = false;
+            lel.LootType = LootType.Newbied;
+            lel.Crafter = this;
+            lel.Quality = ItemQuality.Normal;
             AddItem(lel);
 
-            Sandals snd = new Sandals
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
+            Sandals snd = new Sandals();
+            snd.Hue = iHue;
+            snd.LootType = LootType.Newbied;
             AddItem(snd);
 
-            JesterHat jhat = new JesterHat
-            {
-                Hue = iHue
-            };
+            JesterHat jhat = new JesterHat();
+            jhat.Hue = iHue;
             AddItem(jhat);
 
-            Doublet dblt = new Doublet
-            {
-                Hue = iHue
-            };
+            Doublet dblt = new Doublet();
+            dblt.Hue = iHue;
             AddItem(dblt);
 
             // Spells
@@ -562,7 +495,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -596,67 +529,51 @@ namespace Server.Mobiles
             Name = "Healer";
 
             // Equip
-            Spellbook book = new Spellbook
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Content = 0xFFFFFFFFFFFFFFFF
-            };
+            Spellbook book = new Spellbook();
+            book.Movable = false;
+            book.LootType = LootType.Newbied;
+            book.Content = 0xFFFFFFFFFFFFFFFF;
             AddItem(book);
 
-            LeatherArms lea = new LeatherArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherArms lea = new LeatherArms();
+            lea.Movable = false;
+            lea.LootType = LootType.Newbied;
+            lea.Crafter = this;
+            lea.Quality = ItemQuality.Normal;
             AddItem(lea);
 
-            LeatherChest lec = new LeatherChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherChest lec = new LeatherChest();
+            lec.Movable = false;
+            lec.LootType = LootType.Newbied;
+            lec.Crafter = this;
+            lec.Quality = ItemQuality.Normal;
             AddItem(lec);
 
-            LeatherGorget leg = new LeatherGorget
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherGorget leg = new LeatherGorget();
+            leg.Movable = false;
+            leg.LootType = LootType.Newbied;
+            leg.Crafter = this;
+            leg.Quality = ItemQuality.Normal;
             AddItem(leg);
 
-            LeatherLegs lel = new LeatherLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherLegs lel = new LeatherLegs();
+            lel.Movable = false;
+            lel.LootType = LootType.Newbied;
+            lel.Crafter = this;
+            lel.Quality = ItemQuality.Normal;
             AddItem(lel);
 
-            Sandals snd = new Sandals
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
+            Sandals snd = new Sandals();
+            snd.Hue = iHue;
+            snd.LootType = LootType.Newbied;
             AddItem(snd);
 
-            Cap cap = new Cap
-            {
-                Hue = iHue
-            };
+            Cap cap = new Cap();
+            cap.Hue = iHue;
             AddItem(cap);
 
-            Robe robe = new Robe
-            {
-                Hue = iHue
-            };
+            Robe robe = new Robe();
+            robe.Hue = iHue;
             AddItem(robe);
         }
 
@@ -669,7 +586,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -703,102 +620,76 @@ namespace Server.Mobiles
             Name = "Hybrid Assassin";
 
             // Equip
-            Spellbook book = new Spellbook
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Content = 0xFFFFFFFFFFFFFFFF
-            };
+            Spellbook book = new Spellbook();
+            book.Movable = false;
+            book.LootType = LootType.Newbied;
+            book.Content = 0xFFFFFFFFFFFFFFFF;
             AddToBackpack(book);
 
-            Katana kat = new Katana
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Poison = Poison.Deadly,
-                PoisonCharges = 12,
-                Quality = ItemQuality.Normal
-            };
+            Katana kat = new Katana();
+            kat.Movable = false;
+            kat.LootType = LootType.Newbied;
+            kat.Crafter = this;
+            kat.Poison = Poison.Deadly;
+            kat.PoisonCharges = 12;
+            kat.Quality = ItemQuality.Normal;
             AddToBackpack(kat);
 
-            LeatherArms lea = new LeatherArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherArms lea = new LeatherArms();
+            lea.Movable = false;
+            lea.LootType = LootType.Newbied;
+            lea.Crafter = this;
+            lea.Quality = ItemQuality.Normal;
             AddItem(lea);
 
-            LeatherChest lec = new LeatherChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherChest lec = new LeatherChest();
+            lec.Movable = false;
+            lec.LootType = LootType.Newbied;
+            lec.Crafter = this;
+            lec.Quality = ItemQuality.Normal;
             AddItem(lec);
 
-            LeatherGorget leg = new LeatherGorget
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherGorget leg = new LeatherGorget();
+            leg.Movable = false;
+            leg.LootType = LootType.Newbied;
+            leg.Crafter = this;
+            leg.Quality = ItemQuality.Normal;
             AddItem(leg);
 
-            LeatherLegs lel = new LeatherLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherLegs lel = new LeatherLegs();
+            lel.Movable = false;
+            lel.LootType = LootType.Newbied;
+            lel.Crafter = this;
+            lel.Quality = ItemQuality.Normal;
             AddItem(lel);
 
-            Sandals snd = new Sandals
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
+            Sandals snd = new Sandals();
+            snd.Hue = iHue;
+            snd.LootType = LootType.Newbied;
             AddItem(snd);
 
-            Cap cap = new Cap
-            {
-                Hue = iHue
-            };
+            Cap cap = new Cap();
+            cap.Hue = iHue;
             AddItem(cap);
 
-            Robe robe = new Robe
-            {
-                Hue = iHue
-            };
+            Robe robe = new Robe();
+            robe.Hue = iHue;
             AddItem(robe);
 
-            DeadlyPoisonPotion pota = new DeadlyPoisonPotion
-            {
-                LootType = LootType.Newbied
-            };
+            DeadlyPoisonPotion pota = new DeadlyPoisonPotion();
+            pota.LootType = LootType.Newbied;
             AddToBackpack(pota);
 
-            DeadlyPoisonPotion potb = new DeadlyPoisonPotion
-            {
-                LootType = LootType.Newbied
-            };
+            DeadlyPoisonPotion potb = new DeadlyPoisonPotion();
+            potb.LootType = LootType.Newbied;
             AddToBackpack(potb);
 
-            DeadlyPoisonPotion potc = new DeadlyPoisonPotion
-            {
-                LootType = LootType.Newbied
-            };
+            DeadlyPoisonPotion potc = new DeadlyPoisonPotion();
+            potc.LootType = LootType.Newbied;
             AddToBackpack(potc);
 
-            DeadlyPoisonPotion potd = new DeadlyPoisonPotion
-            {
-                LootType = LootType.Newbied
-            };
+            DeadlyPoisonPotion potd = new DeadlyPoisonPotion();
+            potd.LootType = LootType.Newbied;
             AddToBackpack(potd);
 
             Bandage band = new Bandage(50);
@@ -814,7 +705,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -849,67 +740,51 @@ namespace Server.Mobiles
             Name = "Hybrid Thief";
 
             // Equip
-            Spellbook book = new Spellbook
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Content = 0xFFFFFFFFFFFFFFFF
-            };
+            Spellbook book = new Spellbook();
+            book.Movable = false;
+            book.LootType = LootType.Newbied;
+            book.Content = 0xFFFFFFFFFFFFFFFF;
             AddItem(book);
 
-            LeatherArms lea = new LeatherArms
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherArms lea = new LeatherArms();
+            lea.Movable = false;
+            lea.LootType = LootType.Newbied;
+            lea.Crafter = this;
+            lea.Quality = ItemQuality.Normal;
             AddItem(lea);
 
-            LeatherChest lec = new LeatherChest
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherChest lec = new LeatherChest();
+            lec.Movable = false;
+            lec.LootType = LootType.Newbied;
+            lec.Crafter = this;
+            lec.Quality = ItemQuality.Normal;
             AddItem(lec);
 
-            LeatherGorget leg = new LeatherGorget
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherGorget leg = new LeatherGorget();
+            leg.Movable = false;
+            leg.LootType = LootType.Newbied;
+            leg.Crafter = this;
+            leg.Quality = ItemQuality.Normal;
             AddItem(leg);
 
-            LeatherLegs lel = new LeatherLegs
-            {
-                Movable = false,
-                LootType = LootType.Newbied,
-                Crafter = this,
-                Quality = ItemQuality.Normal
-            };
+            LeatherLegs lel = new LeatherLegs();
+            lel.Movable = false;
+            lel.LootType = LootType.Newbied;
+            lel.Crafter = this;
+            lel.Quality = ItemQuality.Normal;
             AddItem(lel);
 
-            Sandals snd = new Sandals
-            {
-                Hue = iHue,
-                LootType = LootType.Newbied
-            };
+            Sandals snd = new Sandals();
+            snd.Hue = iHue;
+            snd.LootType = LootType.Newbied;
             AddItem(snd);
 
-            Cap cap = new Cap
-            {
-                Hue = iHue
-            };
+            Cap cap = new Cap();
+            cap.Hue = iHue;
             AddItem(cap);
 
-            Robe robe = new Robe
-            {
-                Hue = iHue
-            };
+            Robe robe = new Robe();
+            robe.Hue = iHue;
             AddItem(robe);
 
             Bandage band = new Bandage(50);
@@ -925,7 +800,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)

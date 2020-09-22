@@ -1,3 +1,4 @@
+using System;
 using Server.Gumps;
 using Server.Network;
 
@@ -5,7 +6,7 @@ namespace Server.Items
 {
     public class HouseLadderAddon : BaseAddon
     {
-        public override BaseAddonDeed Deed => new HouseLadderDeed();
+        public override BaseAddonDeed Deed { get { return new HouseLadderDeed(); } }
 
         [Constructable]
         public HouseLadderAddon(int type)
@@ -52,7 +53,7 @@ namespace Server.Items
             : base(serial)
         {
         }
-
+        
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
@@ -68,7 +69,7 @@ namespace Server.Items
 
     public class HouseLadderDeed : BaseAddonDeed
     {
-        public override int LabelNumber => 1076287;  // Ladder
+        public override int LabelNumber { get { return 1076287; } } // Ladder
         private int m_Type;
 
         [Constructable]
@@ -83,8 +84,8 @@ namespace Server.Items
         {
         }
 
-        public override BaseAddon Addon => new HouseLadderAddon(m_Type);
-
+        public override BaseAddon Addon { get { return new HouseLadderAddon(m_Type); } }
+        
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))

@@ -8,24 +8,24 @@ namespace Server.Mobiles
         [Constructable]
         public Wanderer()
         {
-            Name = "Me";
-            Body = 0x1;
-            AccessLevel = AccessLevel.Counselor;
+            this.Name = "Me";
+            this.Body = 0x1;
+            this.AccessLevel = AccessLevel.Counselor;
 
-            m_Timer = new InternalTimer(this);
-            m_Timer.Start();
+            this.m_Timer = new InternalTimer(this);
+            this.m_Timer.Start();
         }
 
         public Wanderer(Serial serial)
             : base(serial)
         {
-            m_Timer = new InternalTimer(this);
-            m_Timer.Start();
+            this.m_Timer = new InternalTimer(this);
+            this.m_Timer.Start();
         }
 
         public override void OnDelete()
         {
-            m_Timer.Stop();
+            this.m_Timer.Stop();
 
             base.OnDelete();
         }
@@ -34,7 +34,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -51,17 +51,17 @@ namespace Server.Mobiles
             public InternalTimer(Wanderer owner)
                 : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1))
             {
-                m_Owner = owner;
+                this.m_Owner = owner;
             }
 
             protected override void OnTick()
             {
-                if ((m_Count++ & 0x3) == 0)
+                if ((this.m_Count++ & 0x3) == 0)
                 {
-                    m_Owner.Direction = (Direction)(Utility.Random(8) | 0x80);
+                    this.m_Owner.Direction = (Direction)(Utility.Random(8) | 0x80);
                 }
 
-                m_Owner.Move(m_Owner.Direction);
+                this.m_Owner.Move(this.m_Owner.Direction);
             }
         }
     }

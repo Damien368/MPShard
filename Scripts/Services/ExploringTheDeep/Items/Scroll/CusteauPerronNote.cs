@@ -1,18 +1,19 @@
-﻿using Server.Gumps;
-using Server.Mobiles;
+﻿using System;
+using Server.Gumps;
 using Server.Network;
+using Server.Mobiles;
 
 namespace Server.Items
 {
     public class CusteauPerronNote : Item
     {
-        public override int LabelNumber => 1023637;  // scroll
+        public override int LabelNumber { get { return 1023637; } } // scroll
 
         [Constructable]
         public CusteauPerronNote() : base(0x46B2)
         {
-            LootType = LootType.Blessed;
-            Weight = 1;
+            this.LootType = LootType.Blessed;
+            this.Weight = 1;
         }
 
         public override void AddNameProperties(ObjectPropertyList list)
@@ -48,7 +49,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
     }
 
@@ -56,9 +57,9 @@ namespace Server.Items
     {
         public CusteauPerronNoteGump(Mobile owner) : base(50, 50)
         {
-            Closable = true;
-            Disposable = true;
-            Dragable = true;
+            this.Closable = true;
+            this.Disposable = true;
+            this.Dragable = true;
 
             AddPage(0);
             AddBackground(6, 11, 390, 324, 9380);

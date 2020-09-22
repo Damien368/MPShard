@@ -1,6 +1,7 @@
+using Server;
+using System;
 using Server.Items;
 using Server.Misc;
-using System;
 
 namespace Server.Mobiles
 {
@@ -24,7 +25,7 @@ namespace Server.Mobiles
             return null;
         }
 
-        public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
+        public override InhumanSpeech SpeechType { get { return InhumanSpeech.Orc; } }
 
         private DateTime m_NextBomb;
         private int m_Thrown;
@@ -60,7 +61,7 @@ namespace Server.Mobiles
                 SetSkill(SkillName.MagicResist, 65.0, 75.0);
                 SetSkill(SkillName.Magery, 60.0, 70.0);
                 SetSkill(SkillName.EvalInt, 60.0, 75.0);
-                SetSkill(SkillName.Meditation, 70.0, 90.0);
+                SetSkill(SkillName.Meditation, 70.0, 90.0);               
                 SetSkill(SkillName.Focus, 80.0, 100.0);
             }
             else if (Body == 0xB6) // Bomber
@@ -111,16 +112,16 @@ namespace Server.Mobiles
                 switch (Utility.Random(4))
                 {
                     default:
-                    case 0: bow = new CompositeBow(); break;
-                    case 1: bow = new Crossbow(); break;
-                    case 2: bow = new Bow(); break;
-                    case 3: bow = new HeavyCrossbow(); break;
+                    case 0: bow = new CompositeBow(); PackItem(new Arrow(25)); break;
+                    case 1: bow = new Crossbow(); PackItem(new Bolt(25)); break;
+                    case 2: bow = new Bow(); PackItem(new Arrow(25)); break;
+                    case 3: bow = new HeavyCrossbow(); PackItem(new Bolt(25)); break;
                 }
 
                 AddItem(bow);
             }
 
-            SetSkill(SkillName.DetectHidden, 40.0, 45.0);
+            SetSkill(SkillName.DetectHidden, 40.0, 45.0);            
 
             Fame = 8000;
             Karma = -8000;
@@ -178,13 +179,11 @@ namespace Server.Mobiles
             }
         }
 
-        public override int TreasureMapLevel => 3;
+        public override int TreasureMapLevel { get { return 3; } }
 
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
-            AddLoot(LootPack.LootItem<Arrow>(25, true));
-            AddLoot(LootPack.LootItem<Bolt>(25, true));
         }
 
         public PirateCrew(Serial serial)
@@ -195,7 +194,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

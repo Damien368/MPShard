@@ -1,13 +1,14 @@
-﻿using Server.Engines.Quests;
-using Server.Items;
-using Server.Multis;
+﻿using Server;
 using System;
+using Server.Engines.Quests;
+using Server.Multis;
+using Server.Items;
 
 namespace Server.Mobiles
 {
     public class FishMonger : MondainQuester
     {
-        public override Type[] Quests => new Type[] { typeof(ProfessionalFisherQuest) };
+        public override Type[] Quests { get { return new Type[] { typeof(ProfessionalFisherQuest) }; } }
 
         [Constructable]
         public FishMonger()
@@ -25,7 +26,7 @@ namespace Server.Mobiles
             Name = NameList.RandomName("male");
             Title = "the fish monger";
 
-            Hue = Race.RandomSkinHue();
+            Hue = Race.RandomSkinHue();      
             Race.RandomHair(this);
             HairHue = Race.RandomHairHue();
         }
@@ -46,7 +47,7 @@ namespace Server.Mobiles
                 SayTo(player, 1116514); //Bring yer ship around, I might have some work for ye!);
             else
             {
-                bool inRange = InRange(boat.Location, distance) && boat.Map == Map;
+                bool inRange = InRange(boat.Location, distance) && boat.Map == this.Map;
 
                 if (!FishQuestHelper.HasFishQuest(player, this, inRange))
                 {
@@ -67,7 +68,7 @@ namespace Server.Mobiles
                             player.SendGump(new MondainQuestGump(quest));
 
                             if (boat.IsClassicBoat)
-                                SayTo(player, "Such a weak vessle can only catch a weak line.");
+                                this.SayTo(player, "Such a weak vessle can only catch a weak line.");
                         }
                     }
                 }
@@ -79,7 +80,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)

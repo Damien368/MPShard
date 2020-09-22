@@ -1,12 +1,15 @@
-﻿namespace Server.Items
+﻿using Server;
+using System;
+
+namespace Server.Items
 {
     public class FishingGuideBook6 : BaseBook
     {
         [Constructable]
-        public FishingGuideBook6() : base(Utility.Random(0xFF1, 2), false)
-        {
+		public FishingGuideBook6() : base( Utility.Random( 0xFF1, 2 ), false )
+		{
             Name = "Vplume 6 - Legendary Sea Creatures";
-        }
+		}
 
         public static readonly BookContent Content = new BookContent
         (
@@ -202,7 +205,7 @@
 
                 "This creature be said",
                 "to live in the",
-                string.Format("{0} beneath Fire", FishInfo.GetFishLocation(typeof(TunnelCrab))),
+                String.Format("{0} beneath Fire", FishInfo.GetFishLocation(typeof(TunnelCrab))),
                 "Island. 'Tis a goblin",
                 "legend so 'tis a bit",
                 "suspect."
@@ -213,7 +216,7 @@
                 "Void Crab:",
 
                 "Some old fisherman in",
-                string.Format("{0} say they have", FishInfo.GetFishLocation(typeof(VoidCrab))),
+                String.Format("{0} say they have", FishInfo.GetFishLocation(typeof(VoidCrab))),
                 "seen a crab that ",
                 "resembles a void demon",
                 "in the rivers. This has",
@@ -225,8 +228,8 @@
                 "Void Lobster:",
 
                 "The goblins o' the",
-                string.Format("{0} tell o' a", FishInfo.GetFishLocation(typeof(VoidLobster))),
-                "creature that looks like",
+                String.Format("{0} tell o' a", FishInfo.GetFishLocation(typeof(VoidLobster))),
+                "creature that looks like", 
                 "a cross between a void",
                 "demon and a lobster. They",
                 "say it lives in the lava",
@@ -234,24 +237,24 @@
             )
         );
 
-        public override BookContent DefaultContent => Content;
+        public override BookContent DefaultContent{ get{ return Content; } }
 
-        public FishingGuideBook6(Serial serial) : base(serial)
-        {
-        }
+        public FishingGuideBook6( Serial serial ) : base( serial )
+		{
+		}
 
-        public override void Serialize(GenericWriter writer)
-        {
-            base.Serialize(writer);
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
 
-            writer.WriteEncodedInt(0); // version
-        }
+			writer.WriteEncodedInt( (int)0 ); // version
+		}
 
-        public override void Deserialize(GenericReader reader)
-        {
-            base.Deserialize(reader);
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
 
-            int version = reader.ReadEncodedInt();
-        }
+			int version = reader.ReadEncodedInt();
+		}
     }
 }

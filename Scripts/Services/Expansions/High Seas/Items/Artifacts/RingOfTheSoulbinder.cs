@@ -1,8 +1,11 @@
-﻿namespace Server.Items
+﻿using Server;
+using System;
+
+namespace Server.Items
 {
     public class RingOfTheSoulbinder : SilverRing
     {
-        public override int LabelNumber => 1116620;
+        public override int LabelNumber { get { return 1116620; } }
 
         [Constructable]
         public RingOfTheSoulbinder()
@@ -24,7 +27,7 @@
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

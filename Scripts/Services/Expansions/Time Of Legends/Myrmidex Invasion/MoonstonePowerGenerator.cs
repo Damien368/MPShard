@@ -1,14 +1,15 @@
-using Server.Commands;
-using Server.Mobiles;
+using Server;
 using System;
+using Server.Mobiles;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Commands;
 
 namespace Server.Items
 {
     public class MoonstonePowerGeneratorAddon : BaseAddon
     {
-        public override bool ShareHue => false;
+        public override bool ShareHue { get { return false; } }
 
         public Timer ActiveTimer { get; set; }
         public InternalComponent Activator1 { get; set; }
@@ -47,58 +48,40 @@ namespace Server.Items
         [Constructable]
         public MoonstonePowerGeneratorAddon(bool link)
         {
-            AddonComponent c = new AddonComponent(39759)
-            {
-                Hue = 2955
-            };
+            AddonComponent c = new AddonComponent(39759);
+            c.Hue = 2955;
             AddComponent(c, 0, 0, 0);
 
-            c = new AddonComponent(39759)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39759);
+            c.Hue = 2955;
             AddComponent(c, -1, 0, 0);
 
-            c = new AddonComponent(39759)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39759);
+            c.Hue = 2955;
             AddComponent(c, 1, 0, 0);
 
-            c = new AddonComponent(39759)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39759);
+            c.Hue = 2955;
             AddComponent(c, 0, -1, 0);
 
-            c = new AddonComponent(39759)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39759);
+            c.Hue = 2955;
             AddComponent(c, 0, 1, 0);
 
-            c = new AddonComponent(39818)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39818);
+            c.Hue = 2955;
             AddComponent(c, -1, -1, 0);
 
-            c = new AddonComponent(39818)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39818);
+            c.Hue = 2955;
             AddComponent(c, -1, 1, 0);
 
-            c = new AddonComponent(39818)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39818);
+            c.Hue = 2955;
             AddComponent(c, 1, -1, 0);
 
-            c = new AddonComponent(39818)
-            {
-                Hue = 2955
-            };
+            c = new AddonComponent(39818);
+            c.Hue = 2955;
             AddComponent(c, 1, 1, 0);
 
             Activator1 = new InternalComponent(40158);
@@ -130,7 +113,7 @@ namespace Server.Items
 
             if (Generator != null && !Generator.Deleted)
             {
-                Generator.MoveToWorld(new Point3D(X, Y, Z + 5), Map);
+                Generator.MoveToWorld(new Point3D(this.X, this.Y, this.Z + 5), this.Map);
             }
         }
 
@@ -140,7 +123,7 @@ namespace Server.Items
 
             if (Generator != null && !Generator.Deleted)
             {
-                Generator.Map = Map;
+                Generator.Map = this.Map;
             }
         }
 
@@ -196,13 +179,13 @@ namespace Server.Items
                     if (!_Active && value)
                     {
                         ItemID = ActiveID;
-                        Effects.PlaySound(Location, Map, 0x051);
+                        Effects.PlaySound(this.Location, this.Map, 0x051);
                     }
                     else if (_Active && !value)
                     {
                         ItemID = InactiveID;
                         WhoActivated = null;
-                        Effects.PlaySound(Location, Map, 0x051);
+                        Effects.PlaySound(this.Location, this.Map, 0x051);
                     }
 
                     _Active = value;
@@ -336,7 +319,7 @@ namespace Server.Items
                 Boss = new Zipactriotl(true);
                 Boss.MoveToWorld(new Point3D(899, 2303, -20), Map.TerMur);
 
-                foreach (MoonstonePowerGeneratorAddon c in Generators.Where(c => c.Generator != null))
+                foreach (var c in Generators.Where(c => c.Generator != null))
                 {
                     c.Generator.CanSpawn = true;
                 }
@@ -394,7 +377,7 @@ namespace Server.Items
                     });
                 });
 
-            if (!startup)
+            if(!startup)
                 MorphItems();
 
             if (Boss != null)
@@ -439,7 +422,7 @@ namespace Server.Items
 
     public class MoonstonePowerGenerator : DamageableItem
     {
-        public override int LabelNumber => 1156854;  // Moonstone Power Generator
+        public override int LabelNumber { get { return 1156854; } } // Moonstone Power Generator
 
         public List<BaseCreature> Spawn;
         public Timer Timer { get; set; }
@@ -497,10 +480,10 @@ namespace Server.Items
 
         public void OnTick()
         {
-            if (Spawn.Count >= 7 || Deleted || Map == null)
+            if (Spawn.Count >= 7 || this.Deleted || this.Map == null)
                 return;
 
-            IPooledEnumerable eable = Map.GetMobilesInRange(Location, 8);
+            IPooledEnumerable eable = this.Map.GetMobilesInRange(this.Location, 8);
 
             foreach (Mobile m in eable)
             {
@@ -515,7 +498,7 @@ namespace Server.Items
 
         private void DoSpawn()
         {
-            if (Spawn.Count >= 7 || Deleted || Map == null)
+            if (Spawn.Count >= 7 || this.Deleted || this.Map == null)
                 return;
 
             BaseCreature bc = new IgnisFatalis();
@@ -523,7 +506,7 @@ namespace Server.Items
             int x = Utility.RandomBool() ? 2 : -2;
             int y = Utility.RandomBool() ? 2 : -2;
 
-            bc.MoveToWorld(new Point3D(X + x, Y + y, Map.GetAverageZ(x, y)), Map);
+            bc.MoveToWorld(new Point3D(this.X + x, this.Y + y, this.Map.GetAverageZ(x, y)), this.Map);
             Spawn.Add(bc);
         }
 
@@ -533,29 +516,29 @@ namespace Server.Items
 
             int oldhits = Hits;
 
-            if (ItemID == IDHalfHits && Hits <= (HitsMax * .10))
+            if (this.ItemID == IDHalfHits && this.Hits <= (HitsMax * .10))
             {
                 ItemID = 40154;
             }
 
             if (0.033 > Utility.RandomDouble())
             {
-                from.PrivateOverheadMessage(Network.MessageType.Regular, 0x23, 1156855, from.NetState); // *Arcing energy from the generator zaps you!*
+                from.PrivateOverheadMessage(Server.Network.MessageType.Regular, 0x23, 1156855, from.NetState); // *Arcing energy from the generator zaps you!*
                 AOS.Damage(from, Utility.RandomMinMax(50, 100), 0, 0, 0, 0, 100);
                 from.FixedParticles(0x3818, 1, 11, 0x13A8, 0, 0, EffectLayer.Waist);
-                Effects.PlaySound(Location, Map, 0x1DC);
+                Effects.PlaySound(this.Location, this.Map, 0x1DC);
             }
         }
 
         public override void OnAfterDestroyed()
         {
-            Effects.PlaySound(Location, Map, 0x665);
+            Effects.PlaySound(this.Location, this.Map, 0x665);
 
             if (Spawn != null)
             {
                 Spawn.ForEach(bc =>
                     {
-                        if (bc != null && bc.Alive)
+                        if(bc != null && bc.Alive)
                             bc.Kill();
                     });
 

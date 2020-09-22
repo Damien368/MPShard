@@ -1,8 +1,10 @@
-using Server.ContextMenus;
+using Server;
+using System;
 using Server.Items;
+using Server.ContextMenus;
+using System.Collections.Generic;
 using Server.Multis;
 using Server.Network;
-using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -11,11 +13,11 @@ namespace Server.Mobiles
         public static readonly int DryDockDistance = 300;
         public static readonly int DryDockAmount = 2500;
 
-        public override bool IsActiveVendor => false;
-        public override bool IsInvulnerable => true;
+        public override bool IsActiveVendor { get { return false; } }
+        public override bool IsInvulnerable { get { return true; } }
 
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+        private List<SBInfo> m_SBInfos = new List<SBInfo>();
+        protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
 
         public override void InitSBInfo()
         {
@@ -23,11 +25,11 @@ namespace Server.Mobiles
         }
 
         [Constructable]
-        public DockMaster() : base("the dockmaster")
+        public DockMaster() : base( "the dockmaster" )
         {
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
         {
             base.GetContextMenuEntries(from, list);
             list.Add(new DryDockEntry(from, this));
@@ -36,8 +38,8 @@ namespace Server.Mobiles
 
         private class DryDockEntry : ContextMenuEntry
         {
-            private readonly Mobile m_From;
-            private readonly DockMaster m_DockMaster;
+            private Mobile m_From;
+            private DockMaster m_DockMaster;
 
             public DryDockEntry(Mobile from, DockMaster dockmaster) : base(1149575, 5)
             {
@@ -47,7 +49,7 @@ namespace Server.Mobiles
 
             public override void OnClick()
             {
-                BaseBoat boat = BaseBoat.GetBoat(m_From);
+                var boat = BaseBoat.GetBoat(m_From);
 
                 if (boat != null && m_DockMaster.InRange(boat.Location, 100))
                     boat.BeginDryDock(m_From, m_DockMaster);
@@ -58,8 +60,8 @@ namespace Server.Mobiles
 
         private class RetrieveHoldEntry : ContextMenuEntry
         {
-            private readonly Mobile m_From;
-            private readonly DockMaster m_DockMaster;
+            private Mobile m_From;
+            private DockMaster m_DockMaster;
 
             public RetrieveHoldEntry(Mobile from, DockMaster dockmaster)
                 : base(1116504, 5)
@@ -75,13 +77,13 @@ namespace Server.Mobiles
 
                 Container pack = m_From.Backpack;
 
-                if (pack != null && pack.GetAmount(typeof(Gold)) < DryDockAmount && Banker.GetBalance(m_From) < DryDockAmount)
+                if (pack != null && pack.GetAmount(typeof(Gold)) < DockMaster.DryDockAmount && Banker.GetBalance(m_From) < DryDockAmount)
                 {
-                    m_DockMaster.PrivateOverheadMessage(MessageType.Regular, m_DockMaster.SpeechHue, 1116506, DryDockAmount.ToString(), m_From.NetState); //The price is ~1_price~ and I will accept nothing less!
+                    m_DockMaster.PrivateOverheadMessage(MessageType.Regular, m_DockMaster.SpeechHue, 1116506, DockMaster.DryDockAmount.ToString(), m_From.NetState); //The price is ~1_price~ and I will accept nothing less!
                     return;
                 }
 
-                BaseBoat boat = BaseBoat.GetBoat(m_From);
+                var boat = BaseBoat.GetBoat(m_From);
 
                 if (boat != null && m_DockMaster.InRange(boat.Location, 50))
                     m_DockMaster.TryRetrieveHold(m_From, boat);
@@ -92,10 +94,8 @@ namespace Server.Mobiles
 
         public void TryRetrieveHold(Mobile from, BaseBoat boat)
         {
-            for (int i = 0; i < m_Crates.Count; i++)
-            {
-                if (m_Crates[i].Owner == from)
-                {
+            for (int i = 0; i < m_Crates.Count; i++) {
+                if (m_Crates[i].Owner == from) {
                     from.SendLocalizedMessage(1116516); //Thou must return thy current shipping crate before I can retrieve another shipment for you.
                     return;
                 }
@@ -133,7 +133,7 @@ namespace Server.Mobiles
 
             Point3D pnt = Point3D.Zero;
 
-            if (!CanDropCrate(ref pnt, Map))
+            if (!CanDropCrate(ref pnt, this.Map))
             {
                 SayTo(from, 1116517); //Arrrgh!  My dock has no more room.  Please come back later.
                 from.BankBox.DropItem(crate);
@@ -143,7 +143,7 @@ namespace Server.Mobiles
             else
             {
                 from.SendLocalizedMessage(1116542, ShipCrate.DT.ToString()); //Yer ship has been unloaded to a crate inside this here warehouse.  You have ~1_time~ minutes to get yer goods or it be gone.
-                crate.MoveToWorld(pnt, Map);
+                crate.MoveToWorld(pnt, this.Map);
             }
 
             if (cantMove)
@@ -151,7 +151,7 @@ namespace Server.Mobiles
         }
 
         private Rectangle2D m_Bounds = new Rectangle2D(4561, 2298, 8, 5);
-        private static readonly List<ShipCrate> m_Crates = new List<ShipCrate>();
+        private static List<ShipCrate> m_Crates = new List<ShipCrate>();
 
         public static void RemoveCrate(ShipCrate crate)
         {
@@ -171,9 +171,9 @@ namespace Server.Mobiles
                 Point3D p = new Point3D(x, y, z);
                 IPooledEnumerable eable = map.GetItemsInRange(pnt, 0);
 
-                foreach (Item item in eable)
+                foreach (Item item in eable) 
                 {
-                    if (item != null && item is Container && !item.Movable)
+                    if (item != null && item is Container && !item.Movable) 
                     {
                         badSpot = true;
                         break;
@@ -194,12 +194,12 @@ namespace Server.Mobiles
 
         public BaseBoat GetBoatInRegion(Mobile from)
         {
-            if (Map == null || Map == Map.Internal || Region == null)
+            if (this.Map == null || this.Map == Map.Internal || this.Region == null)
                 return null;
 
-            foreach (Rectangle3D rec in Region.Area)
+            foreach (Rectangle3D rec in this.Region.Area)
             {
-                IPooledEnumerable eable = Map.GetItemsInBounds(new Rectangle2D(rec.Start.X, rec.Start.Y, rec.Width, rec.Height));
+                IPooledEnumerable eable = this.Map.GetItemsInBounds(new Rectangle2D(rec.Start.X, rec.Start.Y, rec.Width, rec.Height));
 
                 foreach (Item item in eable)
                 {
@@ -223,7 +223,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

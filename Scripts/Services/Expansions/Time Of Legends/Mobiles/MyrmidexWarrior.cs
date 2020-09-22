@@ -1,5 +1,7 @@
-using Server.Engines.MyrmidexInvasion;
+using System;
+using Server;
 using Server.Items;
+using Server.Engines.MyrmidexInvasion;
 
 namespace Server.Mobiles
 {
@@ -47,23 +49,19 @@ namespace Server.Mobiles
 
         public override void GenerateLoot()
         {
-            AddLoot(LootPack.Rich, 2);
-            AddLoot(LootPack.LootItemCallback(TryDropMoonstone, 0.25, Utility.RandomMinMax(1, 5), false, false));
+            this.AddLoot(LootPack.Rich, 2);
         }
 
-        public static Item TryDropMoonstone(IEntity e)
+        public override bool OnBeforeDeath()
         {
-            if (Region.Find(e.Location, e.Map).IsPartOf("MyrmidexBattleground"))
-            {
-                return new MoonstoneCrystalShard();
-            }
+            if (Region.IsPartOf("MyrmidexBattleground") && 0.25 > Utility.RandomDouble())
+                PackItem(new MoonstoneCrystalShard(Utility.RandomMinMax(1, 5)));
 
-            return null;
+            return base.OnBeforeDeath();
         }
 
-        public override Poison HitPoison => Poison.Deadly;
-        public override Poison PoisonImmune => Poison.Deadly;
-        public override int TreasureMapLevel => 2;
+        public override Poison HitPoison { get { return Poison.Deadly; } }
+        public override Poison PoisonImmune { get { return Poison.Deadly; } }
 
         public override bool IsEnemy(Mobile m)
         {

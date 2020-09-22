@@ -1,12 +1,13 @@
-using Server.Mobiles;
 using System;
 using System.Collections.Generic;
+
+using Server.Mobiles;
 
 namespace Server.Items
 {
     public class PotionOfGloriousFortune : Item
     {
-        public override int LabelNumber => 1158688;  // Potion of Glorious Fortune
+        public override int LabelNumber { get { return 1158688; } } // Potion of Glorious Fortune
 
         public static int Bonus = 400;
 
@@ -34,12 +35,12 @@ namespace Server.Items
         {
         }
 
-
+        
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -59,9 +60,9 @@ namespace Server.Items
                 return;
             }
 
-            List<Mobile> list = new List<Mobile>(Table.Keys);
+            var list = new List<Mobile>(Table.Keys);
 
-            foreach (Mobile m in list)
+            foreach(var m in list)
             {
                 UnderEffects(m);
             }
@@ -73,7 +74,7 @@ namespace Server.Items
         {
             if (UnderEffects(m))
             {
-                return Bonus / 100;
+                return (int)(Bonus / 100);
             }
 
             return 1;
@@ -154,7 +155,7 @@ namespace Server.Items
 
             if (Table != null)
             {
-                foreach (KeyValuePair<Mobile, DateTime> kpv in Table)
+                foreach (var kpv in Table)
                 {
                     writer.Write(kpv.Key);
                     writer.Write(kpv.Value);
@@ -170,8 +171,8 @@ namespace Server.Items
 
             for (int i = 0; i < count; i++)
             {
-                Mobile bc = reader.ReadMobile();
-                DateTime dt = reader.ReadDateTime();
+                var bc = reader.ReadMobile();
+                var dt = reader.ReadDateTime();
 
                 if (bc != null && dt > DateTime.UtcNow)
                 {
@@ -196,7 +197,7 @@ namespace Server.Items
 
         public static void OnLogin(LoginEventArgs e)
         {
-            PlayerMobile pm = e.Mobile as PlayerMobile;
+            var pm = e.Mobile as PlayerMobile;
 
             if (pm != null)
             {

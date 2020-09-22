@@ -22,45 +22,80 @@ namespace Server
 			m_From = new SecureTradeInfo(this, from, new SecureTradeContainer(this));
 			m_To = new SecureTradeInfo(this, to, new SecureTradeContainer(this));
 
+			var from6017 = (from.NetState != null && from.NetState.ContainerGridLines);
+			var to6017 = (to.NetState != null && to.NetState.ContainerGridLines);
+
+			var from704565 = (from.NetState != null && from.NetState.NewSecureTrading);
+			var to704565 = (to.NetState != null && to.NetState.NewSecureTrading);
+
 			from.Send(new MobileStatus(from, to));
 			from.Send(new UpdateSecureTrade(m_From.Container, false, false));
 
-			from.Send(new SecureTradeEquip(m_To.Container, to));
+			if (from6017)
+			{
+				from.Send(new SecureTradeEquip6017(m_To.Container, to));
+			}
+			else
+			{
+				from.Send(new SecureTradeEquip(m_To.Container, to));
+			}
 
 			from.Send(new UpdateSecureTrade(m_From.Container, false, false));
 
-			from.Send(new SecureTradeEquip(m_From.Container, from));
+			if (from6017)
+			{
+				from.Send(new SecureTradeEquip6017(m_From.Container, from));
+			}
+			else
+			{
+				from.Send(new SecureTradeEquip(m_From.Container, from));
+			}
 
 			from.Send(new DisplaySecureTrade(to, m_From.Container, m_To.Container, to.Name));
 			from.Send(new UpdateSecureTrade(m_From.Container, false, false));
 
-			if (from.Account != null)
+			if (from.Account != null && from704565)
 			{
-				from.Send(new UpdateSecureTrade(m_From.Container, TradeFlag.UpdateLedger, from.Account.TotalGold, from.Account.TotalPlat));
+				from.Send(
+					new UpdateSecureTrade(m_From.Container, TradeFlag.UpdateLedger, from.Account.TotalGold, from.Account.TotalPlat));
 			}
 
 			to.Send(new MobileStatus(to, from));
 			to.Send(new UpdateSecureTrade(m_To.Container, false, false));
 
-			to.Send(new SecureTradeEquip(m_From.Container, from));
+			if (to6017)
+			{
+				to.Send(new SecureTradeEquip6017(m_From.Container, from));
+			}
+			else
+			{
+				to.Send(new SecureTradeEquip(m_From.Container, from));
+			}
 
 			to.Send(new UpdateSecureTrade(m_To.Container, false, false));
 
-			to.Send(new SecureTradeEquip(m_To.Container, to));
+			if (to6017)
+			{
+				to.Send(new SecureTradeEquip6017(m_To.Container, to));
+			}
+			else
+			{
+				to.Send(new SecureTradeEquip(m_To.Container, to));
+			}
 
 			to.Send(new DisplaySecureTrade(from, m_To.Container, m_From.Container, from.Name));
 			to.Send(new UpdateSecureTrade(m_To.Container, false, false));
 
-			if (to.Account != null)
+			if (to.Account != null && to704565)
 			{
 				to.Send(new UpdateSecureTrade(m_To.Container, TradeFlag.UpdateLedger, to.Account.TotalGold, to.Account.TotalPlat));
 			}
 		}
 
-		public SecureTradeInfo From => m_From;
-		public SecureTradeInfo To => m_To;
+		public SecureTradeInfo From { get { return m_From; } }
+		public SecureTradeInfo To { get { return m_To; } }
 
-		public bool Valid => m_Valid;
+		public bool Valid { get { return m_Valid; } }
 
 		public void Cancel()
 		{
@@ -69,13 +104,13 @@ namespace Server
 				return;
 			}
 
-			System.Collections.Generic.List<Item> list = m_From.Container.Items;
+			var list = m_From.Container.Items;
 
-			for (int i = list.Count - 1; i >= 0; --i)
+			for (var i = list.Count - 1; i >= 0; --i)
 			{
 				if (i < list.Count)
 				{
-					Item item = list[i];
+					var item = list[i];
 
 					if (item == m_From.VirtualCheck)
 					{
@@ -93,11 +128,11 @@ namespace Server
 
 			list = m_To.Container.Items;
 
-			for (int i = list.Count - 1; i >= 0; --i)
+			for (var i = list.Count - 1; i >= 0; --i)
 			{
 				if (i < list.Count)
 				{
-					Item item = list[i];
+					var item = list[i];
 
 					if (item == m_To.VirtualCheck)
 					{
@@ -128,7 +163,7 @@ namespace Server
 
 			m_Valid = false;
 
-			NetState ns = m_From.Mobile.NetState;
+			var ns = m_From.Mobile.NetState;
 
 			if (ns != null)
 			{
@@ -158,20 +193,17 @@ namespace Server
 
 		private static void UpdateCurrency(SecureTradeInfo left, SecureTradeInfo right)
 		{
-			NetState ls = left.Mobile != null ? left.Mobile.NetState : null;
-			NetState rs = right.Mobile != null ? right.Mobile.NetState : null;
-
-			if (ls != null)
+			if (left.Mobile.NetState != null && left.Mobile.NetState.NewSecureTrading)
 			{
-				int plat = left.Mobile.Account.TotalPlat;
-				int gold = left.Mobile.Account.TotalGold;
+				var plat = left.Mobile.Account.TotalPlat;
+				var gold = left.Mobile.Account.TotalGold;
 
-				ls.Send(new UpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat));
+				left.Mobile.Send(new UpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat));
 			}
 
-			if (rs != null)
+			if (right.Mobile.NetState != null && right.Mobile.NetState.NewSecureTrading)
 			{
-				rs.Send(new UpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat));
+				right.Mobile.Send(new UpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat));
 			}
 		}
 
@@ -184,15 +216,15 @@ namespace Server
 
 			if (!m_From.IsDisposed && m_From.Accepted && !m_To.IsDisposed && m_To.Accepted)
 			{
-				System.Collections.Generic.List<Item> list = m_From.Container.Items;
+				var list = m_From.Container.Items;
 
-				bool allowed = true;
+				var allowed = true;
 
-				for (int i = list.Count - 1; allowed && i >= 0; --i)
+				for (var i = list.Count - 1; allowed && i >= 0; --i)
 				{
 					if (i < list.Count)
 					{
-						Item item = list[i];
+						var item = list[i];
 
 						if (item == m_From.VirtualCheck)
 						{
@@ -208,11 +240,11 @@ namespace Server
 
 				list = m_To.Container.Items;
 
-				for (int i = list.Count - 1; allowed && i >= 0; --i)
+				for (var i = list.Count - 1; allowed && i >= 0; --i)
 				{
 					if (i < list.Count)
 					{
-						Item item = list[i];
+						var item = list[i];
 
 						if (item == m_To.VirtualCheck)
 						{
@@ -230,8 +262,8 @@ namespace Server
 				{
 					if (m_From.Mobile.Account != null)
 					{
-						double cur = m_From.Mobile.Account.TotalCurrency;
-						double off = m_From.Plat + (m_From.Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
+						var cur = m_From.Mobile.Account.TotalCurrency;
+						var off = m_From.Plat + (m_From.Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
 
 						if (off > cur)
 						{
@@ -242,8 +274,8 @@ namespace Server
 
 					if (m_To.Mobile.Account != null)
 					{
-						double cur = m_To.Mobile.Account.TotalCurrency;
-						double off = m_To.Plat + (m_To.Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
+						var cur = m_To.Mobile.Account.TotalCurrency;
+						var off = m_To.Plat + (m_To.Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
 
 						if (off > cur)
 						{
@@ -271,11 +303,11 @@ namespace Server
 
 				list = m_From.Container.Items;
 
-				for (int i = list.Count - 1; i >= 0; --i)
+				for (var i = list.Count - 1; i >= 0; --i)
 				{
 					if (i < list.Count)
 					{
-						Item item = list[i];
+						var item = list[i];
 
 						if (item == m_From.VirtualCheck)
 						{
@@ -293,11 +325,11 @@ namespace Server
 
 				list = m_To.Container.Items;
 
-				for (int i = list.Count - 1; i >= 0; --i)
+				for (var i = list.Count - 1; i >= 0; --i)
 				{
 					if (i < list.Count)
 					{
-						Item item = list[i];
+						var item = list[i];
 
 						if (item == m_To.VirtualCheck)
 						{
@@ -420,8 +452,8 @@ namespace Server
 		public SecureTradeContainer Container { get; private set; }
 		public VirtualCheck VirtualCheck { get; private set; }
 
-		public int Gold { get => VirtualCheck.Gold; set => VirtualCheck.Gold = value; }
-		public int Plat { get => VirtualCheck.Plat; set => VirtualCheck.Plat = value; }
+		public int Gold { get { return VirtualCheck.Gold; } set { VirtualCheck.Gold = value; } }
+		public int Plat { get { return VirtualCheck.Plat; } set { VirtualCheck.Plat = value; } }
 
 		public bool Accepted { get; set; }
 

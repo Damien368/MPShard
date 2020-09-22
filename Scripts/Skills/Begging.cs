@@ -1,9 +1,10 @@
 #region References
+using System;
+
 using Server.Items;
 using Server.Misc;
 using Server.Network;
 using Server.Targeting;
-using System;
 #endregion
 
 namespace Server.SkillHandlers
@@ -70,6 +71,10 @@ namespace Server.SkillHandlers
                         {
                             number = 500402; // You are too far away to beg from her.
                         }
+                    }
+                    else if (!Core.ML && from.Mounted) // If we're on a mount, who would give us money? TODO: guessed it's removed since ML
+                    {
+                        number = 500404; // They seem unwilling to give you any money.
                     }
                     else
                     {

@@ -13,14 +13,14 @@ namespace Server
 	{
 		public static bool UseEditGump = false;
 
-		public override bool IsVirtualItem => true;
+		public override bool IsVirtualItem { get { return true; } }
 
-		public override bool DisplayWeight => false;
-		public override bool DisplayLootType => false;
+		public override bool DisplayWeight { get { return false; } }
+		public override bool DisplayLootType { get { return false; } }
 
-		public override double DefaultWeight => 0;
+		public override double DefaultWeight { get { return 0; } }
 
-		public override string DefaultName => "Offer Of Currency";
+		public override string DefaultName { get { return "Offer Of Currency"; } }
 
 		public EditGump Editor { get; private set; }
 
@@ -29,7 +29,7 @@ namespace Server
 		[CommandProperty(AccessLevel.Administrator)]
 		public int Plat
 		{
-			get => _Plat;
+			get { return _Plat; }
 			set
 			{
 				_Plat = value;
@@ -42,7 +42,7 @@ namespace Server
 		[CommandProperty(AccessLevel.Administrator)]
 		public int Gold
 		{
-			get => _Gold;
+			get { return _Gold; }
 			set
 			{
 				_Gold = value;
@@ -69,7 +69,7 @@ namespace Server
 
 		public override bool IsAccessibleTo(Mobile check)
 		{
-			Items.SecureTradeContainer c = GetSecureTradeCont();
+			var c = GetSecureTradeCont();
 
 			if (check == null || c == null)
 			{
@@ -105,16 +105,21 @@ namespace Server
 			}
 		}
 
+		public override void OnSingleClick(Mobile from)
+		{
+			LabelTo(from, "Offer: {0:#,0} platinum, {1:#,0} gold", Plat, Gold);
+		}
+
 		public override void GetProperties(ObjectPropertyList list)
 		{
 			base.GetProperties(list);
 
-			list.Add(1060738, string.Format("{0:#,0} platinum, {1:#,0} gold", Plat, Gold)); // value: ~1_val~
+			list.Add(1060738, String.Format("{0:#,0} platinum, {1:#,0} gold", Plat, Gold)); // value: ~1_val~
 		}
 
 		public void UpdateTrade(Mobile user)
 		{
-			Items.SecureTradeContainer c = GetSecureTradeCont();
+			var c = GetSecureTradeCont();
 
 			if (c == null || c.Trade == null)
 			{
@@ -259,7 +264,7 @@ namespace Server
 				AddImage(10, 8, 113);
 				AddImage(360, 8, 113);
 
-				string title = string.Format(
+				var title = String.Format(
 					"<BASEFONT COLOR=#{0:X6}><CENTER>BANK OF {1}</CENTER>",
 					Color.DarkSlateGray.ToArgb() & 0x00FFFFFF,
 					User.RawName.ToUpper());
@@ -309,32 +314,32 @@ namespace Server
 				switch ((Buttons)info.ButtonID)
 				{
 					case Buttons.Close:
-					break;
+						break;
 					case Buttons.Clear:
 					{
 						_Plat = _Gold = 0;
 						refresh = true;
 					}
-					break;
+						break;
 					case Buttons.Accept:
 					{
-						string platText = info.GetTextEntry(0).Text;
-						string goldText = info.GetTextEntry(1).Text;
+						var platText = info.GetTextEntry(0).Text;
+						var goldText = info.GetTextEntry(1).Text;
 
-						if (!int.TryParse(platText, out _Plat))
+						if (!Int32.TryParse(platText, out _Plat))
 						{
 							User.SendMessage("That is not a valid amount of platinum.");
 							refresh = true;
 						}
-						else if (!int.TryParse(goldText, out _Gold))
+						else if (!Int32.TryParse(goldText, out _Gold))
 						{
 							User.SendMessage("That is not a valid amount of gold.");
 							refresh = true;
 						}
 						else
 						{
-							double cur = User.Account.TotalCurrency;
-							double off = _Plat + (_Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
+							var cur = User.Account.TotalCurrency;
+							var off = _Plat + (_Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
 
 							if (off > cur)
 							{
@@ -351,19 +356,19 @@ namespace Server
 							}
 						}
 					}
-					break;
+						break;
 					case Buttons.AllPlat:
 					{
 						_Plat = User.Account.TotalPlat;
 						refresh = true;
 					}
-					break;
+						break;
 					case Buttons.AllGold:
 					{
 						_Gold = User.Account.TotalGold;
 						refresh = true;
 					}
-					break;
+						break;
 				}
 
 				if (updated)

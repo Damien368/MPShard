@@ -1,9 +1,10 @@
+using System;
 using Server.Mobiles;
 
 namespace Server.Items
-{
+{ 
     public class UnderworldTele : Teleporter
-    {
+    { 
         [Constructable]
         public UnderworldTele()
         {
@@ -19,13 +20,13 @@ namespace Server.Items
             if (m is PlayerMobile)
             {
                 PlayerMobile player = (PlayerMobile)m;
-
+				
                 if (player.AbyssEntry)
                 {
                     return base.OnMoveOver(m);
                 }
                 else
-                    player.SendLocalizedMessage(1077196); // You may not enter this area.				
+					player.SendLocalizedMessage(1077196); // You may not enter this area.				
             }
             return true;
         }
@@ -33,7 +34,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 
 namespace Server.Engines.VendorSearching
@@ -6,7 +9,7 @@ namespace Server.Engines.VendorSearching
     {
         public Category Category { get; set; }
         public int PageID { get; set; }
-        public int Cliloc { get; set; }
+        public int Cliloc { get; set; }        
         public SearchCriterionEntry[] Criteria { get; set; }
 
         public SearchCriteriaCategory(Category cat, int pid, int cliloc, SearchCriterionEntry[] criteria)
@@ -20,7 +23,7 @@ namespace Server.Engines.VendorSearching
         public static SearchCriteriaCategory[] AllCategories = new SearchCriteriaCategory[]
         {
             new SearchCriteriaCategory(Category.PriceRange, 2, 1154512, new SearchCriterionEntry[] { /* Price Range */
-            }),
+            }), 
             new SearchCriteriaCategory(Category.Equipment, 3, 1154531, new SearchCriterionEntry[] { // Equipment
 				new SearchCriterionEntry(Layer.Shoes, 1154602),
                 new SearchCriterionEntry(Layer.Pants, 1154603),
@@ -144,7 +147,7 @@ namespace Server.Engines.VendorSearching
 				new SearchCriterionEntry(AosAttribute.BonusStr, 1079767, 1060485),
                 new SearchCriterionEntry(AosAttribute.BonusDex, 1079732, 1060409),
                 new SearchCriterionEntry(AosAttribute.BonusInt, 1079756, 1060432),
-                new SearchCriterionEntry(AosAttribute.BonusHits, 1079404, 1060431),
+                new SearchCriterionEntry(AosAttribute.BonusHits, 1079404, 1060415),
                 new SearchCriterionEntry(AosAttribute.BonusStam, 1079405, 1060484),
                 new SearchCriterionEntry(AosAttribute.BonusMana, 1079406, 1060439),
                 new SearchCriterionEntry(AosAttribute.RegenHits, 1075627, 1060444),
@@ -247,8 +250,6 @@ namespace Server.Engines.VendorSearching
             }),
             new SearchCriteriaCategory(Category.Sort, 25, 1154695, new SearchCriterionEntry[] { /* Sort */
             }),
-            new SearchCriteriaCategory(Category.Auction, 26, 1159353, new SearchCriterionEntry[] { /* Auction Item */
-            }),
         };
     }
 
@@ -260,7 +261,7 @@ namespace Server.Engines.VendorSearching
 
         public SearchCriterionEntry(object obj, int cliloc)
             : this(obj, cliloc, 0)
-        {
+        {            
         }
 
         public SearchCriterionEntry(object obj, int cliloc, int pcliloc)

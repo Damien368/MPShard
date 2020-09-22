@@ -1,51 +1,56 @@
-using System.Collections.Generic;
+using System; 
+using System.Collections.Generic; 
+using Server; 
 
-namespace Server.Mobiles
-{
-    public class DocksAlchemist : BaseVendor
-    {
-        private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
-        protected override List<SBInfo> SBInfos => m_SBInfos;
+namespace Server.Mobiles 
+{ 
+	public class DocksAlchemist : BaseVendor
+	{
+        private List<SBInfo> m_SBInfos = new List<SBInfo>();
+        protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
 
-        public override NpcGuild NpcGuild => NpcGuild.MagesGuild;
+        public override NpcGuild NpcGuild { get { return NpcGuild.MagesGuild; } }
 
-        [Constructable]
-        public DocksAlchemist() : base("the alchemist")
-        {
+		[Constructable]
+		public DocksAlchemist() : base( "the alchemist" )
+		{
             SetSkill(SkillName.Alchemy, 85.0, 100.0);
             SetSkill(SkillName.TasteID, 65.0, 88.0);
-        }
+		} 
 
-        public override void InitSBInfo()
+		public override void InitSBInfo() 
+		{
+            m_SBInfos.Add(new SBDocksAlchemist()); 
+		}
+
+        public override VendorShoeType ShoeType
         {
-            m_SBInfos.Add(new SBDocksAlchemist());
+            get { return Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals; }
         }
 
-        public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
+		public override void InitOutfit()
+		{
+			base.InitOutfit();
 
-        public override void InitOutfit()
-        {
-            base.InitOutfit();
+			AddItem( new Server.Items.HalfApron() );
+		}
 
-            AddItem(new Items.HalfApron());
-        }
+		public DocksAlchemist( Serial serial ) : base( serial ) 
+		{ 
+		} 
 
-        public DocksAlchemist(Serial serial) : base(serial)
-        {
-        }
+		public override void Serialize( GenericWriter writer ) 
+		{ 
+			base.Serialize( writer ); 
 
-        public override void Serialize(GenericWriter writer)
-        {
-            base.Serialize(writer);
+			writer.Write( (int) 0 ); // version 
+		} 
 
-            writer.Write(0); // version 
-        }
+		public override void Deserialize( GenericReader reader ) 
+		{ 
+			base.Deserialize( reader ); 
 
-        public override void Deserialize(GenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            int version = reader.ReadInt();
-        }
-    }
+			int version = reader.ReadInt(); 
+		} 
+	} 
 }

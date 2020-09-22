@@ -1,13 +1,15 @@
-using Server.Engines.Quests;
+﻿using Server;
+using System;
 using Server.Items;
 using Server.Multis;
-using System;
+using System.Collections.Generic;
+using Server.Engines.Quests;
 
 namespace Server.Mobiles
 {
     public class SeaMarketOfficer : MondainQuester
     {
-        public override Type[] Quests => new Type[] { typeof(ProfessionalBountyQuest) };
+        public override Type[] Quests { get { return new Type[] { typeof(ProfessionalBountyQuest) }; } }
 
         public SeaMarketOfficer()
         {
@@ -49,11 +51,9 @@ namespace Server.Mobiles
                     }
                     else
                     {
-                        ProfessionalBountyQuest q = new ProfessionalBountyQuest((BaseGalleon)boat)
-                        {
-                            Owner = pm,
-                            Quester = this
-                        };
+                        ProfessionalBountyQuest q = new ProfessionalBountyQuest((BaseGalleon)boat);
+                        q.Owner = pm;
+                        q.Quester = this;
 
                         pm.CloseGump(typeof(MondainQuestGump));
                         pm.SendGump(new MondainQuestGump(q));
@@ -113,7 +113,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)
@@ -136,16 +136,19 @@ namespace Server.Mobiles
 
         public static void Initialize()
         {
-            if (TramInstance == null)
+            if (Core.HS)
             {
-                TramInstance = new SeaMarketOfficer();
-                TramInstance.MoveToWorld(new Point3D(4543, 2299, -1), Map.Trammel);
-            }
+                if (TramInstance == null)
+                {
+                    TramInstance = new SeaMarketOfficer();
+                    TramInstance.MoveToWorld(new Point3D(4543, 2299, -1), Map.Trammel);
+                }
 
-            if (FelInstance == null)
-            {
-                FelInstance = new SeaMarketOfficer();
-                FelInstance.MoveToWorld(new Point3D(4543, 2299, -1), Map.Felucca);
+                if (FelInstance == null)
+                {
+                    FelInstance = new SeaMarketOfficer();
+                    FelInstance.MoveToWorld(new Point3D(4543, 2299, -1), Map.Felucca);
+                }
             }
         }
     }

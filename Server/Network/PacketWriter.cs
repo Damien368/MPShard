@@ -187,7 +187,7 @@ namespace Server.Network
 			if (value == null)
 			{
 				Console.WriteLine("Network: Attempted to WriteAsciiFixed() with null value");
-				value = string.Empty;
+				value = String.Empty;
 			}
 
 			int length = value.Length;
@@ -225,7 +225,7 @@ namespace Server.Network
 			if (value == null)
 			{
 				Console.WriteLine("Network: Attempted to WriteAsciiNull() with null value");
-				value = string.Empty;
+				value = String.Empty;
 			}
 
 			int length = value.Length;
@@ -249,7 +249,7 @@ namespace Server.Network
 			if (value == null)
 			{
 				Console.WriteLine("Network: Attempted to WriteLittleUniNull() with null value");
-				value = string.Empty;
+				value = String.Empty;
 			}
 
 			int length = value.Length;
@@ -276,7 +276,7 @@ namespace Server.Network
 			if (value == null)
 			{
 				Console.WriteLine("Network: Attempted to WriteLittleUniFixed() with null value");
-				value = string.Empty;
+				value = String.Empty;
 			}
 
 			size *= 2;
@@ -318,7 +318,7 @@ namespace Server.Network
 			if (value == null)
 			{
 				Console.WriteLine("Network: Attempted to WriteBigUniNull() with null value");
-				value = string.Empty;
+				value = String.Empty;
 			}
 
 			int length = value.Length;
@@ -346,7 +346,7 @@ namespace Server.Network
 			if (value == null)
 			{
 				Console.WriteLine("Network: Attempted to WriteBigUniFixed() with null value");
-				value = string.Empty;
+				value = String.Empty;
 			}
 
 			size *= 2;
@@ -408,17 +408,17 @@ namespace Server.Network
 		/// <summary>
 		///     Gets the total stream length.
 		/// </summary>
-		public long Length => m_Stream.Length;
+		public long Length { get { return m_Stream.Length; } }
 
 		/// <summary>
 		///     Gets or sets the current stream position.
 		/// </summary>
-		public long Position { get => m_Stream.Position; set => m_Stream.Position = value; }
+		public long Position { get { return m_Stream.Position; } set { m_Stream.Position = value; } }
 
 		/// <summary>
 		///     The internal stream used by this PacketWriter instance.
 		/// </summary>
-		public MemoryStream UnderlyingStream => m_Stream;
+		public MemoryStream UnderlyingStream { get { return m_Stream; } }
 
 		/// <summary>
 		///     Offsets the current position from an origin.

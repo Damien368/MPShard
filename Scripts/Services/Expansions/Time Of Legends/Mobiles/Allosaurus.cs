@@ -1,3 +1,5 @@
+using System;
+using Server;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -5,7 +7,7 @@ namespace Server.Mobiles
     [CorpseName("an allosaurus corpse")]
     public class Allosaurus : BaseCreature
     {
-        public override bool AttacksFocus => true;
+        public override bool AttacksFocus { get { return true; } }
 
         [Constructable]
         public Allosaurus() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, .2, .4)
@@ -81,18 +83,15 @@ namespace Server.Mobiles
             return 0x2C3;
         }
 
-        public override int TreasureMapLevel => 7;
-
         public override void SetToChampionSpawn()
         {
             SetStr(347, 387);
             SetHits(940, 1000);
         }
 
-        public override int Meat => 3;
-        public override MeatType MeatType => MeatType.DinoRibs;
-        public override int Hides => 11;
-        public override HideType HideType => HideType.Horned;
+        public override int Meat { get { return 3; } }
+        public override int Hides { get { return 11; } }
+        public override HideType HideType { get { return HideType.Horned; } }
 
         public Allosaurus(Serial serial) : base(serial)
         {

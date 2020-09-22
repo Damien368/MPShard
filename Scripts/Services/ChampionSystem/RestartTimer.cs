@@ -8,13 +8,13 @@ namespace Server.Engines.CannedEvil
         public RestartTimer(ChampionSpawn spawn, TimeSpan delay)
             : base(delay)
         {
-            m_Spawn = spawn;
-            Priority = TimerPriority.FiveSeconds;
+            this.m_Spawn = spawn;
+            this.Priority = TimerPriority.FiveSeconds;
         }
 
         protected override void OnTick()
         {
-            m_Spawn.EndRestart();
+            this.m_Spawn.EndRestart();
         }
     }
 }

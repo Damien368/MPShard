@@ -1,8 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Server.Commands;
 using Server.Network;
 using Server.Targeting;
-using System;
-using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -177,14 +177,20 @@ namespace Server.Items
                 m_Link = value;
             }
         }
-        public virtual bool UseChainedFunctionality => false;
+        public virtual bool UseChainedFunctionality
+        {
+            get
+            {
+                return false;
+            }
+        }
         // Called by RunUO
         public static void Initialize()
         {
-            EventSink.OpenDoorMacroUsed += EventSink_OpenDoorMacroUsed;
+            EventSink.OpenDoorMacroUsed += new OpenDoorMacroEventHandler(EventSink_OpenDoorMacroUsed);
 
-            CommandSystem.Register("Link", AccessLevel.GameMaster, Link_OnCommand);
-            CommandSystem.Register("ChainLink", AccessLevel.GameMaster, ChainLink_OnCommand);
+            CommandSystem.Register("Link", AccessLevel.GameMaster, new CommandEventHandler(Link_OnCommand));
+            CommandSystem.Register("ChainLink", AccessLevel.GameMaster, new CommandEventHandler(ChainLink_OnCommand));
         }
 
         public static Point3D GetOffset(DoorFacing facing)
@@ -331,7 +337,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0); // version
+            writer.Write((int)0); // version
 
             writer.Write(m_KeyValue);
 
@@ -351,7 +357,7 @@ namespace Server.Items
 
             int version = reader.ReadInt();
 
-            switch (version)
+            switch ( version )
             {
                 case 0:
                     {
@@ -379,7 +385,7 @@ namespace Server.Items
         [Description("Links two targeted doors together.")]
         private static void Link_OnCommand(CommandEventArgs e)
         {
-            e.Mobile.BeginTarget(-1, false, TargetFlags.None, Link_OnFirstTarget);
+            e.Mobile.BeginTarget(-1, false, TargetFlags.None, new TargetCallback(Link_OnFirstTarget));
             e.Mobile.SendMessage("Target the first door to link.");
         }
 
@@ -389,7 +395,7 @@ namespace Server.Items
 
             if (door == null)
             {
-                from.BeginTarget(-1, false, TargetFlags.None, Link_OnFirstTarget);
+                from.BeginTarget(-1, false, TargetFlags.None, new TargetCallback(Link_OnFirstTarget));
                 from.SendMessage("That is not a door. Try again.");
             }
             else
@@ -480,7 +486,7 @@ namespace Server.Items
             {
                 int x = m.X, y = m.Y;
 
-                switch (m.Direction & Direction.Mask)
+                switch ( m.Direction & Direction.Mask )
                 {
                     case Direction.North:
                         --y;

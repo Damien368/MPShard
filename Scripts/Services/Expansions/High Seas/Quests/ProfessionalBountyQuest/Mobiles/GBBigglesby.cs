@@ -1,13 +1,16 @@
-﻿using Server.Items;
+﻿using Server;
 using System;
+using Server.Engines.Quests;
+using Server.Multis;
+using Server.Items;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
     public class GBBigglesby : BaseVendor
     {
-        public override bool IsActiveVendor => false;
-        protected override List<SBInfo> SBInfos => new List<SBInfo>();
+        public override bool IsActiveVendor { get { return false; } }
+        protected override List<SBInfo> SBInfos { get { return new List<SBInfo>(); } }
 
         public override void InitSBInfo()
         {
@@ -31,10 +34,8 @@ namespace Server.Mobiles
             HairHue = Race.RandomHairHue();
 
             Item fancyShirt = new FancyShirt();
-            Item shirt = new Shirt(PirateCaptain.GetRandomShirtHue())
-            {
-                Layer = Layer.OuterTorso
-            };
+            Item shirt = new Shirt(PirateCaptain.GetRandomShirtHue());
+            shirt.Layer = Layer.OuterTorso;
 
             AddItem(new Cloak(5));
             AddItem(new Cutlass());
@@ -74,7 +75,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0); // version
+            writer.Write((int)0); // version
         }
 
         public override void Deserialize(GenericReader reader)

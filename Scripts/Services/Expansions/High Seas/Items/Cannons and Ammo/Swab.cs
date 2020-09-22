@@ -1,4 +1,7 @@
-﻿namespace Server.Items
+﻿using System;
+using Server;
+
+namespace Server.Items
 {
     public class Swab : Item
     {
@@ -13,7 +16,7 @@
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

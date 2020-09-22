@@ -12,14 +12,20 @@ namespace Server.Engines.Reports
     public class BarGraph : Chart
     {
         #region Type Identification
-        public static readonly PersistableType ThisTypeID = new PersistableType("bg", Construct);
+        public static readonly PersistableType ThisTypeID = new PersistableType("bg", new ConstructCallback(Construct));
 
         private static PersistableObject Construct()
         {
             return new BarGraph();
         }
 
-        public override PersistableType TypeID => ThisTypeID;
+        public override PersistableType TypeID
+        {
+            get
+            {
+                return ThisTypeID;
+            }
+        }
         #endregion
 
         private int m_Ticks;
@@ -37,22 +43,22 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_Ticks;
+                return this.m_Ticks;
             }
             set
             {
-                m_Ticks = value;
+                this.m_Ticks = value;
             }
         }
         public BarGraphRenderMode RenderMode
         {
             get
             {
-                return m_RenderMode;
+                return this.m_RenderMode;
             }
             set
             {
-                m_RenderMode = value;
+                this.m_RenderMode = value;
             }
         }
 
@@ -60,22 +66,22 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_xTitle;
+                return this.m_xTitle;
             }
             set
             {
-                m_xTitle = value;
+                this.m_xTitle = value;
             }
         }
         public string yTitle
         {
             get
             {
-                return m_yTitle;
+                return this.m_yTitle;
             }
             set
             {
-                m_yTitle = value;
+                this.m_yTitle = value;
             }
         }
 
@@ -83,22 +89,22 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_FontSize;
+                return this.m_FontSize;
             }
             set
             {
-                m_FontSize = value;
+                this.m_FontSize = value;
             }
         }
         public int Interval
         {
             get
             {
-                return m_Interval;
+                return this.m_Interval;
             }
             set
             {
-                m_Interval = value;
+                this.m_Interval = value;
             }
         }
 
@@ -106,22 +112,22 @@ namespace Server.Engines.Reports
         {
             get
             {
-                return m_Regions;
+                return this.m_Regions;
             }
             set
             {
-                m_Regions = value;
+                this.m_Regions = value;
             }
         }
 
         public BarGraph(string name, string fileName, int ticks, string xTitle, string yTitle, BarGraphRenderMode rm)
         {
-            m_Name = name;
-            m_FileName = fileName;
-            m_Ticks = ticks;
-            m_xTitle = xTitle;
-            m_yTitle = yTitle;
-            m_RenderMode = rm;
+            this.m_Name = name;
+            this.m_FileName = fileName;
+            this.m_Ticks = ticks;
+            this.m_xTitle = xTitle;
+            this.m_yTitle = yTitle;
+            this.m_RenderMode = rm;
         }
 
         private BarGraph()
@@ -132,28 +138,28 @@ namespace Server.Engines.Reports
         {
             base.SerializeAttributes(op);
 
-            op.SetInt32("t", m_Ticks);
-            op.SetInt32("r", (int)m_RenderMode);
+            op.SetInt32("t", this.m_Ticks);
+            op.SetInt32("r", (int)this.m_RenderMode);
 
-            op.SetString("x", m_xTitle);
-            op.SetString("y", m_yTitle);
+            op.SetString("x", this.m_xTitle);
+            op.SetString("y", this.m_yTitle);
 
-            op.SetInt32("s", m_FontSize);
-            op.SetInt32("i", m_Interval);
+            op.SetInt32("s", this.m_FontSize);
+            op.SetInt32("i", this.m_Interval);
         }
 
         public override void DeserializeAttributes(PersistenceReader ip)
         {
             base.DeserializeAttributes(ip);
 
-            m_Ticks = ip.GetInt32("t");
-            m_RenderMode = (BarGraphRenderMode)ip.GetInt32("r");
+            this.m_Ticks = ip.GetInt32("t");
+            this.m_RenderMode = (BarGraphRenderMode)ip.GetInt32("r");
 
-            m_xTitle = Utility.Intern(ip.GetString("x"));
-            m_yTitle = Utility.Intern(ip.GetString("y"));
+            this.m_xTitle = Utility.Intern(ip.GetString("x"));
+            this.m_yTitle = Utility.Intern(ip.GetString("y"));
 
-            m_FontSize = ip.GetInt32("s");
-            m_Interval = ip.GetInt32("i");
+            this.m_FontSize = ip.GetInt32("s");
+            this.m_Interval = ip.GetInt32("i");
         }
 
         public static int LookupReportValue(Snapshot ss, string reportName, string valueName)
@@ -204,10 +210,9 @@ namespace Server.Engines.Reports
                 counts[hour]++;
             }
 
-            BarGraph barGraph = new BarGraph("Hourly average " + valueName, "graphs_" + valueName.ToLower() + "_avg", 10, "Time", valueName, BarGraphRenderMode.Lines)
-            {
-                m_FontSize = 6
-            };
+            BarGraph barGraph = new BarGraph("Hourly average " + valueName, "graphs_" + valueName.ToLower() + "_avg", 10, "Time", valueName, BarGraphRenderMode.Lines);
+
+            barGraph.m_FontSize = 6;
 
             for (int i = 7; i <= totals.Length + 7; ++i)
             {
@@ -236,11 +241,10 @@ namespace Server.Engines.Reports
 
         public static BarGraph Growth(SnapshotHistory history, string reportName, string valueName)
         {
-            BarGraph barGraph = new BarGraph("Growth of " + valueName + " over time", "graphs_" + valueName.ToLower() + "_growth", 10, "Time", valueName, BarGraphRenderMode.Lines)
-            {
-                FontSize = 6,
-                Interval = 7
-            };
+            BarGraph barGraph = new BarGraph("Growth of " + valueName + " over time", "graphs_" + valueName.ToLower() + "_growth", 10, "Time", valueName, BarGraphRenderMode.Lines);
+
+            barGraph.FontSize = 6;
+            barGraph.Interval = 7;
 
             DateTime startPeriod = history.Snapshots[0].TimeStamp.Date + TimeSpan.FromDays(1.0);
             DateTime endPeriod = history.Snapshots[history.Snapshots.Count - 1].TimeStamp.Date;

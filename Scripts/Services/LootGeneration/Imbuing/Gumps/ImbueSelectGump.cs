@@ -1,5 +1,8 @@
-using Server.Items;
+using System;
+using Server;
 using Server.Mobiles;
+using Server.Network;
+using Server.Items;
 using Server.SkillHandlers;
 
 namespace Server.Gumps
@@ -27,7 +30,7 @@ namespace Server.Gumps
             ImbuingContext context = Imbuing.GetContext(User);
             context.LastImbued = m_Item;
 
-            ItemType itemType = ItemPropertyInfo.GetItemType(m_Item);
+            var itemType = ItemPropertyInfo.GetItemType(m_Item);
             bool twoHanded = m_Item.Layer == Layer.TwoHanded;
 
             AddPage(0);
@@ -86,7 +89,7 @@ namespace Server.Gumps
                 AddButton(15, 90 + (yOffset * 25), 4005, 4007, 10004, GumpButtonType.Reply, 0);
                 AddHtmlLocalized(50, 90 + (yOffset * 25), 150, 18, 1114254, LabelColor, false, false);   //Resists
                 yOffset += 1;
-            }
+            }            
 
             if (itemRef == 1 || itemRef == 2)
             {
@@ -200,7 +203,7 @@ namespace Server.Gumps
 
                     if (twoHanded)
                     {
-                        AddButton(250, 90 + (yOffset * 20), 4005, 4007, 10163, GumpButtonType.Reply, 0);
+                        AddButton(250, 90 + (yOffset * 20), 4005, 4007, 10161, GumpButtonType.Reply, 0);
                         AddHtmlLocalized(295, 90 + (yOffset * 20), 150, 18, 1072792, LabelColor, false, false);   //Balanced
                         yOffset += 1;
                     }
@@ -278,7 +281,7 @@ namespace Server.Gumps
                     AddHtmlLocalized(295, 90 + (yOffset * 20), 150, 18, 1075626, LabelColor, false, false);       //Reflect Physical Damage
                     yOffset += 1;
 
-                    AddButton(250, 90 + (yOffset * 20), 4005, 4007, 10145, GumpButtonType.Reply, 0);
+                    AddButton(250, 90 + (yOffset * 20), 4005, 4007, 10124, GumpButtonType.Reply, 0);
                     AddHtmlLocalized(295, 90 + (yOffset * 20), 150, 18, 1079757, LabelColor, false, false);       //Lower Requirements
                     yOffset += 1;
 
@@ -709,7 +712,7 @@ namespace Server.Gumps
                     {
                         User.EndAction(typeof(Imbuing));
                         break;
-                    }
+                    }                
                 case 10001:
                     {
                         context.ImbMenu_Cat = 1;
@@ -829,9 +832,9 @@ namespace Server.Gumps
 
                         if (Imbuing.OnBeforeImbue(User, context.LastImbued, id, -1))
                         {
-                            SendGump(new ImbueGump(User, context.LastImbued, id, -1));
+                            BaseGump.SendGump(new ImbueGump(User, context.LastImbued, id, -1));
                         }
-
+                        
                         break;
                     }
             }

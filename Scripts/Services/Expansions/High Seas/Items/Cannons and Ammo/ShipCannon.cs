@@ -1,11 +1,13 @@
+using System.Collections.Generic;
+using System;
+using System.Linq;
+
+using Server;
+using Server.Mobiles;
 using Server.ContextMenus;
 using Server.Gumps;
-using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Server.Items
 {
@@ -52,30 +54,30 @@ namespace Server.Items
         public DamageLevel DamageState { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public Direction Facing => GetFacing();
+        public Direction Facing { get { return GetFacing(); } }
 
-        public virtual bool HitMultipleMobs => false;
+        public virtual bool HitMultipleMobs { get { return false; } }
 
         public abstract ShipCannonDeed GetDeed { get; }
         public abstract int Range { get; }
         public abstract CannonPower Power { get; }
 
-        public virtual int MaxHits => 100;
-        public virtual TimeSpan ActionTime => TimeSpan.FromSeconds(1.5);
+        public virtual int MaxHits { get { return 100; } }
+        public virtual TimeSpan ActionTime { get { return TimeSpan.FromSeconds(1.5); } }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool CanLight => Prepered == CannonAction.Finish && Loaded == CannonAction.Finish && Charged == CannonAction.Finish && Primed == CannonAction.Finish;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool Empty => !CanLight && Items.Count == 0;
+        public bool Empty { get { return !CanLight && Items.Count == 0; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public double Durability => (m_Hits / (double)MaxHits) * 100.0;
+        public double Durability { get { return ((double)m_Hits / (double)MaxHits) * 100.0; } }
 
-        public override bool ForceShowProperties => true;
-        public override int DefaultGumpID => 0x9CE7;
-        public override bool DisplaysContent => false;
-        public override int DefaultMaxWeight => 300;
+        public override bool ForceShowProperties { get { return true; } }
+        public override int DefaultGumpID { get { return 0x9CE7; } }
+        public override bool DisplaysContent { get { return false; } }
+        public override int DefaultMaxWeight { get { return 300; } }
 
         public List<Mobile> Viewing { get; set; } = new List<Mobile>();
 
@@ -146,7 +148,7 @@ namespace Server.Items
 
             Timer.DelayCall(ActionTime, () =>
             {
-                PowderCharge charge = FindItemByType<PowderCharge>();
+                var charge = FindItemByType<PowderCharge>();
 
                 if (charge != null)
                 {
@@ -197,8 +199,8 @@ namespace Server.Items
             {
                 ICannonAmmo ammo = null;
 
-                Cannonball cannon = FindItemByType<Cannonball>();
-                Grapeshot grapeshot = FindItemByType<Grapeshot>();
+                var cannon = FindItemByType<Cannonball>();
+                var grapeshot = FindItemByType<Grapeshot>();
 
                 if (cannon != null)
                 {
@@ -269,7 +271,7 @@ namespace Server.Items
 
             Timer.DelayCall(ActionTime, () =>
             {
-                FuseCord fuse = FindItemByType<FuseCord>();
+                var fuse = FindItemByType<FuseCord>();
 
                 if (fuse != null)
                 {
@@ -387,7 +389,7 @@ namespace Server.Items
             return _Types.Any(t => t == item.GetType() || item.GetType().IsSubclassOf(t));
         }
 
-        private readonly Type[] _Types =
+        private Type[] _Types =
         {
             typeof(Cannonball), typeof(Grapeshot), typeof(PowderCharge), typeof(FuseCord)
         };
@@ -564,7 +566,7 @@ namespace Server.Items
                 if (currentRange % latDist == 0)
                     lateralOffset++;
 
-                TimeSpan delay = TimeSpan.FromSeconds(currentRange / 10.0);
+                TimeSpan delay = TimeSpan.FromSeconds((double)currentRange / 10.0);
 
                 switch (AmmoType)
                 {
@@ -588,25 +590,13 @@ namespace Server.Items
 
                                 if (b != null && b != Galleon && b.IsEnemy(Galleon))
                                     list.Add(b);
-
-                                damageables.AddRange(FindDamageables(shooter, newPoint, map, false, false, false, true, true));
-                            }
-
-                            foreach (IDamageable m in damageables)
-                            {
-                                list.Add(m);
                             }
 
                             if (list.Count > 0)
                             {
                                 IEntity toHit = list[Utility.Random(list.Count)];
 
-                                if (toHit is Mobile)
-                                {
-                                    Timer.DelayCall(delay, new TimerStateCallback(OnMobileHit), new object[] { (Mobile)toHit, newPoint, ammo, shooter });
-                                    hit = true;
-                                }
-                                else if (toHit is BaseBoat)
+                                if (toHit is BaseBoat)
                                 {
                                     Timer.DelayCall(delay, new TimerStateCallback(OnShipHit), new object[] { (BaseBoat)toHit, newPoint, ammo, shooter });
                                     hit = true;
@@ -640,7 +630,7 @@ namespace Server.Items
                                 damageables.AddRange(FindDamageables(shooter, newPoint, map, true, true, false, true, true));
                             }
 
-                            foreach (IDamageable m in damageables)
+                            foreach (var m in damageables)
                             {
                                 list.Add(m);
                             }
@@ -898,10 +888,10 @@ namespace Server.Items
         public virtual void OnMobileHit(object obj)
         {
             object[] objects = (object[])obj;
-            Mobile toHit = objects[0] as Mobile;
-            Point3D pnt = (Point3D)objects[1];
-            AmmoInfo info = objects[2] as AmmoInfo;
-            Mobile shooter = objects[3] as Mobile;
+            var toHit = objects[0] as Mobile;
+            var pnt = (Point3D)objects[1];
+            var info = objects[2] as AmmoInfo;
+            var shooter = objects[3] as Mobile;
 
             int damage = (int)(Utility.RandomMinMax(info.MinDamage, info.MaxDamage) * Galleon.CannonDamageMod);
 
@@ -919,10 +909,10 @@ namespace Server.Items
         public virtual void OnDamageableItemHit(object obj)
         {
             object[] objects = (object[])obj;
-            DamageableItem toHit = objects[0] as DamageableItem;
-            Point3D pnt = (Point3D)objects[1];
-            AmmoInfo info = objects[2] as AmmoInfo;
-            Mobile shooter = objects[3] as Mobile;
+            var toHit = objects[0] as DamageableItem;
+            var pnt = (Point3D)objects[1];
+            var info = objects[2] as AmmoInfo;
+            var shooter = objects[3] as Mobile;
 
             if (info == null || toHit == null || toHit.Map == null)
                 return;
@@ -984,7 +974,7 @@ namespace Server.Items
 
             double ingotsNeeded = 36 * (int)DamageState;
 
-            ingotsNeeded -= (from.Skills[SkillName.Blacksmith].Value / 200.0) * ingotsNeeded;
+            ingotsNeeded -= ((double)from.Skills[SkillName.Blacksmith].Value / 200.0) * ingotsNeeded;
 
             double min = ingotsNeeded / 10;
             double ingots1 = pack.GetAmount(typeof(IronIngot));
@@ -1052,9 +1042,9 @@ namespace Server.Items
                 Viewing.Add(from);
             }
 
-            foreach (PlayerMobile pm in Viewing.OfType<PlayerMobile>())
+            foreach (var pm in Viewing.OfType<PlayerMobile>())
             {
-                ShipCannonGump gump = BaseGump.GetGump<ShipCannonGump>(pm, g => g.Cannon == this);
+                var gump = BaseGump.GetGump<ShipCannonGump>(pm, g => g.Cannon == this);
 
                 if (gump != null)
                 {
@@ -1087,8 +1077,8 @@ namespace Server.Items
             InvalidateDamageState(from);
         }
 
-        public Dictionary<Mobile, List<int>> Actions => m_Actions;
-        private readonly Dictionary<Mobile, List<int>> m_Actions = new Dictionary<Mobile, List<int>>();
+        public Dictionary<Mobile, List<int>> Actions { get { return m_Actions; } }
+        private Dictionary<Mobile, List<int>> m_Actions = new Dictionary<Mobile, List<int>>();
 
         public void AddAction(Mobile from, int action)
         {
@@ -1098,7 +1088,7 @@ namespace Server.Items
             if (!m_Actions.ContainsKey(from))
                 m_Actions[from] = new List<int>();
 
-            List<int> list = m_Actions[from];
+            var list = m_Actions[from];
 
             list.Insert(0, action);
 
@@ -1230,11 +1220,11 @@ namespace Server.Items
                 Galleon.RemoveCannon(this);
             }
 
-            List<PlayerMobile> list = new List<PlayerMobile>(Viewing.OfType<PlayerMobile>());
+            var list = new List<PlayerMobile>(Viewing.OfType<PlayerMobile>());
 
-            foreach (PlayerMobile pm in list)
+            foreach (var pm in list)
             {
-                ShipCannonGump gump = BaseGump.GetGump<ShipCannonGump>(pm, g => g.Cannon == this);
+                var gump = BaseGump.GetGump<ShipCannonGump>(pm, g => g.Cannon == this);
 
                 if (gump != null)
                 {
@@ -1346,8 +1336,8 @@ namespace Server.Items
 
                 if (Cannon.Actions.ContainsKey(User))
                 {
-                    int actual = 0;
-                    List<int> list = Cannon.Actions[User];
+                    var actual = 0;
+                    var list = Cannon.Actions[User];
 
                     for (int i = list.Count - 1; i >= 0; i--)
                     {
@@ -1429,9 +1419,9 @@ namespace Server.Items
 
     public class Culverin : BaseShipCannon
     {
-        public override int Range => 10;
-        public override ShipCannonDeed GetDeed => new CulverinDeed();
-        public override CannonPower Power => CannonPower.Light;
+        public override int Range { get { return 10; } }
+        public override ShipCannonDeed GetDeed { get { return new CulverinDeed(); } }
+        public override CannonPower Power { get { return CannonPower.Light; } }
 
         public Culverin(BaseGalleon g) : base(g)
         {
@@ -1442,7 +1432,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -1454,11 +1444,11 @@ namespace Server.Items
 
     public class Carronade : BaseShipCannon
     {
-        public override int Range => 10;
-        public override ShipCannonDeed GetDeed => new CarronadeDeed();
-        public override CannonPower Power => CannonPower.Heavy;
+        public override int Range { get { return 10; } }
+        public override ShipCannonDeed GetDeed { get { return new CarronadeDeed(); } }
+        public override CannonPower Power { get { return CannonPower.Heavy; } }
 
-        public override TimeSpan ActionTime => TimeSpan.FromSeconds(2.0);
+        public override TimeSpan ActionTime { get { return TimeSpan.FromSeconds(2.0); } }
 
         public Carronade(BaseGalleon g) : base(g)
         {
@@ -1469,7 +1459,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -1481,13 +1471,13 @@ namespace Server.Items
 
     public class Blundercannon : BaseShipCannon
     {
-        public override int LabelNumber => 1158942;  // Blundercannon
+        public override int LabelNumber { get { return 1158942; } } // Blundercannon
 
-        public override int Range => 12;
-        public override ShipCannonDeed GetDeed => new BlundercannonDeed();
-        public override CannonPower Power => CannonPower.Massive;
+        public override int Range { get { return 12; } }
+        public override ShipCannonDeed GetDeed { get { return new BlundercannonDeed(); } }
+        public override CannonPower Power { get { return CannonPower.Massive; } }
 
-        public override TimeSpan ActionTime => TimeSpan.FromSeconds(2.0);
+        public override TimeSpan ActionTime { get { return TimeSpan.FromSeconds(2.0); } }
 
         public Blundercannon(BaseGalleon g) : base(g)
         {
@@ -1498,7 +1488,7 @@ namespace Server.Items
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)

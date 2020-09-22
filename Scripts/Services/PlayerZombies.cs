@@ -1,8 +1,8 @@
+﻿using System;
+using System.Collections.Generic;
 using Server.Events.Halloween;
 using Server.Items;
 using Server.Mobiles;
-using System;
-using System.Collections.Generic;
 
 namespace Server.Engines.Events
 {
@@ -63,11 +63,11 @@ namespace Server.Engines.Events
 
             if (today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween)
             {
-                m_Timer = Timer.DelayCall(tick, tick, Timer_Callback);
+                m_Timer = Timer.DelayCall(tick, tick, new TimerCallback(Timer_Callback));
 
-                m_ClearTimer = Timer.DelayCall(clear, clear, Clear_Callback);
+                m_ClearTimer = Timer.DelayCall(clear, clear, new TimerCallback(Clear_Callback));
 
-                EventSink.PlayerDeath += EventSink_PlayerDeath;
+                EventSink.PlayerDeath += new PlayerDeathEventHandler(EventSink_PlayerDeath);
             }
         }
 
@@ -152,21 +152,21 @@ namespace Server.Engines.Events
     public class PlayerBones : BaseContainer
     {
         [Constructable]
-        public PlayerBones(string name)
+        public PlayerBones(String name)
             : base(Utility.RandomMinMax(0x0ECA, 0x0ED2))
         {
-            Name = string.Format("{0}'s bones", name);
+            this.Name = String.Format("{0}'s bones", name);
 
-            switch (Utility.Random(10))
+            switch( Utility.Random(10) )
             {
                 case 0:
-                    Hue = 0xa09;
+                    this.Hue = 0xa09;
                     break;
                 case 1:
-                    Hue = 0xa93;
+                    this.Hue = 0xa93;
                     break;
                 case 2:
-                    Hue = 0xa47;
+                    this.Hue = 0xa47;
                     break;
                 default:
                     break;
@@ -181,7 +181,7 @@ namespace Server.Engines.Events
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -204,96 +204,40 @@ namespace Server.Engines.Events
         public ZombieSkeleton(PlayerMobile player)
             : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
         {
-            m_DeadPlayer = player;
+            this.m_DeadPlayer = player;
 
-            Name = (player != null) ? string.Format("{0}'s {1}", player.Name, m_Name) : m_Name;
+            this.Name = (player != null) ? String.Format("{0}'s {1}", player.Name, m_Name) : m_Name;
 
-            Body = 0x93;
-            BaseSoundID = 0x1c3;
+            this.Body = 0x93;
+            this.BaseSoundID = 0x1c3;
 
-            SetStr(500);
-            SetDex(500);
-            SetInt(500);
+            this.SetStr(500);
+            this.SetDex(500);
+            this.SetInt(500);
 
-            SetHits(2500);
-            SetMana(500);
-            SetStam(500);
+            this.SetHits(2500);
+            this.SetMana(500);
+            this.SetStam(500);
 
-            SetDamage(8, 18);
+            this.SetDamage(8, 18);
 
-            SetDamageType(ResistanceType.Physical, 40);
-            SetDamageType(ResistanceType.Cold, 60);
+            this.SetDamageType(ResistanceType.Physical, 40);
+            this.SetDamageType(ResistanceType.Cold, 60);
 
-            SetResistance(ResistanceType.Fire, 50);
-            SetResistance(ResistanceType.Energy, 50);
-            SetResistance(ResistanceType.Physical, 50);
-            SetResistance(ResistanceType.Cold, 50);
-            SetResistance(ResistanceType.Poison, 50);
+            this.SetResistance(ResistanceType.Fire, 50);
+            this.SetResistance(ResistanceType.Energy, 50);
+            this.SetResistance(ResistanceType.Physical, 50);
+            this.SetResistance(ResistanceType.Cold, 50);
+            this.SetResistance(ResistanceType.Poison, 50);
 
-            SetSkill(SkillName.MagicResist, 65.1, 80.0);
-            SetSkill(SkillName.Tactics, 95.1, 100);
-            SetSkill(SkillName.Wrestling, 85.1, 95);
+            this.SetSkill(SkillName.MagicResist, 65.1, 80.0);
+            this.SetSkill(SkillName.Tactics, 95.1, 100);
+            this.SetSkill(SkillName.Wrestling, 85.1, 95);
 
-            Fame = 1000;
-            Karma = -1000;
+            this.Fame = 1000;
+            this.Karma = -1000;
 
-            switch (Utility.Random(10))
-            {
-                case 0:
-                    PackItem(new LeftArm());
-                    break;
-                case 1:
-                    PackItem(new RightArm());
-                    break;
-                case 2:
-                    PackItem(new Torso());
-                    break;
-                case 3:
-                    PackItem(new Bone());
-                    break;
-                case 4:
-                    PackItem(new RibCage());
-                    break;
-                case 5:
-                    if (m_DeadPlayer != null && !m_DeadPlayer.Deleted)
-                    {
-                        PackItem(new PlayerBones(m_DeadPlayer.Name));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Meager);
-            AddLoot(LootPack.LootItemCallback(GenerateBodyPart, 50.0, 1, false, false));
-        }
-
-        public Item GenerateBodyPart(IEntity e)
-        {
-            switch (Utility.Random(6))
-            {
-                case 0:
-                    return new LeftArm();
-                case 1:
-                    return new RightArm();
-                case 2:
-                    return new Torso();
-                case 3:
-                    return new Bone();
-                case 4:
-                    return new RibCage();
-                default:
-                    if (m_DeadPlayer != null && !m_DeadPlayer.Deleted)
-                    {
-                        return new PlayerBones(m_DeadPlayer.Name);
-                    }
-                    break;
-            }
-
-            return null;
+            this.VirtualArmor = 18;
         }
 
         public ZombieSkeleton(Serial serial)
@@ -301,19 +245,62 @@ namespace Server.Engines.Events
         {
         }
 
-        public override bool BleedImmune => true;
+        public override bool BleedImmune
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override Poison PoisonImmune
+        {
+            get
+            {
+                return Poison.Regular;
+            }
+        }
 
-        public override Poison PoisonImmune => Poison.Regular;
+        public override void GenerateLoot()
+        {
+            switch( Utility.Random(10) )
+            {
+                case 0:
+                    this.PackItem(new LeftArm());
+                    break;
+                case 1:
+                    this.PackItem(new RightArm());
+                    break;
+                case 2:
+                    this.PackItem(new Torso());
+                    break;
+                case 3:
+                    this.PackItem(new Bone());
+                    break;
+                case 4:
+                    this.PackItem(new RibCage());
+                    break;
+                case 5:
+                    if (this.m_DeadPlayer != null && !this.m_DeadPlayer.Deleted)
+                    {
+                        this.PackItem(new PlayerBones(this.m_DeadPlayer.Name));
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            this.AddLoot(LootPack.Meager);
+        }
 
         public override void OnDelete()
         {
             if (HalloweenHauntings.ReAnimated != null)
             {
-                if (m_DeadPlayer != null && !m_DeadPlayer.Deleted)
+                if (this.m_DeadPlayer != null && !this.m_DeadPlayer.Deleted)
                 {
-                    if (HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey(m_DeadPlayer))
+                    if (HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey(this.m_DeadPlayer))
                     {
-                        HalloweenHauntings.ReAnimated.Remove(m_DeadPlayer);
+                        HalloweenHauntings.ReAnimated.Remove(this.m_DeadPlayer);
                     }
                 }
             }
@@ -322,9 +309,9 @@ namespace Server.Engines.Events
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
 
-            writer.WriteMobile(m_DeadPlayer);
+            writer.WriteMobile(this.m_DeadPlayer);
         }
 
         public override void Deserialize(GenericReader reader)
@@ -332,7 +319,7 @@ namespace Server.Engines.Events
             base.Deserialize(reader);
             int version = reader.ReadInt();
 
-            m_DeadPlayer = (PlayerMobile)reader.ReadMobile();
+            this.m_DeadPlayer = (PlayerMobile)reader.ReadMobile();
         }
     }
 }

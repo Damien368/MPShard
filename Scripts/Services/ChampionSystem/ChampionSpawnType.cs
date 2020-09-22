@@ -1,5 +1,5 @@
-using Server.Mobiles;
 using System;
+using Server.Mobiles;
 
 namespace Server.Engines.CannedEvil
 {
@@ -21,7 +21,7 @@ namespace Server.Engines.CannedEvil
         #region TOL
         DragonTurtle,
         #endregion
-        Khaldun,
+        Khaldun
     }
 
     public class ChampionSpawnInfo
@@ -31,10 +31,34 @@ namespace Server.Engines.CannedEvil
         private readonly Type[][] m_SpawnTypes;
         private readonly string[] m_LevelNames;
 
-        public string Name => m_Name;
-        public Type Champion => m_Champion;
-        public Type[][] SpawnTypes => m_SpawnTypes;
-        public string[] LevelNames => m_LevelNames;
+        public string Name
+        {
+            get
+            {
+                return m_Name;
+            }
+        }
+        public Type Champion
+        {
+            get
+            {
+                return m_Champion;
+            }
+        }
+        public Type[][] SpawnTypes
+        {
+            get
+            {
+                return m_SpawnTypes;
+            }
+        }
+        public string[] LevelNames
+        {
+            get
+            {
+                return m_LevelNames;
+            }
+        }
 
         public ChampionSpawnInfo(string name, Type champion, string[] levelNames, Type[][] spawnTypes)
         {
@@ -44,7 +68,13 @@ namespace Server.Engines.CannedEvil
             m_SpawnTypes = spawnTypes;
         }
 
-        public static ChampionSpawnInfo[] Table => m_Table;
+        public static ChampionSpawnInfo[] Table
+        {
+            get
+            {
+                return m_Table;
+            }
+        }
 
         private static readonly ChampionSpawnInfo[] m_Table = new ChampionSpawnInfo[]
         {
@@ -85,7 +115,9 @@ namespace Server.Engines.CannedEvil
             }),
             new ChampionSpawnInfo("Unholy Terror", typeof(Neira), new string[] { "Scourge", "Punisher", "Nemesis" }, new Type[][]	// Unholy Terror
             { // Unholy Terror
-                new Type[] { typeof(Bogle), typeof(Ghoul), typeof(Shade), typeof(Spectre), typeof(Wraith) }, // Level 1
+                (Core.AOS ? new Type[] { typeof(Bogle), typeof(Ghoul), typeof(Shade), typeof(Spectre), typeof(Wraith) }// Level 1 (Pre-AoS)
+                 : new Type[] { typeof(Ghoul), typeof(Shade), typeof(Spectre), typeof(Wraith) }), // Level 1
+
                 new Type[] { typeof(BoneMagi), typeof(Mummy), typeof(SkeletalMage) }, // Level 2
                 new Type[] { typeof(BoneKnight), typeof(Lich), typeof(SkeletalKnight) }, // Level 3
                 new Type[] { typeof(LichLord), typeof(RottingCorpse) }// Level 4

@@ -10,9 +10,8 @@ namespace Server.Engines.Quests
             {
                 return Activator.CreateInstance(type);
             }
-            catch (Exception e)
+            catch
             {
-                Diagnostics.ExceptionLogging.LogException(e);
                 return null;
             }
         }
@@ -21,7 +20,7 @@ namespace Server.Engines.Quests
         {
             if (type == null)
             {
-                writer.WriteEncodedInt(0x00);
+                writer.WriteEncodedInt((int)0x00);
             }
             else
             {
@@ -29,13 +28,13 @@ namespace Server.Engines.Quests
                 {
                     if (referenceTable[i] == type)
                     {
-                        writer.WriteEncodedInt(0x01);
-                        writer.WriteEncodedInt(i);
+                        writer.WriteEncodedInt((int)0x01);
+                        writer.WriteEncodedInt((int)i);
                         return;
                     }
                 }
 
-                writer.WriteEncodedInt(0x02);
+                writer.WriteEncodedInt((int)0x02);
                 writer.Write(type.FullName);
             }
         }
@@ -44,7 +43,7 @@ namespace Server.Engines.Quests
         {
             int encoding = reader.ReadEncodedInt();
 
-            switch (encoding)
+            switch ( encoding )
             {
                 default:
                 case 0x00: // null
@@ -76,7 +75,7 @@ namespace Server.Engines.Quests
         {
             int encoding = reader.ReadEncodedInt();
 
-            switch (encoding)
+            switch ( encoding )
             {
                 default:
                 case 0x00: // null
@@ -117,7 +116,7 @@ namespace Server.Engines.Quests
         {
             int encoding = reader.ReadEncodedInt();
 
-            switch (encoding)
+            switch ( encoding )
             {
                 default:
                 case 0x00: // null
@@ -158,7 +157,7 @@ namespace Server.Engines.Quests
         {
             int encoding = reader.ReadEncodedInt();
 
-            switch (encoding)
+            switch ( encoding )
             {
                 default:
                 case 0x00: // null

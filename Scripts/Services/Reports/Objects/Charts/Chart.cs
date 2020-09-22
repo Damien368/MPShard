@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Engines.Reports
 {
     public abstract class Chart : PersistableObject
@@ -7,54 +9,60 @@ namespace Server.Engines.Reports
         protected ChartItemCollection m_Items;
         public Chart()
         {
-            m_Items = new ChartItemCollection();
+            this.m_Items = new ChartItemCollection();
         }
 
         public string Name
         {
             get
             {
-                return m_Name;
+                return this.m_Name;
             }
             set
             {
-                m_Name = value;
+                this.m_Name = value;
             }
         }
         public string FileName
         {
             get
             {
-                return m_FileName;
+                return this.m_FileName;
             }
             set
             {
-                m_FileName = value;
+                this.m_FileName = value;
             }
         }
-        public ChartItemCollection Items => m_Items;
+        public ChartItemCollection Items
+        {
+            get
+            {
+                return this.m_Items;
+            }
+        }
         public override void SerializeAttributes(PersistenceWriter op)
         {
-            op.SetString("n", m_Name);
-            op.SetString("f", m_FileName);
+            op.SetString("n", this.m_Name);
+            op.SetString("f", this.m_FileName);
         }
 
         public override void DeserializeAttributes(PersistenceReader ip)
         {
-            m_Name = Utility.Intern(ip.GetString("n"));
-            m_FileName = Utility.Intern(ip.GetString("f"));
+            this.m_Name = Utility.Intern(ip.GetString("n"));
+            this.m_FileName = Utility.Intern(ip.GetString("f"));
         }
 
         public override void SerializeChildren(PersistenceWriter op)
         {
-            for (int i = 0; i < m_Items.Count; ++i)
-                m_Items[i].Serialize(op);
+            for (int i = 0; i < this.m_Items.Count; ++i)
+                this.m_Items[i].Serialize(op);
         }
 
         public override void DeserializeChildren(PersistenceReader ip)
         {
             while (ip.HasChild)
-                m_Items.Add(ip.GetChild() as ChartItem);
+                this.m_Items.Add(ip.GetChild() as ChartItem);
         }
     }
 }

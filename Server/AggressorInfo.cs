@@ -69,7 +69,7 @@ namespace Server
 
 		private static TimeSpan m_ExpireDelay = TimeSpan.FromMinutes(2.0);
 
-		public static TimeSpan ExpireDelay { get => m_ExpireDelay; set => m_ExpireDelay = value; }
+		public static TimeSpan ExpireDelay { get { return m_ExpireDelay; } set { m_ExpireDelay = value; } }
 
 		public static void DumpAccess()
 		{
@@ -91,7 +91,7 @@ namespace Server
 					DumpAccess();
 				}
 
-				return m_Attacker.Deleted || m_Defender.Deleted || DateTime.UtcNow >= (m_LastCombatTime + m_ExpireDelay);
+				return (m_Attacker.Deleted || m_Defender.Deleted || DateTime.UtcNow >= (m_LastCombatTime + m_ExpireDelay));
 			}
 		}
 

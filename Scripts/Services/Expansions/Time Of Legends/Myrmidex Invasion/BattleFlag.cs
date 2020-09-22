@@ -1,6 +1,9 @@
-using Server.Mobiles;
 using System;
+using Server;
+using Server.Mobiles;
+using Server.Items;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Server.Engines.MyrmidexInvasion
 {
@@ -55,7 +58,7 @@ namespace Server.Engines.MyrmidexInvasion
         public static void DisplayWaveInfo(BattleSpawner spawner, Mobile m)
         {
             int delay = 0;
-            foreach (System.Collections.Generic.KeyValuePair<int, System.Collections.Generic.List<BaseCreature>> kvp in spawner.MyrmidexTeam)
+            foreach (var kvp in spawner.MyrmidexTeam)
             {
                 if (kvp.Value.Count > 0)
                 {
@@ -64,7 +67,7 @@ namespace Server.Engines.MyrmidexInvasion
 
                     Timer.DelayCall(TimeSpan.FromSeconds(delay), () =>
                     {
-                        m.SendLocalizedMessage(1156606, string.Format("{0}\t{1}\t{2}", (BattleSpawner.WaveCount - count).ToString(), BattleSpawner.WaveCount.ToString(), wave.ToString())); // Myrmidex have lost ~1_VAL~ of ~2_VAL~ from wave ~3_VAL~ of their front line.	
+                        m.SendLocalizedMessage(1156606, String.Format("{0}\t{1}\t{2}", (BattleSpawner.WaveCount - count).ToString(), BattleSpawner.WaveCount.ToString(), wave.ToString())); // Myrmidex have lost ~1_VAL~ of ~2_VAL~ from wave ~3_VAL~ of their front line.	
                     });
                 }
 
@@ -72,7 +75,7 @@ namespace Server.Engines.MyrmidexInvasion
             }
 
             delay = 0;
-            foreach (System.Collections.Generic.KeyValuePair<int, System.Collections.Generic.List<BaseCreature>> kvp in spawner.TribeTeam)
+            foreach (var kvp in spawner.TribeTeam)
             {
                 if (kvp.Value.Count > 0)
                 {
@@ -81,7 +84,7 @@ namespace Server.Engines.MyrmidexInvasion
 
                     Timer.DelayCall(TimeSpan.FromSeconds(delay), () =>
                     {
-                        m.SendLocalizedMessage(1156607, string.Format("{0}\t{1}\t{2}", (BattleSpawner.WaveCount - count).ToString(), BattleSpawner.WaveCount.ToString(), wave.ToString())); // Myrmidex have lost ~1_VAL~ of ~2_VAL~ from wave ~3_VAL~ of their front line.	
+                        m.SendLocalizedMessage(1156607, String.Format("{0}\t{1}\t{2}", (BattleSpawner.WaveCount - count).ToString(), BattleSpawner.WaveCount.ToString(), wave.ToString())); // Myrmidex have lost ~1_VAL~ of ~2_VAL~ from wave ~3_VAL~ of their front line.	
                     });
                 }
 
@@ -89,7 +92,7 @@ namespace Server.Engines.MyrmidexInvasion
             }
         }
 
-        public override bool HandlesOnMovement => BattleSpawner != null && NextSpawn < DateTime.UtcNow;
+        public override bool HandlesOnMovement { get { return BattleSpawner != null && NextSpawn < DateTime.UtcNow; } }
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
@@ -98,14 +101,14 @@ namespace Server.Engines.MyrmidexInvasion
                 BaseCreature bc = (BaseCreature)m;
                 Point3D check = Allegiance == Allegiance.Myrmidex ? new Point3D(914, 1807, 0) : Location;
 
-                if (Allegiance == Allegiance.Myrmidex && bc.InRange(check, 8))
+                if (this.Allegiance == Allegiance.Myrmidex && bc.InRange(check, 8))
                 {
                     if (bc is BritannianInfantry || (bc is BaseEodonTribesman && ((BaseEodonTribesman)bc).TribeType != EodonTribe.Barrab))
                     {
                         Spawn(false, typeof(MyrmidexDrone), typeof(MyrmidexWarrior), typeof(TribeWarrior));
                     }
                 }
-                else if (Allegiance == Allegiance.Tribes && bc.InRange(check, 8))
+                else if (this.Allegiance == Allegiance.Tribes && bc.InRange(check, 8))
                 {
                     if (bc is MyrmidexDrone || bc is MyrmidexWarrior || (bc is BaseEodonTribesman && ((BaseEodonTribesman)bc).TribeType == EodonTribe.Barrab))
                     {
@@ -117,63 +120,46 @@ namespace Server.Engines.MyrmidexInvasion
 
         private void Spawn(bool tribe, params Type[] types)
         {
-            if (Map == null || NextSpawn > DateTime.UtcNow)
-            {
+            if (Map == null)
                 return;
-            }
 
             NextSpawn = DateTime.UtcNow + TimeSpan.FromMinutes(10);
 
-            for (var i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
-                var t = types[Utility.Random(types.Length)];
+                Type t = types[Utility.Random(types.Length)];
                 BaseCreature bc = null;
 
                 if (t.IsSubclassOf(typeof(BaseEodonTribesman)))
-                {
-                    bc = Activator.CreateInstance(t, EodonTribe.Barrab) as BaseCreature;
-                }
+                    bc = Activator.CreateInstance(t, new object[] { EodonTribe.Barrab }) as BaseCreature;
                 else
-                {
                     bc = Activator.CreateInstance(t) as BaseCreature;
-                }
 
                 if (bc != null)
                 {
-                    var rec = new Rectangle2D(X - 5, Y - 5, 10, 10);
-                    var p = Location;
+                    Rectangle2D rec = new Rectangle2D(this.X, this.Y, 3, 3);
+                    Point3D p = this.Location;
 
                     bc.NoLootOnDeath = true;
 
-                    for (var j = 0; j < 20; j++)
+                    do
                     {
-                        p = Map.GetRandomSpawnPoint(rec);
-
-                        if (Map.CanSpawnMobile(p))
-                        {
-                            break;
-                        }
+                        p = this.Map.GetRandomSpawnPoint(rec);
                     }
+                    while (p == this.Location || !this.Map.CanSpawnMobile(p));
 
-                    if (p == Location)
+                    bc.MoveToWorld(p, this.Map);
+
+                    if (tribe)
                     {
-                        bc.Delete();
+                        bc.Home = new Point3D(914, 1872, 0);
                     }
                     else
                     {
-                        bc.MoveToWorld(p, Map);
-
-                        if (tribe)
-                        {
-                            bc.Home = new Point3D(914, 1872, 0);
-                        }
-                        else
-                        {
-                            bc.Home = new Point3D(913, 1792, 0);
-                        }
-
-                        bc.RangeHome = 15;
+                        bc.Home = new Point3D(913, 1792, 0);
                     }
+
+                    bc.RangeHome = 15;
                 }
             }
         }

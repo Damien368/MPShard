@@ -1,3 +1,6 @@
+using System;
+using Server.Items;
+using Server.Mobiles;
 using Server.Gumps;
 
 namespace Server.Items
@@ -16,7 +19,13 @@ namespace Server.Items
             Krampus
         }
 
-        public override int LabelNumber => 1156395;
+        public override int LabelNumber
+        {
+            get
+            {
+                return 1156395;
+            }
+        }
 
         private CardType _Type;
 
@@ -38,7 +47,7 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (from.InRange(GetWorldLocation(), 3))
+            if (from.InRange(this.GetWorldLocation(), 3))
             {
                 Gump g = new Gump(100, 100);
 
@@ -77,7 +86,7 @@ namespace Server.Items
         {
             base.Serialize(writer);
 
-            writer.Write(0);
+            writer.Write((int)0);
             writer.Write((int)_Type);
         }
 

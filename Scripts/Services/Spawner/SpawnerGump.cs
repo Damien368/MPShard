@@ -1,5 +1,7 @@
-using Server.Gumps;
 using System;
+using System.Collections.Generic;
+using Server.Gumps;
+using Server.Network;
 
 namespace Server.Mobiles
 {
@@ -8,7 +10,7 @@ namespace Server.Mobiles
         public static readonly int MaxEntries = 13;
         public Spawner Spawner { get; set; }
 
-        public int LabelHue => User != null && User.NetState != null && User.NetState.IsEnhancedClient ? 0x386 : 0x384;
+        public int LabelHue { get { return User != null && User.NetState != null && User.NetState.IsEnhancedClient ? 0x386 : 0x384; } }
 
         public SpawnerGump(Mobile m, Spawner spawner)
             : base(m as PlayerMobile, 50, 50)
@@ -36,10 +38,10 @@ namespace Server.Mobiles
             AddLabel(38, 356, LabelHue, "Cancel");
 
             AddButton(110, 310, 0xFA5, 0xFA7, 1500, GumpButtonType.Reply, 0);
-            AddLabel(143, 310, LabelHue, string.Format("Running: {0}", Spawner.Running ? "Yes" : "No"));
+            AddLabel(143, 310, LabelHue, String.Format("Running: {0}", Spawner.Running ? "Yes" : "No"));
 
             AddButton(110, 333, 0xFA5, 0xFA7, 1000, GumpButtonType.Reply, 0);
-            AddLabel(143, 333, LabelHue, string.Format("Group: {0}", Spawner.Group ? "Yes" : "No"));
+            AddLabel(143, 333, LabelHue, String.Format("Group: {0}", Spawner.Group ? "Yes" : "No"));
 
             AddButton(110, 356, 0xFB4, 0xFB6, 2, GumpButtonType.Reply, 0);
             AddLabel(143, 356, LabelHue, "Bring to Home");
@@ -74,7 +76,7 @@ namespace Server.Mobiles
 
                 if (i < Spawner.SpawnObjects.Count)
                 {
-                    SpawnObject so = Spawner.SpawnObjects[i];
+                    var so = Spawner.SpawnObjects[i];
 
                     str = so.SpawnName;
                     max = so.MaxCount;
@@ -114,7 +116,7 @@ namespace Server.Mobiles
                     {
                         name = name.Trim();
 
-                        if (!string.IsNullOrEmpty(maxCount))
+                        if (!String.IsNullOrEmpty(maxCount))
                         {
                             max = Utility.ToInt32(maxCount);
                         }
@@ -152,7 +154,7 @@ namespace Server.Mobiles
             if (Spawner.Deleted || User.AccessLevel < AccessLevel.GameMaster)
                 return;
 
-            switch (info.ButtonID)
+            switch ( info.ButtonID )
             {
                 case 0: // Closed
                     {

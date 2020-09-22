@@ -1,11 +1,13 @@
+﻿using Server;
+using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     public class SoulboundSwashbuckler : BaseCreature
     {
-        public override bool ClickTitle => false;
-        public override bool AlwaysMurderer => true;
+        public override bool ClickTitle { get { return false; } }
+        public override bool AlwaysMurderer { get { return true; } }
 
         [Constructable]
         public SoulboundSwashbuckler()
@@ -50,19 +52,10 @@ namespace Server.Mobiles
 
         }
 
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 1);
-        }
-
-        public override bool OnBeforeDeath()
-        {
-            if (Region.IsPartOf<Regions.CorgulRegion>())
-            {
-                CorgulTheSoulBinder.CheckDropSOT(this);
-            }
-
-            return base.OnBeforeDeath();
         }
 
         public SoulboundSwashbuckler(Serial serial)
@@ -73,7 +66,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(0);
+            writer.Write((int)0);
         }
 
         public override void Deserialize(GenericReader reader)
