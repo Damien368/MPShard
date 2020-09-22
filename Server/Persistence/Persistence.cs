@@ -25,12 +25,12 @@ namespace Server
 			{
 				file.Create().Close();
 			}
-				
+
 			file.Refresh();
 
-			using (var fs = file.OpenWrite())
+			using (FileStream fs = file.OpenWrite())
 			{
-				var writer = new BinaryFileWriter(fs, true);
+				BinaryFileWriter writer = new BinaryFileWriter(fs, true);
 
 				try
 				{
@@ -52,7 +52,7 @@ namespace Server
 		public static void Deserialize(FileInfo file, Action<GenericReader> deserializer)
 		{
 			Deserialize(file, deserializer, true);
-		} 
+		}
 
 		public static void Deserialize(string path, Action<GenericReader> deserializer, bool ensure)
 		{
@@ -72,7 +72,7 @@ namespace Server
 
 				file.Directory.Create();
 			}
-			
+
 			if (!file.Exists)
 			{
 				if (!ensure)
@@ -85,35 +85,35 @@ namespace Server
 
 				file.Create().Close();
 			}
-				
+
 			file.Refresh();
 
-            using (var fs = file.OpenRead())
-            {
-                var reader = new BinaryFileReader(new BinaryReader(fs));
+			using (FileStream fs = file.OpenRead())
+			{
+				BinaryFileReader reader = new BinaryFileReader(new BinaryReader(fs));
 
-                try
-                {
-                    deserializer(reader);
-                }
-                catch (EndOfStreamException eos)
-                {
-                    if (file.Length > 0)
-                    {
-                        throw new Exception(String.Format("[Persistance]: {0}", eos));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Utility.WriteConsoleColor(ConsoleColor.Red, "[Persistance]: An error was encountered while loading a saved object");
+				try
+				{
+					deserializer(reader);
+				}
+				catch (EndOfStreamException eos)
+				{
+					if (file.Length > 0)
+					{
+						throw new Exception(string.Format("[Persistance]: {0}", eos));
+					}
+				}
+				catch (Exception e)
+				{
+					Utility.WriteConsoleColor(ConsoleColor.Red, "[Persistance]: An error was encountered while loading a saved object");
 
-                    throw new Exception(String.Format("[Persistance]: {0}", e));
-                }
-                finally
-                {
-                    reader.Close();
-                }
-            }
+					throw new Exception(string.Format("[Persistance]: {0}", e));
+				}
+				finally
+				{
+					reader.Close();
+				}
+			}
 		}
 	}
 }

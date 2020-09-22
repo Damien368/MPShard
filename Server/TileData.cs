@@ -17,9 +17,9 @@ namespace Server
 			m_Flags = flags;
 		}
 
-		public string Name { get { return m_Name; } set { m_Name = value; } }
+		public string Name { get => m_Name; set => m_Name = value; }
 
-		public TileFlag Flags { get { return m_Flags; } set { m_Flags = value; } }
+		public TileFlag Flags { get => m_Flags; set => m_Flags = value; }
 	}
 
 	public struct ItemData
@@ -47,13 +47,13 @@ namespace Server
 			m_Height = (byte)height;
 		}
 
-		public string Name { get { return m_Name; } set { m_Name = value; } }
+		public string Name { get => m_Name; set => m_Name = value; }
 
-		public TileFlag Flags { get { return m_Flags; } set { m_Flags = value; } }
+		public TileFlag Flags { get => m_Flags; set => m_Flags = value; }
 
 		public bool Bridge
 		{
-			get { return (m_Flags & TileFlag.Bridge) != 0; }
+			get => (m_Flags & TileFlag.Bridge) != 0;
 			set
 			{
 				if (value)
@@ -69,7 +69,7 @@ namespace Server
 
 		public bool Impassable
 		{
-			get { return (m_Flags & TileFlag.Impassable) != 0; }
+			get => (m_Flags & TileFlag.Impassable) != 0;
 			set
 			{
 				if (value)
@@ -85,7 +85,7 @@ namespace Server
 
 		public bool Surface
 		{
-			get { return (m_Flags & TileFlag.Surface) != 0; }
+			get => (m_Flags & TileFlag.Surface) != 0;
 			set
 			{
 				if (value)
@@ -99,15 +99,15 @@ namespace Server
 			}
 		}
 
-		public int Weight { get { return m_Weight; } set { m_Weight = (byte)value; } }
+		public int Weight { get => m_Weight; set => m_Weight = (byte)value; }
 
-		public int Quality { get { return m_Quality; } set { m_Quality = (byte)value; } }
+		public int Quality { get => m_Quality; set => m_Quality = (byte)value; }
 
-		public int Quantity { get { return m_Quantity; } set { m_Quantity = (byte)value; } }
+		public int Quantity { get => m_Quantity; set => m_Quantity = (byte)value; }
 
-		public int Value { get { return m_Value; } set { m_Value = (byte)value; } }
+		public int Value { get => m_Value; set => m_Value = (byte)value; }
 
-		public int Height { get { return m_Height; } set { m_Height = (byte)value; } }
+		public int Height { get => m_Height; set => m_Height = (byte)value; }
 
 		public int CalcHeight
 		{
@@ -154,7 +154,7 @@ namespace Server
 		Wearable = 0x00400000,
 		LightSource = 0x00800000,
 		Animation = 0x01000000,
-        HoverOver = 0x02000000,
+		HoverOver = 0x02000000,
 		Unknown3 = 0x04000000,
 		Armor = 0x08000000,
 		Roof = 0x10000000,
@@ -168,14 +168,14 @@ namespace Server
 		private static readonly LandData[] m_LandData;
 		private static readonly ItemData[] m_ItemData;
 
-		public static LandData[] LandTable { get { return m_LandData; } }
-		public static ItemData[] ItemTable { get { return m_ItemData; } }
+		public static LandData[] LandTable => m_LandData;
+		public static ItemData[] ItemTable => m_ItemData;
 
 		private static readonly int m_MaxLandValue;
 		private static readonly int m_MaxItemValue;
 
-		public static int MaxLandValue { get { return m_MaxLandValue; } }
-		public static int MaxItemValue { get { return m_MaxItemValue; } }
+		public static int MaxLandValue => m_MaxLandValue;
+		public static int MaxItemValue => m_MaxItemValue;
 
 		private static readonly byte[] m_StringBuffer = new byte[20];
 
@@ -185,7 +185,7 @@ namespace Server
 
 			int count = 0;
 
-			while(count < 20 && m_StringBuffer[count] != 0)
+			while (count < 20 && m_StringBuffer[count] != 0)
 			{
 				++count;
 			}
@@ -324,7 +324,7 @@ namespace Server
 				Console.WriteLine("Make sure your Scripts/Misc/DataPath.cs is properly configured");
 				Console.WriteLine("After pressing return an exception will be thrown and the server will terminate");
 
-				throw new Exception(String.Format("TileData: {0} not found", filePath));
+				throw new Exception(string.Format("TileData: {0} not found", filePath));
 			}
 		}
 	}

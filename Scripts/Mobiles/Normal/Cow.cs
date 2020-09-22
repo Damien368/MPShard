@@ -24,8 +24,6 @@ namespace Server.Mobiles
 
             SetDamage(1, 4);
 
-            SetDamage(1, 4);
-
             SetDamageType(ResistanceType.Physical, 100);
 
             SetResistance(ResistanceType.Physical, 5, 15);
@@ -37,13 +35,11 @@ namespace Server.Mobiles
             Fame = 300;
             Karma = 0;
 
-            VirtualArmor = 10;
-
             Tamable = true;
             ControlSlots = 1;
             MinTameSkill = 11.1;
 
-            if (Core.AOS && Utility.Random(1000) == 0) // 0.1% chance to have mad cows
+            if (Utility.Random(1000) == 0) // 0.1% chance to have mad cows
                 FightMode = FightMode.Closest;
         }
 
@@ -76,27 +72,9 @@ namespace Server.Mobiles
                 m_Milk = value;
             }
         }
-        public override int Meat
-        {
-            get
-            {
-                return 8;
-            }
-        }
-        public override int Hides
-        {
-            get
-            {
-                return 12;
-            }
-        }
-        public override FoodType FavoriteFood
-        {
-            get
-            {
-                return FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-            }
-        }
+        public override int Meat => 8;
+        public override int Hides => 12;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
         public override void OnDoubleClick(Mobile from)
         {
             base.OnDoubleClick(from);
@@ -143,10 +121,10 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write((int)1);
+            writer.Write(1);
 
-            writer.Write((DateTime)m_MilkedOn);
-            writer.Write((int)m_Milk);
+            writer.Write(m_MilkedOn);
+            writer.Write(m_Milk);
         }
 
         public override void Deserialize(GenericReader reader)

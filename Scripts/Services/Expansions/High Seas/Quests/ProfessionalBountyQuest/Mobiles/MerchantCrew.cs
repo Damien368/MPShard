@@ -1,15 +1,10 @@
-﻿using Server;
-using System;
 using Server.Items;
-using Server.Multis;
-using System.Collections.Generic;
-using Server.Engines.Quests;
 
 namespace Server.Mobiles
 {
     public class MerchantCrew : BaseCreature
     {
-        public override bool InitialInnocent { get { return true; } }
+        public override bool InitialInnocent => true;
         public override WeaponAbility GetWeaponAbility()
         {
             Item weapon = FindItemOnLayer(Layer.TwoHanded);
@@ -27,7 +22,6 @@ namespace Server.Mobiles
             return null;
         }
 
-
         [Constructable]
         public MerchantCrew()
             : base(AIType.AI_Paladin, FightMode.Aggressor, 10, 1, .2, .4)
@@ -35,7 +29,7 @@ namespace Server.Mobiles
             Title = "the merchant";
             Hue = Race.RandomSkinHue();
 
-            if (this.Female = Utility.RandomBool())
+            if (Female = Utility.RandomBool())
             {
                 Body = 0x191;
                 Name = NameList.RandomName("female");
@@ -84,10 +78,10 @@ namespace Server.Mobiles
             switch (Utility.Random(4))
             {
                 default:
-                case 0: bow = new CompositeBow(); PackItem(new Arrow(25)); break;
-                case 1: bow = new Crossbow(); PackItem(new Bolt(25)); break;
-                case 2: bow = new Bow(); PackItem(new Arrow(25)); break;
-                case 3: bow = new HeavyCrossbow(); PackItem(new Bolt(25)); break;
+                case 0: bow = new CompositeBow(); break;
+                case 1: bow = new Crossbow(); break;
+                case 2: bow = new Bow(); break;
+                case 3: bow = new HeavyCrossbow(); break;
             }
 
             AddItem(bow);
@@ -104,6 +98,8 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
+            AddLoot(LootPack.LootItem<Arrow>(25, true));
+            AddLoot(LootPack.LootItem<Bolt>(25, true));
         }
 
         public MerchantCrew(Serial serial)
@@ -114,7 +110,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write((int)0);
+            writer.Write(0);
         }
 
         public override void Deserialize(GenericReader reader)

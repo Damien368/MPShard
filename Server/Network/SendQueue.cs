@@ -36,13 +36,13 @@ namespace Server.Network
 			private byte[] _buffer;
 			private int _length;
 
-			public byte[] Buffer { get { return _buffer; } }
+			public byte[] Buffer => _buffer;
 
-			public int Length { get { return _length; } }
+			public int Length => _length;
 
-			public int Available { get { return (_buffer.Length - _length); } }
+			public int Available => _buffer.Length - _length;
 
-			public bool IsFull { get { return (_length == _buffer.Length); } }
+			public bool IsFull => _length == _buffer.Length;
 
 			private Gram()
 			{ }
@@ -73,7 +73,7 @@ namespace Server.Network
 
 		public static int CoalesceBufferSize
 		{
-			get { return m_CoalesceBufferSize; }
+			get => m_CoalesceBufferSize;
 			set
 			{
 				if (m_CoalesceBufferSize == value)
@@ -105,19 +105,21 @@ namespace Server.Network
 		public static void ReleaseBuffer(byte[] buffer)
 		{
 			lock (m_UnusedBuffers)
+			{
 				if (buffer != null && buffer.Length == m_CoalesceBufferSize)
 				{
 					m_UnusedBuffers.ReleaseBuffer(buffer);
 				}
+			}
 		}
 
 		private readonly Queue<Gram> _pending;
 
 		private Gram _buffered;
 
-		public bool IsFlushReady { get { return (_pending.Count == 0 && _buffered != null); } }
+		public bool IsFlushReady => _pending.Count == 0 && _buffered != null;
 
-		public bool IsEmpty { get { return (_pending.Count == 0 && _buffered == null); } }
+		public bool IsEmpty => _pending.Count == 0 && _buffered == null;
 
 		public SendQueue()
 		{

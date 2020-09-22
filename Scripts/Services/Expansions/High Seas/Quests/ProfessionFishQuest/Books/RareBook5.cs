@@ -1,15 +1,12 @@
-﻿using Server;
-using System;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
     public class FishingGuideBook5 : BaseBook
     {
         [Constructable]
-		public FishingGuideBook5() : base( Utility.Random( 0xFF1, 2 ), false )
-		{
+        public FishingGuideBook5() : base(Utility.Random(0xFF1, 2), false)
+        {
             Name = "Volume 5 - Enchanted Sea Creatures";
-		}
+        }
 
         public static readonly BookContent Content = new BookContent
         (
@@ -59,7 +56,7 @@ namespace Server.Items
 
                 "This daring fish",
                 "swims the rivers o'",
-                String.Format("{0}. If prepared", FishInfo.GetFishLocation(typeof(FairySalmon))),
+                string.Format("{0}. If prepared", FishInfo.GetFishLocation(typeof(FairySalmon))),
                 "correctly, and eaten,",
                 "it be helpin' improve",
                 "a sailor's concentration",
@@ -121,7 +118,7 @@ namespace Server.Items
 
                 "This fish be found in",
                 "the lava rivers o' the",
-                String.Format("{0}. When ", FishInfo.GetFishLocation(typeof(LavaFish))),
+                string.Format("{0}. When ", FishInfo.GetFishLocation(typeof(LavaFish))),
                 "prepared correctly and",
                 "eaten, it be increasin'",
                 "yer mana when ye be ",
@@ -211,24 +208,24 @@ namespace Server.Items
             )
         );
 
-        public override BookContent DefaultContent{ get{ return Content; } }
+        public override BookContent DefaultContent => Content;
 
-        public FishingGuideBook5( Serial serial ) : base( serial )
-		{
-		}
+        public FishingGuideBook5(Serial serial) : base(serial)
+        {
+        }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
 
-			writer.WriteEncodedInt( (int)0 ); // version
-		}
+            writer.WriteEncodedInt(0); // version
+        }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
+            int version = reader.ReadEncodedInt();
+        }
     }
 }

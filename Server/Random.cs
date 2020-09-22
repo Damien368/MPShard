@@ -51,9 +51,9 @@ namespace Server
 			}
 		}
 
-		public static bool IsHardwareRNG { get { return _Random is IHardwareRNG; } }
+		public static bool IsHardwareRNG => _Random is IHardwareRNG;
 
-		public static Type Type { get { return _Random.GetType(); } }
+		public static Type Type => _Random.GetType();
 
 		public static int Next(int c)
 		{
@@ -95,9 +95,9 @@ namespace Server
 
 		public int Next(int c)
 		{
-            if(c <= 0)
-                return 0;
-            
+			if (c <= 0)
+				return 0;
+
 			int r;
 			lock (m_Random)
 				r = m_Random.Next(c);
@@ -128,8 +128,8 @@ namespace Server
 	{
 		private readonly RNGCryptoServiceProvider _CSP = new RNGCryptoServiceProvider();
 
-		private static int BUFFER_SIZE = 0x4000;
-		private static int LARGE_REQUEST = 0x40;
+		private static readonly int BUFFER_SIZE = 0x4000;
+		private static readonly int LARGE_REQUEST = 0x40;
 
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
@@ -156,7 +156,7 @@ namespace Server
 
 				lock (_syncB)
 				{
-					var b = _Working;
+					byte[] b = _Working;
 					_Working = _Buffer;
 					_Buffer = b;
 					_Index = 0;
@@ -229,7 +229,7 @@ namespace Server
 
 		public unsafe double NextDouble()
 		{
-			var b = new byte[8];
+			byte[] b = new byte[8];
 
 			if (BitConverter.IsLittleEndian)
 			{
@@ -245,7 +245,7 @@ namespace Server
 			ulong r = 0;
 			fixed (byte* buf = b)
 			{
-				r = *(ulong*)(&buf[0]) >> 3;
+				r = *(ulong*)&buf[0] >> 3;
 			}
 
 			/* double: 53 bits of significand precision
@@ -268,8 +268,8 @@ namespace Server
 			internal static extern RDRandError rdrand_get_bytes(int n, byte[] buffer);
 		}
 
-		private static int BUFFER_SIZE = 0x10000;
-		private static int LARGE_REQUEST = 0x40;
+		private static readonly int BUFFER_SIZE = 0x10000;
+		private static readonly int LARGE_REQUEST = 0x40;
 
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
@@ -302,7 +302,7 @@ namespace Server
 
 				lock (_syncB)
 				{
-					var b = _Working;
+					byte[] b = _Working;
 					_Working = _Buffer;
 					_Buffer = b;
 					_Index = 0;
@@ -373,7 +373,7 @@ namespace Server
 
 		public unsafe double NextDouble()
 		{
-			var b = new byte[8];
+			byte[] b = new byte[8];
 
 			if (BitConverter.IsLittleEndian)
 			{
@@ -389,7 +389,7 @@ namespace Server
 			ulong r = 0;
 			fixed (byte* buf = b)
 			{
-				r = *(ulong*)(&buf[0]) >> 3;
+				r = *(ulong*)&buf[0] >> 3;
 			}
 
 			/* double: 53 bits of significand precision
@@ -412,8 +412,8 @@ namespace Server
 			internal static extern RDRandError rdrand_get_bytes(int n, byte[] buffer);
 		}
 
-		private static int BUFFER_SIZE = 0x10000;
-		private static int LARGE_REQUEST = 0x40;
+		private static readonly int BUFFER_SIZE = 0x10000;
+		private static readonly int LARGE_REQUEST = 0x40;
 
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
@@ -446,7 +446,7 @@ namespace Server
 
 				lock (_syncB)
 				{
-					var b = _Working;
+					byte[] b = _Working;
 					_Working = _Buffer;
 					_Buffer = b;
 					_Index = 0;
@@ -517,7 +517,7 @@ namespace Server
 
 		public unsafe double NextDouble()
 		{
-			var b = new byte[8];
+			byte[] b = new byte[8];
 
 			if (BitConverter.IsLittleEndian)
 			{
@@ -533,7 +533,7 @@ namespace Server
 			ulong r = 0;
 			fixed (byte* buf = b)
 			{
-				r = *(ulong*)(&buf[0]) >> 3;
+				r = *(ulong*)&buf[0] >> 3;
 			}
 
 			/* double: 53 bits of significand precision

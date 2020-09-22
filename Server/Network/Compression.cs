@@ -138,8 +138,8 @@ namespace Server.Network
 						// align on byte boundary
 						if ((bitCount & 7) != 0)
 						{
-							bitValue <<= (8 - (bitCount & 7));
-							bitCount += (8 - (bitCount & 7));
+							bitValue <<= 8 - (bitCount & 7);
+							bitCount += 8 - (bitCount & 7);
 						}
 
 						while (bitCount >= 8)
@@ -233,7 +233,7 @@ namespace Server.Network
 			internal static extern ZLibError uncompress(byte[] dest, ref int destLen, byte[] source, int sourceLen);
 		}
 
-		public string Version { get { return SafeNativeMethods.zlibVersion(); } }
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress(byte[] dest, ref int destLength, byte[] source, int sourceLength)
 		{
@@ -269,7 +269,7 @@ namespace Server.Network
 			internal static extern ZLibError uncompress(byte[] dest, ref int destLen, byte[] source, int sourceLen);
 		}
 
-		public string Version { get { return SafeNativeMethods.zlibVersion(); } }
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress(byte[] dest, ref int destLength, byte[] source, int sourceLength)
 		{
@@ -305,7 +305,7 @@ namespace Server.Network
 			internal static extern ZLibError uncompress(byte[] dest, ref int destLen, byte[] source, int sourceLen);
 		}
 
-		public string Version { get { return SafeNativeMethods.zlibVersion(); } }
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress(byte[] dest, ref int destLength, byte[] source, int sourceLength)
 		{
@@ -340,7 +340,7 @@ namespace Server.Network
 			internal static extern ZLibError uncompress(byte[] dest, ref long destLen, byte[] source, long sourceLen);
 		}
 
-		public string Version { get { return SafeNativeMethods.zlibVersion(); } }
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress(byte[] dest, ref int destLength, byte[] source, int sourceLength)
 		{

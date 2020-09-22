@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
+using System;
+using System.Collections.Generic;
 
 namespace Server.Gumps
 {
@@ -28,7 +28,7 @@ namespace Server.Gumps
 
         public static void Initialize()
         {
-            EventSink.PlayerDeath += new PlayerDeathEventHandler(EventSink_PlayerDeath);
+            EventSink.PlayerDeath += EventSink_PlayerDeath;
         }
 
         public static void EventSink_PlayerDeath(PlayerDeathEventArgs e)
@@ -42,7 +42,7 @@ namespace Server.Gumps
             {
                 if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported)
                 {
-                    if (!Core.SE || !((PlayerMobile)m).RecentlyReported.Contains(ai.Attacker))
+                    if (!((PlayerMobile)m).RecentlyReported.Contains(ai.Attacker))
                     {
                         if (!killers.Contains(ai.Attacker))
                         {
@@ -81,8 +81,6 @@ namespace Server.Gumps
                 Titles.AwardFame(g, fameAward, false);
                 Titles.AwardKarma(g, karmaAward, true);
 
-                Server.Items.XmlQuest.RegisterKill(m, g);
-
                 if (killers.Contains(g))
                 {
                     EventSink.InvokePlayerMurdered(new PlayerMurderedEventArgs(g, m));
@@ -113,7 +111,7 @@ namespace Server.Gumps
         {
             Mobile from = state.Mobile;
 
-            switch ( info.ButtonID )
+            switch (info.ButtonID)
             {
                 case 1:
                     {
@@ -123,11 +121,8 @@ namespace Server.Gumps
                             killer.Kills++;
                             killer.ShortTermMurders++;
 
-                            if (Core.SE)
-                            {
-                                ((PlayerMobile)from).RecentlyReported.Add(killer);
-                                Timer.DelayCall(TimeSpan.FromMinutes(10), new TimerStateCallback(ReportedListExpiry_Callback), new object[] { from, killer });
-                            }
+                            ((PlayerMobile)from).RecentlyReported.Add(killer);
+                            Timer.DelayCall(TimeSpan.FromMinutes(10), new TimerStateCallback(ReportedListExpiry_Callback), new object[] { from, killer });
 
                             if (killer is PlayerMobile)
                             {
@@ -194,7 +189,7 @@ namespace Server.Gumps
 
             AddPage(1);
 
-            AddHtml(260, 234, 300, 140, ((Mobile)m_Killers[m_Idx]).Name, false, false); // Player's Name
+            AddHtml(260, 234, 300, 140, m_Killers[m_Idx].Name, false, false); // Player's Name
             AddHtmlLocalized(260, 254, 300, 140, 1049066, false, false); // Would you like to report...
 
             AddButton(260, 300, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);

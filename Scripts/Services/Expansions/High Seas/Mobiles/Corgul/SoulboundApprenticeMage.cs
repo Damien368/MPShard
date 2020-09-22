@@ -1,6 +1,3 @@
-﻿using Server;
-using System;
-
 namespace Server.Mobiles
 {
     public class SoulboundApprenticeMage : EvilMage
@@ -37,10 +34,19 @@ namespace Server.Mobiles
             Karma = -1000;
         }
 
-
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Rich, 3);
+        }
+
+        public override bool OnBeforeDeath()
+        {
+            if (Region.IsPartOf<Regions.CorgulRegion>())
+            {
+                CorgulTheSoulBinder.CheckDropSOT(this);
+            }
+
+            return base.OnBeforeDeath();
         }
 
         public SoulboundApprenticeMage(Serial serial)
@@ -51,7 +57,7 @@ namespace Server.Mobiles
         public override void Serialize(GenericWriter writer)
         {
             base.Serialize(writer);
-            writer.Write((int)0);
+            writer.Write(0);
         }
 
         public override void Deserialize(GenericReader reader)

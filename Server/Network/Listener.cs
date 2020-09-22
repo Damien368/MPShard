@@ -13,9 +13,9 @@ namespace Server.Network
 	public class Listener : IDisposable
 	{
 		private Socket m_Listener;
-        private PingListener _PingListener;
+		private PingListener _PingListener;
 
-        private readonly Queue<Socket> m_Accepted;
+		private readonly Queue<Socket> m_Accepted;
 		private readonly object m_AcceptedSyncRoot;
 
 		private readonly AsyncCallback m_OnAccept;
@@ -37,9 +37,9 @@ namespace Server.Network
 			}
 
 			DisplayListener();
-            _PingListener = new PingListener(ipep);
+			_PingListener = new PingListener(ipep);
 
-            m_OnAccept = OnAccept;
+			m_OnAccept = OnAccept;
 			try
 			{
 				IAsyncResult res = m_Listener.BeginAccept(m_OnAccept, m_Listener);
@@ -59,7 +59,7 @@ namespace Server.Network
 			try
 			{
 				s.LingerState.Enabled = false;
-				
+
 				// Default is 'false' starting Windows Vista and Server 2008. Source: https://msdn.microsoft.com/en-us/library/system.net.sockets.socket.exclusiveaddressuse(v=vs.110).aspx?f=255&MSPPError=-2147217396
 				s.ExclusiveAddressUse = false;
 
@@ -112,7 +112,7 @@ namespace Server.Network
 
 			if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
 			{
-				var adapters = NetworkInterface.GetAllNetworkInterfaces();
+				NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 				foreach (NetworkInterface adapter in adapters)
 				{
 					IPInterfaceProperties properties = adapter.GetIPProperties();
@@ -148,7 +148,7 @@ namespace Server.Network
 			Console.WriteLine(@"----------------------------------------------------------------------");
 			Utility.PopColor();
 		}
-		
+
 		private void OnAccept(IAsyncResult asyncResult)
 		{
 			Socket listener = (Socket)asyncResult.AsyncState;
@@ -268,13 +268,13 @@ namespace Server.Network
 				socket.Close();
 			}
 
-            if (_PingListener == null)
-            {
-                return;
-            }
+			if (_PingListener == null)
+			{
+				return;
+			}
 
-            _PingListener.Dispose();
-            _PingListener = null;
-        }
+			_PingListener.Dispose();
+			_PingListener = null;
+		}
 	}
 }

@@ -1,8 +1,8 @@
+using Server.Gumps;
+using Server.Network;
 using System;
 using System.Collections;
 using System.IO;
-using Server.Gumps;
-using Server.Network;
 
 namespace Server.Engines.Help
 {
@@ -103,7 +103,7 @@ namespace Server.Engines.Help
 
                     string typeString = PageQueue.GetPageTypeName(e.Type);
 
-                    string html = String.Format("[{0}] {1} <basefont color=#{2:X6}>[<u>{3}</u>]</basefont>", typeString, e.Message, e.Handler == null ? 0xFF0000 : 0xFF, e.Handler == null ? "Unhandled" : "Handling");
+                    string html = string.Format("[{0}] {1} <basefont color=#{2:X6}>[<u>{3}</u>]</basefont>", typeString, e.Message, e.Handler == null ? 0xFF0000 : 0xFF, e.Handler == null ? "Unhandled" : "Handling");
 
                     Add(new GumpHtml(12, 44 + ((i % 5) * 80), 350, 70, html, true, true));
                     AddButton(370, 44 + ((i % 5) * 80) + 24, 0xFA5, 0xFA7, i + 1, GumpButtonType.Reply, 0);
@@ -211,7 +211,7 @@ namespace Server.Engines.Help
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Diagnostics.ExceptionLogging.LogException(e);
             }
         }
 
@@ -243,15 +243,16 @@ namespace Server.Engines.Help
                                 if (split.Length == 2)
                                     list.Add(new PredefinedResponse(split[0], split[1]));
                             }
-                            catch
+                            catch (Exception e)
                             {
+                                Diagnostics.ExceptionLogging.LogException(e);
                             }
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Diagnostics.ExceptionLogging.LogException(e);
                 }
             }
 
@@ -308,7 +309,7 @@ namespace Server.Engines.Help
 
                     PredefinedResponse resp = (PredefinedResponse)list[i];
 
-                    string html = String.Format("<u>{0}</u><br>{1}", resp.Title, resp.Message);
+                    string html = string.Format("<u>{0}</u><br>{1}", resp.Title, resp.Message);
 
                     AddHtml(12, 44 + ((i % 5) * 80), 350, 70, html, true, true);
 
@@ -369,12 +370,12 @@ namespace Server.Engines.Help
 
         public string Center(string text)
         {
-            return String.Format("<CENTER>{0}</CENTER>", text);
+            return string.Format("<CENTER>{0}</CENTER>", text);
         }
 
         public string Color(string text, int color)
         {
-            return String.Format("<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text);
+            return string.Format("<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text);
         }
 
         public void AddTextInput(int x, int y, int w, int h, int id, string def)
@@ -415,7 +416,7 @@ namespace Server.Engines.Help
                     {
                         PredefinedResponse resp = (PredefinedResponse)list[index];
 
-                        switch ( type )
+                        switch (type)
                         {
                             case 0: // edit
                                 {
@@ -456,7 +457,7 @@ namespace Server.Engines.Help
             {
                 ArrayList list = PredefinedResponse.List;
 
-                switch ( info.ButtonID )
+                switch (info.ButtonID)
                 {
                     case 1:
                         {
@@ -510,8 +511,8 @@ namespace Server.Engines.Help
                 2415, //Developer
                 2415, //CoOwner
                 2415  //Owner
-        }; 
-        
+        };
+
         private readonly PageEntry m_Entry;
         private readonly Mobile m_Mobile;
 
@@ -543,7 +544,7 @@ namespace Server.Engines.Help
                 AddLabelCropped(128, 18, 264, 20, 2100, entry.Sent.ToString());
 
                 AddLabel(18, 38, 2100, "Sender:");
-                AddLabelCropped(128, 38, 264, 20, 2100, String.Format("{0} {1} [{2}]", entry.Sender.RawName, entry.Sender.Location, entry.Sender.Map));
+                AddLabelCropped(128, 38, 264, 20, 2100, string.Format("{0} {1} [{2}]", entry.Sender.RawName, entry.Sender.Location, entry.Sender.Map));
 
                 AddButton(18, bottom - (buttons * 22), 0xFAB, 0xFAD, 8, GumpButtonType.Reply, 0);
                 AddImageTiled(52, bottom - (buttons * 22) + 1, 340, 80, 0xA40/*0xBBC*//*0x2458*/);
@@ -591,7 +592,7 @@ namespace Server.Engines.Help
                 }
 
                 AddLabel(18, 78, 2100, "Page Location:");
-                AddLabelCropped(128, 78, 264, 20, 2100, String.Format("{0} [{1}]", entry.PageLocation, entry.PageMap));
+                AddLabelCropped(128, 78, 264, 20, 2100, string.Format("{0} [{1}]", entry.PageLocation, entry.PageMap));
 
                 AddButton(18, bottom - (buttons * 22), 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
                 AddLabel(52, bottom - (buttons++ * 22), 2100, "Go to Page Location");
@@ -632,7 +633,7 @@ namespace Server.Engines.Help
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Diagnostics.ExceptionLogging.LogException(e);
             }
         }
 
@@ -652,7 +653,7 @@ namespace Server.Engines.Help
                 return;
             }
 
-            switch ( info.ButtonID )
+            switch (info.ButtonID)
             {
                 case 0: // close
                     {
