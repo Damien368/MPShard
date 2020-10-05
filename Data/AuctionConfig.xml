@@ -43,7 +43,7 @@
 		
 			<ClilocLocation type="string">C:\RunUO\Misc\cliloc.enu</ClilocLocation>
 		-->
-		<ClilocLocation type="string"></ClilocLocation>
+		<ClilocLocation type="string">C:\Program Files (x86)\Electronic Arts\Ultima Online Classic\cliloc.enu</ClilocLocation>
 
 		<EnableLogging type="bool">true</EnableLogging>
 		
