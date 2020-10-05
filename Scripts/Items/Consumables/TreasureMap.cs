@@ -736,6 +736,7 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
+			from.SendMessage("Chest located at: " + ChestLocation.X + " " + ChestLocation.Y);
             if (!from.InRange(GetWorldLocation(), 2))
             {
                 from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
